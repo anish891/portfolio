@@ -325,7 +325,7 @@ export const timelineSteps: TimelineStep[] = [
 export const socialLinks: SocialLink[] = [
   {
     name: "GitHub",
-    url: "https://github.com/anishtejwani",
+    url: "https://github.com/anish891",
     icon: "Github",
   },
   {
@@ -335,11 +335,11 @@ export const socialLinks: SocialLink[] = [
   },
   {
     name: "Email",
-    url: "mailto:anishtejwani@gmail.com",
+    url: "mailto:anishtejwani891@gmail.com",
     icon: "Mail",
   },
 ];
 
 // ─── GitHub Config ───────────────────────────────────────────────────────────
 
-export const githubUsername = "anishtejwani";
+export const githubUsername = "anish891";

@@ -46,8 +46,8 @@ const COMMANDS: Record<string, string> = {
   Databases:  SQL • Firebase`,
 
   contact: `
-  📧 Email:    anishtejwani@gmail.com
-  🔗 GitHub:   github.com/anishtejwani
+  📧 Email:    anishtejwani891@gmail.com
+  🔗 GitHub:   github.com/anish891
   💼 LinkedIn: linkedin.com/in/anishtejwani`,
 
   projects: `

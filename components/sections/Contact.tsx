@@ -40,7 +40,7 @@ export function Contact() {
       `Name: ${name}\nEmail: ${email}\n\nMessage:\n${message}`
     );
     window.open(
-      `mailto:anishtejwani@gmail.com?subject=${subject}&body=${body}`
+      `mailto:anishtejwani891@gmail.com?subject=${subject}&body=${body}`
     );
 
     setSubmitted(true);
@@ -187,7 +187,7 @@ export function Contact() {
               </div>
             </GlassCard>
 
-            {/* Resume Download */}
+            {/* Resume Download
             <GlassCard hover={false}>
               <h3 className="font-semibold text-foreground text-sm mb-3">
                 Resume
@@ -206,7 +206,7 @@ export function Contact() {
                   Download Resume
                 </a>
               </Button>
-            </GlassCard>
+            </GlassCard> */}
           </motion.div>
         </div>
       </div>
