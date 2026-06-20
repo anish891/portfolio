@@ -114,7 +114,7 @@ export function Hero() {
           >
             Contact Me
           </Button>
-          <Button
+          {/* <Button
             variant="outline"
             size="lg"
             className="border-primary/15 bg-primary/5 hover:bg-primary/10 text-primary px-6 h-11 text-sm font-semibold cursor-pointer transition-colors"
@@ -124,11 +124,11 @@ export function Hero() {
               <Download className="size-4 mr-1.5" />
               Resume
             </a>
-          </Button>
+          </Button> */}
         </motion.div>
 
         {/* Scroll indicator */}
-        <motion.div
+        {/* <motion.div
           className="absolute bottom-8 left-1/2 -translate-x-1/2"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -140,7 +140,7 @@ export function Hero() {
           >
             <ArrowDown className="size-5 text-muted-foreground/50" />
           </motion.div>
-        </motion.div>
+        </motion.div> */}
       </div>
     </section>
   );
