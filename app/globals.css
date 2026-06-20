@@ -1,26 +1,338 @@
 @import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+@custom-variant dark (&:is(.dark *));
+
+/* ─── Theme Tokens ──────────────────────────────────────────────────────────── */
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
+  --font-sans: var(--font-sans);
   --font-mono: var(--font-geist-mono);
+  --font-heading: var(--font-sans);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+/* ─── Light Mode (White/Peach Theme) ────────────────────────────────────────── */
+
+:root {
+  --background: oklch(0.99 0.005 60); /* soft warm white */
+  --foreground: oklch(0.25 0.02 50); /* charcoal text with a touch of warm peach */
+  --card: oklch(1 0.003 60); /* clean white cards */
+  --card-foreground: oklch(0.25 0.02 50);
+  --popover: oklch(1 0.003 60);
+  --popover-foreground: oklch(0.25 0.02 50);
+  
+  --primary: oklch(0.70 0.14 55); /* beautiful warm peach/coral primary */
+  --primary-foreground: oklch(1 0 0); /* white text on primary buttons */
+  
+  --secondary: oklch(0.97 0.015 60); /* soft peach-cream */
+  --secondary-foreground: oklch(0.40 0.08 55); /* darker peach-brown text */
+  
+  --muted: oklch(0.96 0.01 60);
+  --muted-foreground: oklch(0.55 0.03 60);
+  
+  --accent: oklch(0.97 0.02 60);
+  --accent-foreground: oklch(0.70 0.14 55);
+  
+  --destructive: oklch(0.60 0.18 25);
+  
+  --border: oklch(0.93 0.01 60);
+  --input: oklch(0.93 0.01 60);
+  --ring: oklch(0.70 0.14 55);
+
+  --radius: 0.625rem;
+
+  /* Custom variables for glassmorphism & glow on light theme */
+  --glass-bg: oklch(1 0.005 60 / 60%);
+  --glass-border: oklch(0.25 0.02 50 / 8%);
+  --glass-shadow: 0 8px 32px oklch(0.25 0.02 50 / 4%);
+  --glow-purple: oklch(0.70 0.14 55);
+  --glow-cyan: oklch(0.82 0.09 70);
+  --glow-blue: oklch(0.78 0.11 62);
+  --gradient-start: oklch(0.70 0.14 55);
+  --gradient-end: oklch(0.82 0.09 70);
+}
+
+/* ─── Base Styles ───────────────────────────────────────────────────────────── */
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  html {
+    @apply font-sans scroll-smooth;
+    scroll-behavior: smooth;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* ─── Custom Scrollbar ──────────────────────────────────────────────────────── */
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: oklch(0.8 0.02 60);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: oklch(0.7 0.04 60);
+}
+
+/* ─── Glass Utilities ───────────────────────────────────────────────────────── */
+
+.glass {
+  background: var(--glass-bg);
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  border: 1px solid var(--glass-border);
+}
+
+.glass-strong {
+  background: oklch(1 0.005 60 / 85%);
+  backdrop-filter: blur(24px) saturate(200%);
+  -webkit-backdrop-filter: blur(24px) saturate(200%);
+  border: 1px solid oklch(0.25 0.02 50 / 10%);
+}
+
+/* ─── Glow Effects ──────────────────────────────────────────────────────────── */
+
+.glow-purple {
+  box-shadow:
+    0 0 20px oklch(0.70 0.14 55 / 10%),
+    0 0 60px oklch(0.70 0.14 55 / 4%);
+}
+
+.glow-cyan {
+  box-shadow:
+    0 0 20px oklch(0.82 0.09 70 / 10%),
+    0 0 60px oklch(0.82 0.09 70 / 4%);
+}
+
+.glow-border {
+  position: relative;
+}
+
+.glow-border::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  background: linear-gradient(
+    135deg,
+    oklch(0.70 0.14 55 / 30%),
+    transparent 50%,
+    oklch(0.82 0.09 70 / 30%)
+  );
+  z-index: -1;
+  mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  -webkit-mask-composite: xor;
+  padding: 1px;
+}
+
+/* ─── Gradient Text ─────────────────────────────────────────────────────────── */
+
+.gradient-text {
+  background: linear-gradient(135deg, var(--glow-purple), var(--glow-cyan));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.gradient-text-warm {
+  background: linear-gradient(135deg, oklch(0.78 0.11 62), oklch(0.70 0.14 55));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ─── Animated Gradient Border ──────────────────────────────────────────────── */
+
+@property --gradient-angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
+.animated-border {
+  --gradient-angle: 0deg;
+  border-image: conic-gradient(
+      from var(--gradient-angle),
+      oklch(0.70 0.14 55),
+      oklch(0.82 0.09 70),
+      oklch(0.78 0.11 62),
+      oklch(0.70 0.14 55)
+    )
+    1;
+  animation: border-rotate 4s linear infinite;
+}
+
+@keyframes border-rotate {
+  to {
+    --gradient-angle: 360deg;
+  }
+}
+
+/* ─── Dot Grid Background ──────────────────────────────────────────────────── */
+
+.bg-dot-grid {
+  background-image: radial-gradient(
+    circle at 1px 1px,
+    oklch(0.25 0.02 50 / 6%) 1px,
+    transparent 0
+  );
+  background-size: 32px 32px;
+}
+
+/* ─── Section Styles ────────────────────────────────────────────────────────── */
+
+.section-padding {
+  padding: 6rem 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .section-padding {
+    padding: 8rem 2rem;
+  }
+}
+
+.section-heading {
+  font-size: clamp(2rem, 5vw, 3rem);
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  line-height: 1.1;
+}
+
+.section-subheading {
+  font-size: clamp(1rem, 2vw, 1.125rem);
+  color: oklch(0.55 0.03 60);
+  max-width: 40rem;
+  line-height: 1.6;
+}
+
+/* ─── Loading Animation ─────────────────────────────────────────────────────── */
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.shimmer {
+  background: linear-gradient(
+    90deg,
+    transparent 25%,
+    oklch(0.70 0.14 55 / 8%) 50%,
+    transparent 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 2s ease-in-out infinite;
+}
+
+/* ─── Pulse Glow ────────────────────────────────────────────────────────────── */
+
+@keyframes pulse-glow {
+  0%,
+  100% {
+    opacity: 0.4;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+.pulse-glow {
+  animation: pulse-glow 3s ease-in-out infinite;
+}
+
+/* ─── Float Animation ───────────────────────────────────────────────────────── */
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+/* ─── Typing Cursor ─────────────────────────────────────────────────────────── */
+
+.typed-cursor {
+  color: oklch(0.70 0.14 55);
+  font-weight: 100;
+  animation: blink 0.7s infinite;
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+/* ─── Selection Color ───────────────────────────────────────────────────────── */
+
+::selection {
+  background: oklch(0.70 0.14 55 / 30%);
+  color: oklch(0.25 0.02 50);
 }
