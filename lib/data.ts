@@ -28,27 +28,7 @@ export interface Skill {
   icon?: string;
 }
 
-export interface ExperienceCard {
-  title: string;
-  icon: string;
-  gradient: string;
-  highlights: string[];
-}
 
-export interface Achievement {
-  value: string;
-  label: string;
-  icon: string;
-  isNumeric: boolean;
-  numericValue?: number;
-  suffix?: string;
-}
-
-export interface TimelineStep {
-  title: string;
-  description: string;
-  icon: string;
-}
 
 export interface SocialLink {
   name: string;
@@ -162,42 +142,7 @@ export const techStack: SkillCategory[] = [
   },
 ];
 
-// ─── Experience ──────────────────────────────────────────────────────────────
 
-export const experienceCards: ExperienceCard[] = [
-  {
-    title: "AI Engineering",
-    icon: "Brain",
-    gradient: "from-violet-500 to-purple-600",
-    highlights: [
-      "Built AI agents and proof-of-concept systems",
-      "Integrated modern AI frameworks and APIs",
-      "Automated business workflows",
-      "Designed intelligent productivity solutions",
-    ],
-  },
-  {
-    title: "Full-Stack Engineering",
-    icon: "Layers",
-    gradient: "from-cyan-500 to-blue-600",
-    highlights: [
-      "Developed and deployed end-to-end web applications",
-      "Modernized legacy systems",
-      "Built internal automation tools",
-      "Improved operational efficiency",
-    ],
-  },
-  {
-    title: "Java Development",
-    icon: "Code2",
-    gradient: "from-amber-500 to-orange-600",
-    highlights: [
-      "Designed and developed full-stack applications using Java",
-      "Worked with JSP, Servlets, and SQL",
-      "Built scalable backend functionality",
-    ],
-  },
-];
 
 // ─── Projects ────────────────────────────────────────────────────────────────
 
@@ -253,71 +198,7 @@ export const projects: Project[] = [
   },
 ];
 
-// ─── Achievements ────────────────────────────────────────────────────────────
 
-export const achievements: Achievement[] = [
-  {
-    value: "250+",
-    label: "LeetCode Problems Solved",
-    icon: "Code2",
-    isNumeric: true,
-    numericValue: 250,
-    suffix: "+",
-  },
-  {
-    value: "Silver Badge",
-    label: "LeetCode Achievement",
-    icon: "Award",
-    isNumeric: false,
-  },
-  {
-    value: "2024",
-    label: "Computer Engineering Graduate",
-    icon: "GraduationCap",
-    isNumeric: false,
-  },
-  {
-    value: "AI-900",
-    label: "Microsoft Azure AI Fundamentals",
-    icon: "BadgeCheck",
-    isNumeric: false,
-  },
-];
-
-// ─── Learning Journey ────────────────────────────────────────────────────────
-
-export const timelineSteps: TimelineStep[] = [
-  {
-    title: "Java & Web Development",
-    description: "Foundations in object-oriented programming and web technologies",
-    icon: "Code2",
-  },
-  {
-    title: "Full-Stack Development",
-    description: "Building end-to-end applications with modern frameworks",
-    icon: "Layers",
-  },
-  {
-    title: "Mobile Development",
-    description: "Cross-platform mobile apps with Flutter",
-    icon: "Smartphone",
-  },
-  {
-    title: "Cloud & DevOps",
-    description: "Cloud infrastructure, CI/CD pipelines, and deployment",
-    icon: "Cloud",
-  },
-  {
-    title: "Artificial Intelligence",
-    description: "AI/ML models, LLM integrations, and intelligent systems",
-    icon: "Brain",
-  },
-  {
-    title: "Advanced System Design",
-    description: "Distributed systems, scalability, and architecture patterns",
-    icon: "Network",
-  },
-];
 
 // ─── Social Links ────────────────────────────────────────────────────────────
 
@@ -339,6 +220,4 @@ export const socialLinks: SocialLink[] = [
   },
 ];
 
-// ─── GitHub Config ───────────────────────────────────────────────────────────
 
-export const githubUsername = "anish891";
