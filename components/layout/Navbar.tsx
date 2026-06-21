@@ -6,6 +6,7 @@ import { navItems } from "@/lib/data";
 import { Menu, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { VisitorCounter } from "@/components/ui/VisitorCounter";
+import { ThemeToggle } from "@/components/ui/ThemeToggle";
 
 export function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -88,6 +89,7 @@ export function Navbar() {
                   </button>
                 );
               })}
+              <ThemeToggle />
             </div>
 
             {/* Mobile Toggle */}
@@ -138,6 +140,14 @@ export function Navbar() {
                   </motion.button>
                 );
               })}
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: navItems.length * 0.05 }}
+                className="pt-2"
+              >
+                <ThemeToggle />
+              </motion.div>
             </div>
           </motion.div>
         )}
