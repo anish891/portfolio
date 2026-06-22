@@ -5,10 +5,16 @@ import { Sun, Moon } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 export function ThemeToggle() {
-  const [isDark, setIsDark] = useState<boolean>(() => {
-    if (typeof window === "undefined") return false;
-    return document.documentElement.classList.contains("dark");
-  });
+  // Always start false (SSR-safe). The real value is synced in useEffect
+  // after mount, which avoids a server/client hydration mismatch caused by
+  // the inline theme-init script that may have already added the "dark" class.
+  const [isDark, setIsDark] = useState<boolean>(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+    setIsDark(document.documentElement.classList.contains("dark"));
+  }, []);
 
   // Keep state in sync if something else changes the class externally
   useEffect(() => {
@@ -30,6 +36,18 @@ export function ThemeToggle() {
     } catch {}
     setIsDark(next);
   }, [isDark]);
+
+  // Render a placeholder until mounted to keep SSR/client HTML identical
+  if (!mounted) {
+    return (
+      <button
+        aria-label="Toggle theme"
+        className="relative p-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-primary/5 transition-all duration-200 cursor-pointer"
+      >
+        <span className="block size-4" />
+      </button>
+    );
+  }
 
   return (
     <button
