@@ -75,11 +75,10 @@ export function Projects() {
             <button
               key={filter.value}
               onClick={() => setActiveFilter(filter.value)}
-              className={`px-4 py-1.5 text-sm rounded-lg transition-all duration-200 cursor-pointer font-medium ${
-                activeFilter === filter.value
-                  ? "bg-primary/10 text-primary border border-primary/15"
-                  : "text-muted-foreground hover:text-foreground hover:bg-primary/5 border border-transparent"
-              }`}
+              className={`px-4 py-1.5 text-sm rounded-lg transition-all duration-200 cursor-pointer font-medium ${activeFilter === filter.value
+                ? "bg-primary/10 text-primary border border-primary/15"
+                : "text-muted-foreground hover:text-foreground hover:bg-primary/5 border border-transparent"
+                }`}
             >
               {filter.label}
             </button>
