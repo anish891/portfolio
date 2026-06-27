@@ -22,23 +22,12 @@ const iconMap: Record<string, React.ElementType> = {
   Sparkles,
 };
 
-const filters = [
-  { label: "All", value: "all" },
-  { label: "AI / ML", value: "ai" },
-  { label: "Web", value: "web" },
-  { label: "Mobile", value: "mobile" },
-] as const;
 
 export function Projects() {
   const { ref, isInView } = useInView<HTMLDivElement>({ threshold: 0.05 });
-  const [activeFilter, setActiveFilter] = useState<string>("all");
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
 
-  const filteredProjects =
-    activeFilter === "all"
-      ? projects
-      : projects.filter((p) => p.category === activeFilter);
 
   const handleProjectClick = (project: Project) => {
     setSelectedProject(project);
@@ -71,24 +60,13 @@ export function Projects() {
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.5, delay: 0.2 }}
         >
-          {filters.map((filter) => (
-            <button
-              key={filter.value}
-              onClick={() => setActiveFilter(filter.value)}
-              className={`px-4 py-1.5 text-sm rounded-lg transition-all duration-200 cursor-pointer font-medium ${activeFilter === filter.value
-                ? "bg-primary/10 text-primary border border-primary/15"
-                : "text-muted-foreground hover:text-foreground hover:bg-primary/5 border border-transparent"
-                }`}
-            >
-              {filter.label}
-            </button>
-          ))}
+          
         </motion.div>
 
         {/* Project Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
           <AnimatePresence mode="popLayout">
-            {filteredProjects.map((project, i) => {
+            {projects.map((project, i) => {
               const Icon = iconMap[project.icon] || Sparkles;
               return (
                 <motion.div
