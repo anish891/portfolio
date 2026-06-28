@@ -40,7 +40,6 @@ export interface SocialLink {
 
 export const navItems: NavItem[] = [
   { label: "Home", href: "#home" },
-  { label: "About", href: "#about" },
   { label: "Tech", href: "#tech" },
   { label: "Projects", href: "#projects" },
   { label: "Contact", href: "#contact" },
@@ -60,6 +59,8 @@ export const heroContent = {
   intro:
     "I build intelligent software systems, AI-powered applications, and scalable web platforms. Passionate about solving complex problems through automation, modern engineering practices, and elegant user experiences.",
   location: "Mumbai, India",
+  email: "anishtejwani891@gmail.com",
+  specialty: "AI + Full-Stack",
 };
 
 // ─── About ───────────────────────────────────────────────────────────────────

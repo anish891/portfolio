@@ -1,27 +1,49 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { MapPin, ArrowDown, Download } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { useTypingEffect } from "@/hooks/useTypingEffect";
+import { MapPin, Mail, Briefcase, ArrowRight } from "lucide-react";
+import { heroContent, socialLinks, aboutContent } from "@/lib/data";
 import { useMousePosition } from "@/hooks/useMousePosition";
-import { heroContent } from "@/lib/data";
+import { Github, Linkedin } from "@/components/ui/icons";
+import { GitHubHeatmap } from "@/components/ui/GitHubHeatmap";
+
+const socialIconMap: Record<string, React.ElementType> = {
+  Github,
+  Linkedin,
+  Mail: ({ className }: { className?: string }) => (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="20"
+      height="20"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={className}
+    >
+      <rect width="20" height="16" x="2" y="4" rx="2" />
+      <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
+    </svg>
+  ),
+};
+
+// Fade-up animation variant
+const fadeUp = (delay = 0) => ({
+  initial: { opacity: 0, y: 18 },
+  animate: { opacity: 1, y: 0 },
+  transition: { duration: 0.5, delay, ease: "easeOut" as const },
+});
+
 
 export function Hero() {
-  const { elementRef } = useTypingEffect({
-    strings: heroContent.typingStrings,
-    typeSpeed: 80,
-    backSpeed: 50,
-    backDelay: 1500,
-    loop: true,
-  });
-
   const mouse = useMousePosition();
 
   return (
     <section
       id="home"
-      className="relative min-h-[80vh] flex items-center justify-center overflow-hidden py-24"
+      className="relative flex items-start justify-center overflow-hidden pt-28 pb-12"
     >
       {/* Mouse-following gradient */}
       <div
@@ -35,112 +57,151 @@ export function Hero() {
       <div className="absolute inset-0 bg-dot-grid opacity-30" />
 
       {/* Ambient glow orbs */}
-      <div className="absolute top-1/4 left-1/4 w-96 h-96 rounded-full bg-[oklch(0.70_0.14_55/5%)] blur-[100px] animate-float" />
+      <div className="absolute top-1/3 left-1/4 w-80 h-80 rounded-full bg-[oklch(0.70_0.14_55/4%)] blur-[120px] animate-float" />
       <div
-        className="absolute bottom-1/4 right-1/4 w-80 h-80 rounded-full bg-[oklch(0.82_0.09_70/5%)] blur-[100px] animate-float"
+        className="absolute bottom-1/4 right-1/4 w-64 h-64 rounded-full bg-[oklch(0.82_0.09_70/4%)] blur-[100px] animate-float"
         style={{ animationDelay: "3s" }}
       />
 
       {/* Content */}
-      <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 text-center">
-        {/* Location */}
+      <div className="relative z-10 max-w-3xl mx-auto px-4 sm:px-6 w-full">
+
+        {/* ── Profile header ───────────────────────────── */}
         <motion.div
-          className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full glass text-sm text-muted-foreground mb-5"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.2 }}
+          className="flex items-center gap-4 mb-7"
+          {...fadeUp(0.05)}
         >
-          <MapPin className="size-3.5 text-[oklch(0.70_0.14_55)]" />
-          {heroContent.location}
+          {/* Avatar */}
+          <div className="relative flex-shrink-0">
+            <div className="w-[68px] h-[68px] rounded-2xl bg-gradient-to-br from-[oklch(0.70_0.14_55)] to-[oklch(0.82_0.09_70)] flex items-center justify-center text-white text-xl font-bold shadow-lg shadow-primary/20 select-none">
+              AT
+            </div>
+            {/* Availability dot */}
+            <span className="absolute -bottom-0.5 -right-0.5 flex h-3.5 w-3.5">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-50" />
+              <span className="relative inline-flex rounded-full h-3.5 w-3.5 bg-emerald-400 border-2 border-background" />
+            </span>
+          </div>
+
+          {/* Name + tagline */}
+          <div>
+            <h1 className="text-3xl sm:text-4xl font-bold tracking-tight">
+              <span className="gradient-text">{heroContent.name}</span>
+            </h1>
+            <p className="text-muted-foreground text-sm sm:text-[15px] mt-1 font-medium">
+              {heroContent.tagline}
+            </p>
+          </div>
         </motion.div>
 
-        {/* Name */}
-        <motion.h1
-          className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold tracking-tight mb-4"
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, delay: 0.3 }}
-        >
-          <span className="gradient-text">{heroContent.name}</span>
-        </motion.h1>
-
-        {/* Typing animation */}
+        {/* ── Meta info row ────────────────────────────── */}
         <motion.div
-          className="text-xl sm:text-2xl md:text-3xl font-medium text-muted-foreground mb-6 h-10"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.5 }}
+          className="grid grid-cols-2 sm:grid-cols-3 gap-x-8 gap-y-4 py-5 border-y border-border/60 mb-6"
+          {...fadeUp(0.12)}
         >
-          <span ref={elementRef} />
+          <div>
+            <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/50 mb-1.5">
+              Location
+            </p>
+            <div className="flex items-center gap-1.5">
+              <MapPin className="size-3.5 text-primary flex-shrink-0" />
+              <span className="text-sm text-foreground font-medium">
+                {heroContent.location}
+              </span>
+            </div>
+          </div>
+
+          <div>
+            <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/50 mb-1.5">
+              Email
+            </p>
+            <div className="flex items-center gap-1.5">
+              <Mail className="size-3.5 text-primary flex-shrink-0" />
+              <a
+                href={`mailto:${heroContent.email}`}
+                className="text-sm text-foreground font-medium hover:text-primary transition-colors truncate"
+              >
+                {heroContent.email}
+              </a>
+            </div>
+          </div>
+
+          <div>
+            <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/50 mb-1.5">
+              Specialty
+            </p>
+            <div className="flex items-center gap-1.5">
+              <Briefcase className="size-3.5 text-primary flex-shrink-0" />
+              <span className="text-sm text-foreground font-medium">
+                {heroContent.specialty}
+              </span>
+            </div>
+          </div>
         </motion.div>
 
-        {/* Intro */}
+        {/* ── Bio ──────────────────────────────────────── */}
         <motion.p
-          className="max-w-2xl mx-auto text-base sm:text-lg text-muted-foreground leading-relaxed mb-7"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.7 }}
+          className="text-foreground/80 leading-relaxed text-sm sm:text-[15px] mb-6"
+          {...fadeUp(0.19)}
         >
           {heroContent.intro}
         </motion.p>
 
-        {/* CTA Buttons */}
-        <motion.div
-          className="flex flex-col sm:flex-row items-center justify-center gap-3"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.9 }}
-        >
-          <Button
-            size="lg"
-            className="bg-gradient-to-r from-[oklch(0.70_0.14_55)] to-[oklch(0.82_0.09_70)] text-white border-0 px-6 h-11 text-sm font-semibold hover:opacity-90 transition-opacity cursor-pointer shadow-sm shadow-primary/20"
-            onClick={() =>
+        {/* ── Social links ─────────────────────────────── */}
+        <motion.div className="flex items-center gap-1 mb-8" {...fadeUp(0.25)}>
+          {socialLinks.map((link) => {
+            const Icon = socialIconMap[link.icon];
+            if (!Icon) return null;
+            return (
+              <a
+                key={link.name}
+                href={link.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={link.name}
+                className="p-2 rounded-xl text-muted-foreground hover:text-primary hover:bg-primary/8 transition-all duration-200"
+              >
+                <Icon className="size-5" />
+              </a>
+            );
+          })}
+
+          {/* CTA */}
+          <a
+            href="#projects"
+            onClick={(e) => {
+              e.preventDefault();
               document
                 .getElementById("projects")
-                ?.scrollIntoView({ behavior: "smooth" })
-            }
+                ?.scrollIntoView({ behavior: "smooth" });
+            }}
+            className="ml-3 inline-flex items-center gap-1.5 text-sm font-semibold text-primary hover:gap-2.5 transition-all duration-200"
           >
-            View Projects
-          </Button>
-          <Button
-            variant="outline"
-            size="lg"
-            className="border-primary/15 bg-primary/5 hover:bg-primary/10 text-primary px-6 h-11 text-sm font-semibold cursor-pointer transition-colors"
-            onClick={() =>
-              document
-                .getElementById("contact")
-                ?.scrollIntoView({ behavior: "smooth" })
-            }
-          >
-            Contact Me
-          </Button>
-          {/* <Button
-            variant="outline"
-            size="lg"
-            className="border-primary/15 bg-primary/5 hover:bg-primary/10 text-primary px-6 h-11 text-sm font-semibold cursor-pointer transition-colors"
-            asChild
-          >
-            <a href="/resume.pdf" download>
-              <Download className="size-4 mr-1.5" />
-              Resume
-            </a>
-          </Button> */}
+            View Projects <ArrowRight className="size-4" />
+          </a>
         </motion.div>
 
-        {/* Scroll indicator */}
-        {/* <motion.div
-          className="absolute bottom-8 left-1/2 -translate-x-1/2"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1.5 }}
-        >
-          <motion.div
-            animate={{ y: [0, 8, 0] }}
-            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-          >
-            <ArrowDown className="size-5 text-muted-foreground/50" />
-          </motion.div>
-        </motion.div> */}
+        {/* ── GitHub Heatmap ───────────────────────────── */}
+        <motion.div {...fadeUp(0.32)}>
+          <GitHubHeatmap username="anish891" />
+        </motion.div>
+
+        {/* ── Interests / Currently Into ───────────────── */}
+        <motion.div className="mt-7" {...fadeUp(0.38)}>
+          <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/50 mb-3">
+            Currently Into
+          </p>
+          <div className="flex flex-wrap gap-2">
+            {aboutContent.interests.map((interest) => (
+              <span
+                key={interest}
+                className="px-3 py-1 text-xs rounded-full bg-primary/5 border border-primary/10 text-muted-foreground hover:text-foreground hover:bg-primary/10 hover:border-primary/25 transition-all duration-200 cursor-default"
+              >
+                {interest}
+              </span>
+            ))}
+          </div>
+        </motion.div>
       </div>
     </section>
   );
