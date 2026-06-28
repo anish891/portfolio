@@ -12,7 +12,7 @@ export default function Home() {
   return (
     <>
       <Navbar />
-      <main className="flex-1 w-full flex flex-col gap-12 sm:gap-20 md:gap-28 pb-16">
+      <main className="flex-1 w-full flex flex-col pb-8">
         <Hero />
         <About />
         <TechStack />
