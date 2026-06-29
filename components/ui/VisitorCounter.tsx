@@ -10,7 +10,7 @@ export function VisitorCounter() {
     const fetchCount = async () => {
       try {
         const isStorageAvailable = typeof window !== "undefined" && typeof window.localStorage !== "undefined";
-        
+
         let hasVisited = true;
         if (isStorageAvailable) {
           try {
@@ -21,7 +21,7 @@ export function VisitorCounter() {
         }
 
         let url = "https://abacus.jasoncameron.dev/get/anishtejwani-portfolio/visits";
-        
+
         if (!hasVisited && isStorageAvailable) {
           url = "https://abacus.jasoncameron.dev/hit/anishtejwani-portfolio/visits";
           try {
