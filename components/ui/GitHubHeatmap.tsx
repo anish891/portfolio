@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 interface Contribution {
   date: string;
@@ -12,20 +12,77 @@ interface Props {
   username: string;
 }
 
-// oklch-aware level styles using CSS custom property opacity
+// Distinct color stops (not opacity steps on one color) so each level
+// is actually distinguishable against the glass background, light or dark.
 const levelStyles = [
-  "opacity-[0.07]",  // 0 – empty
-  "opacity-25",      // 1 – low
-  "opacity-50",      // 2 – medium
-  "opacity-75",      // 3 – high
-  "opacity-100",     // 4 – max
+  "bg-primary/[0.06] border-primary/10",   // 0 – empty
+  "bg-primary/30 border-primary/30",       // 1 – low
+  "bg-primary/55 border-primary/55",       // 2 – medium
+  "bg-primary/80 border-primary/80",       // 3 – high
+  "bg-primary border-primary",             // 4 – max
 ];
+
+function formatTooltipDate(dateStr: string): string {
+  const d = new Date(dateStr);
+  const day = d.getDate();
+  const suffix =
+    day % 10 === 1 && day !== 11
+      ? "st"
+      : day % 10 === 2 && day !== 12
+        ? "nd"
+        : day % 10 === 3 && day !== 13
+          ? "rd"
+          : "th";
+  const month = d.toLocaleString("default", { month: "long" });
+  return `${month} ${day}${suffix}`;
+}
 
 export function GitHubHeatmap({ username }: Props) {
   const [contributions, setContributions] = useState<Contribution[]>([]);
   const [total, setTotal] = useState(0);
   const [yearLabel, setYearLabel] = useState("");
   const [loading, setLoading] = useState(true);
+  const [hovered, setHovered] = useState<{
+    day: Contribution;
+    x: number;
+    y: number;
+  } | null>(null);
+
+  // Measure available width and size cells so all 53 weeks fit with
+  // no horizontal scroll, instead of a fixed 11px that overflows.
+  const gridWrapRef = useRef<HTMLDivElement>(null);
+  const [cellSize, setCellSize] = useState(11);
+  const [gap, setGap] = useState(3);
+  const MAX_CELL = 13;
+  const MAX_GAP = 3;
+
+  useEffect(() => {
+    const el = gridWrapRef.current;
+    if (!el) return;
+
+    const compute = (width: number, weekCount: number) => {
+      if (weekCount <= 0 || width <= 0) return;
+      // Solve for the largest cell+gap pair where gap is always cell/4
+      // (proportional spacing) so the grid exactly fills `width` and
+      // never overflows, down to arbitrarily narrow containers:
+      //   width = weeks*cell + (weeks-1)*(cell/4)
+      const raw = width / (weekCount + (weekCount - 1) / 4);
+      const cell = Math.max(0.5, Math.min(MAX_CELL, raw));
+      const g = Math.min(MAX_GAP, cell / 4);
+      setCellSize(Math.floor(cell * 10) / 10);
+      setGap(Math.floor(g * 10) / 10);
+    };
+
+    const weekCount = Math.ceil(contributions.length / 7) || 53;
+    compute(el.clientWidth, weekCount);
+
+    const observer = new ResizeObserver((entries) => {
+      const w = entries[0]?.contentRect.width;
+      if (w) compute(w, weekCount);
+    });
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [contributions.length]);
 
   useEffect(() => {
     fetch("/api/github-contributions")
@@ -59,21 +116,37 @@ export function GitHubHeatmap({ username }: Props) {
     weeks.push(contributions.slice(i, i + 7));
   }
 
-  // Compute which columns get a month label (min 3 cols apart to avoid overlap)
-  const monthLabels: Map<number, string> = new Map();
-  let lastLabelCol = -4;
-  weeks.forEach((week, wi) => {
-    if (!week[0]) return;
-    const d = new Date(week[0].date);
-    const prev = wi > 0 && weeks[wi - 1][0] ? new Date(weeks[wi - 1][0].date) : null;
-    if ((!prev || prev.getMonth() !== d.getMonth()) && wi - lastLabelCol >= 3) {
-      monthLabels.set(
-        wi,
-        d.toLocaleString("default", { month: "short" }).toUpperCase()
-      );
-      lastLabelCol = wi;
-    }
-  });
+  // Place a label at the pixel x-position where each month begins.
+  // Labels are NOT confined to a single cellSize-wide column (that's
+  // what made them illegible at small cell sizes) — they're floated
+  // at a fixed readable size and only skipped if they'd visually
+  // collide with the previous label, measured in actual pixels.
+  const colX = (wi: number) => wi * (cellSize + gap);
+  const LABEL_MIN_PX_GAP = 24; // ~width of a 3-letter label at readable size
+  const monthLabels: { x: number; text: string }[] = [];
+  {
+    let lastX = -Infinity;
+    weeks.forEach((week, wi) => {
+      if (!week[0]) return;
+      const d = new Date(week[0].date);
+      const prev =
+        wi > 0 && weeks[wi - 1][0] ? new Date(weeks[wi - 1][0].date) : null;
+      const isMonthChange = !prev || prev.getMonth() !== d.getMonth();
+      if (!isMonthChange) return;
+
+      const x = colX(wi);
+      if (x - lastX < LABEL_MIN_PX_GAP && monthLabels.length > 0) {
+        // Too close to the previous label — replace it rather than
+        // drop this month entirely.
+        monthLabels.pop();
+      }
+      monthLabels.push({
+        x,
+        text: d.toLocaleString("default", { month: "short" }).toUpperCase(),
+      });
+      lastX = x;
+    });
+  }
 
   if (loading) {
     return (
@@ -84,49 +157,92 @@ export function GitHubHeatmap({ username }: Props) {
   if (contributions.length === 0) return null;
 
   return (
-    <div className="glass rounded-2xl p-4 overflow-hidden">
-      {/* Month labels row */}
-      <div
-        className="flex mb-[3px]"
-        style={{ gap: "3px" }}
-      >
-        {weeks.map((_, wi) => (
-          <div
-            key={wi}
-            className="flex-shrink-0 text-[9px] font-semibold text-muted-foreground/50 leading-none"
-            style={{ width: 11 }}
-          >
-            {monthLabels.get(wi) ?? ""}
-          </div>
-        ))}
-      </div>
+    <div className="glass rounded-2xl p-4 relative">
+      {/* Floating tooltip — shows exact count for the hovered day */}
+      {hovered && (
+        <div
+          className="pointer-events-none absolute z-20 -translate-x-1/2 -translate-y-full rounded-lg bg-popover border border-border px-2.5 py-1.5 text-[11px] font-medium shadow-lg whitespace-nowrap"
+          style={{ left: hovered.x, top: hovered.y - 8 }}
+        >
+          <span className="text-foreground font-bold">
+            {hovered.day.count}
+          </span>{" "}
+          <span className="text-muted-foreground">
+            contribution{hovered.day.count !== 1 ? "s" : ""} on{" "}
+            {formatTooltipDate(hovered.day.date)}
+          </span>
+          {/* little pointer triangle */}
+          <div className="absolute left-1/2 top-full -translate-x-1/2 border-4 border-transparent border-t-popover" />
+        </div>
+      )}
 
-      {/* Heatmap grid */}
-      <div className="flex overflow-x-auto" style={{ gap: "3px" }}>
-        {weeks.map((week, wi) => (
-          <div key={wi} className="flex flex-col flex-shrink-0" style={{ gap: "3px" }}>
-            {Array.from({ length: 7 }).map((_, di) => {
-              const day = week[di];
-              if (!day) {
+      <div ref={gridWrapRef}>
+        {/* Month labels row — fixed height, labels float at their
+            actual pixel position rather than being squeezed into a
+            cellSize-wide column, so they stay legible at any cell size. */}
+        <div className="relative h-3 mb-1">
+          {monthLabels.map(({ x, text }, i) => (
+            <span
+              key={i}
+              className="absolute top-0 text-[9px] font-semibold text-muted-foreground/60 leading-none whitespace-nowrap"
+              style={{ left: x }}
+            >
+              {text}
+            </span>
+          ))}
+        </div>
+
+        {/* Heatmap grid — sized to exactly fill the container, no scroll */}
+        <div className="flex" style={{ gap }}>
+          {weeks.map((week, wi) => (
+            <div
+              key={wi}
+              className="flex flex-col flex-shrink-0"
+              style={{ gap }}
+            >
+              {Array.from({ length: 7 }).map((_, di) => {
+                const day = week[di];
+                if (!day) {
+                  return (
+                    <div
+                      key={di}
+                      style={{
+                        width: cellSize,
+                        height: cellSize,
+                        borderRadius: 2,
+                      }}
+                      className="bg-primary/5 border border-primary/5"
+                    />
+                  );
+                }
                 return (
                   <div
                     key={di}
-                    style={{ width: 11, height: 11, borderRadius: 2 }}
-                    className="bg-primary/5 border border-primary/5"
+                    onMouseEnter={(e) => {
+                      const rect = e.currentTarget.getBoundingClientRect();
+                      const parentRect = e.currentTarget
+                        .closest(".relative")
+                        ?.getBoundingClientRect();
+                      if (!parentRect) return;
+                      setHovered({
+                        day,
+                        x: rect.left - parentRect.left + rect.width / 2,
+                        y: rect.top - parentRect.top,
+                      });
+                    }}
+                    onMouseLeave={() => setHovered(null)}
+                    style={{
+                      width: cellSize,
+                      height: cellSize,
+                      borderRadius: 2,
+                    }}
+                    className={`border cursor-pointer transition-transform hover:scale-110 ${levelStyles[day.level]}`}
                   />
                 );
-              }
-              return (
-                <div
-                  key={di}
-                  title={`${day.date}: ${day.count} contribution${day.count !== 1 ? "s" : ""}`}
-                  style={{ width: 11, height: 11, borderRadius: 2 }}
-                  className={`bg-primary border border-primary/30 cursor-default transition-opacity hover:opacity-80 ${levelStyles[day.level]}`}
-                />
-              );
-            })}
-          </div>
-        ))}
+              })}
+            </div>
+          ))}
+        </div>
       </div>
 
       {/* Footer — count + legend */}
@@ -140,8 +256,8 @@ export function GitHubHeatmap({ username }: Props) {
           {([0, 1, 2, 3, 4] as const).map((l) => (
             <div
               key={l}
-              style={{ width: 11, height: 11, borderRadius: 2 }}
-              className={`bg-primary border border-primary/30 ${levelStyles[l]}`}
+              style={{ width: cellSize, height: cellSize, borderRadius: 2 }}
+              className={`border ${levelStyles[l]}`}
             />
           ))}
           <span className="text-[9px] text-muted-foreground/50 ml-1">MORE</span>
