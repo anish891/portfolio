@@ -9,12 +9,26 @@ export function VisitorCounter() {
   useEffect(() => {
     const fetchCount = async () => {
       try {
-        const hasVisited = localStorage.getItem("has_visited_anish_portfolio");
+        const isStorageAvailable = typeof window !== "undefined" && typeof window.localStorage !== "undefined";
+        
+        let hasVisited = true;
+        if (isStorageAvailable) {
+          try {
+            hasVisited = !!localStorage.getItem("has_visited_anish_portfolio");
+          } catch (e) {
+            // Ignore security/disabled storage errors
+          }
+        }
+
         let url = "https://abacus.jasoncameron.dev/get/anishtejwani-portfolio/visits";
         
-        if (!hasVisited) {
+        if (!hasVisited && isStorageAvailable) {
           url = "https://abacus.jasoncameron.dev/hit/anishtejwani-portfolio/visits";
-          localStorage.setItem("has_visited_anish_portfolio", "true");
+          try {
+            localStorage.setItem("has_visited_anish_portfolio", "true");
+          } catch (e) {
+            // Ignore quota exceeded or private browsing errors
+          }
         }
 
         const res = await fetch(url);
