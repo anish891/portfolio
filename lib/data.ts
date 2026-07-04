@@ -63,7 +63,6 @@ export const heroContent = {
     "Systems Architecture",
     "AI & Automation",
     "Product Engineering",
-    "Scalable Infrastructure",
     "Scalable Systems"
   ]
 };
