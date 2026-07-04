@@ -58,14 +58,13 @@ export const heroContent = {
     "Systems Builder",
     "Product Engineer",
     "Full-Stack Developer",
-    // "Generalist Creator"
   ],
   focusAreas: [
-    "Any Kind of Build",
     "Systems Architecture",
     "AI & Automation",
     "Product Engineering",
-    "Scalable Infrastructure"
+    "Scalable Infrastructure",
+    "Scalable Systems"
   ]
 };
 
