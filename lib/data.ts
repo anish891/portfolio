@@ -49,18 +49,24 @@ export const navItems: NavItem[] = [
 
 export const heroContent = {
   name: "Anish Tejwani",
-  tagline: "AI Engineer • Full-Stack Developer • Builder",
-  typingStrings: [
-    "AI Engineer",
-    "Full-Stack Developer",
-    "System Designer",
-    "Problem Solver",
-  ],
   intro:
     "I build intelligent software systems, AI-powered applications, and scalable web platforms. Passionate about solving complex problems through automation, modern engineering practices, and elegant user experiences.",
   location: "Mumbai, India",
   email: "anishtejwani891@gmail.com",
-  specialty: "AI + Full-Stack",
+  roles: [
+    "Software Architect",
+    "Systems Builder",
+    "Product Engineer",
+    "Full-Stack Developer",
+    // "Generalist Creator"
+  ],
+  focusAreas: [
+    "Any Kind of Build",
+    "Systems Architecture",
+    "AI & Automation",
+    "Product Engineering",
+    "Scalable Infrastructure"
+  ]
 };
 
 // ─── About ───────────────────────────────────────────────────────────────────

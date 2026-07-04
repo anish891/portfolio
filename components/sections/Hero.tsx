@@ -1,6 +1,7 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { MapPin, Mail, Briefcase, ArrowRight } from "lucide-react";
 import { heroContent, socialLinks, aboutContent } from "@/lib/data";
 import { useMousePosition } from "@/hooks/useMousePosition";
@@ -39,6 +40,23 @@ const fadeUp = (delay = 0) => ({
 
 export function Hero() {
   const mouse = useMousePosition();
+  const [roleIndex, setRoleIndex] = useState(0);
+  const [focusIndex, setFocusIndex] = useState(0);
+
+  useEffect(() => {
+    const roleTimer = setInterval(() => {
+      setRoleIndex((prev) => (prev + 1) % (heroContent.roles?.length || 1));
+    }, 2500);
+
+    const focusTimer = setInterval(() => {
+      setFocusIndex((prev) => (prev + 1) % (heroContent.focusAreas?.length || 1));
+    }, 2500);
+
+    return () => {
+      clearInterval(roleTimer);
+      clearInterval(focusTimer);
+    };
+  }, []);
 
   return (
     <section
@@ -88,9 +106,22 @@ export function Hero() {
             <h1 className="text-3xl sm:text-4xl font-bold tracking-tight">
               <span className="gradient-text">{heroContent.name}</span>
             </h1>
-            <p className="text-muted-foreground text-sm sm:text-[15px] mt-1 font-medium">
-              {heroContent.tagline}
-            </p>
+            <div className="text-muted-foreground text-sm sm:text-[15px] mt-1 font-semibold flex items-center h-6 overflow-hidden">
+              <div className="relative h-6 w-56 overflow-hidden">
+                <AnimatePresence mode="wait">
+                  <motion.span
+                    key={heroContent.roles[roleIndex]}
+                    initial={{ y: 12, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    exit={{ y: -12, opacity: 0 }}
+                    transition={{ duration: 0.25, ease: "easeInOut" }}
+                    className="absolute left-0 top-0 text-primary font-semibold whitespace-nowrap"
+                  >
+                    {heroContent.roles[roleIndex]}
+                  </motion.span>
+                </AnimatePresence>
+              </div>
+            </div>
           </div>
         </motion.div>
 
@@ -128,13 +159,24 @@ export function Hero() {
 
           <div>
             <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/50 mb-1.5">
-              Specialty
+              Focus
             </p>
             <div className="flex items-center gap-1.5">
               <Briefcase className="size-3.5 text-primary flex-shrink-0" />
-              <span className="text-sm text-foreground font-medium">
-                {heroContent.specialty}
-              </span>
+              <div className="relative h-5 w-44 overflow-hidden">
+                <AnimatePresence mode="wait">
+                  <motion.span
+                    key={heroContent.focusAreas[focusIndex]}
+                    initial={{ y: 10, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    exit={{ y: -10, opacity: 0 }}
+                    transition={{ duration: 0.25, ease: "easeInOut" }}
+                    className="absolute left-0 top-0 text-sm text-foreground font-medium whitespace-nowrap"
+                  >
+                    {heroContent.focusAreas[focusIndex]}
+                  </motion.span>
+                </AnimatePresence>
+              </div>
             </div>
           </div>
         </motion.div>
