@@ -12,8 +12,10 @@ export function ThemeToggle() {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    setMounted(true);
-    setIsDark(document.documentElement.classList.contains("dark"));
+    requestAnimationFrame(() => {
+      setMounted(true);
+      setIsDark(document.documentElement.classList.contains("dark"));
+    });
   }, []);
 
   // Keep state in sync if something else changes the class externally

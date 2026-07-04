@@ -11,7 +11,6 @@ import { socialLinks } from "@/lib/data";
 import {
   Mail,
   Send,
-  Download,
   CheckCircle,
 } from "lucide-react";
 import { Github, Linkedin } from "@/components/ui/icons";
@@ -187,26 +186,7 @@ export function Contact() {
               </div>
             </GlassCard>
 
-            {/* Resume Download
-            <GlassCard hover={false}>
-              <h3 className="font-semibold text-foreground text-sm mb-3">
-                Resume
-              </h3>
-              <p className="text-xs text-muted-foreground mb-3">
-                Download my latest resume for a complete overview.
-              </p>
-              <Button
-                variant="outline"
-                size="sm"
-                className="w-full border-primary/15 bg-primary/5 hover:bg-primary/10 text-primary font-semibold cursor-pointer transition-colors"
-                asChild
-              >
-                <a href="/resume.pdf" download>
-                  <Download className="size-3.5 mr-1.5" />
-                  Download Resume
-                </a>
-              </Button>
-            </GlassCard> */}
+
           </motion.div>
         </div>
       </div>

@@ -66,7 +66,6 @@ export const heroContent = {
 // ─── About ───────────────────────────────────────────────────────────────────
 
 export const aboutContent = {
-  bio: "Computer Engineer with experience building AI-powered applications, full-stack platforms, automation systems, and real-time solutions. Experienced in modern web technologies, cloud-based AI services, and scalable software architecture.",
   interests: [
     "Artificial Intelligence",
     "Distributed Systems",

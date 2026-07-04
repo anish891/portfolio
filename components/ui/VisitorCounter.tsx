@@ -15,7 +15,7 @@ export function VisitorCounter() {
         if (isStorageAvailable) {
           try {
             hasVisited = !!localStorage.getItem("has_visited_anish_portfolio");
-          } catch (e) {
+          } catch {
             // Ignore security/disabled storage errors
           }
         }
@@ -26,7 +26,7 @@ export function VisitorCounter() {
           url = "https://abacus.jasoncameron.dev/hit/anishtejwani-portfolio/visits";
           try {
             localStorage.setItem("has_visited_anish_portfolio", "true");
-          } catch (e) {
+          } catch {
             // Ignore quota exceeded or private browsing errors
           }
         }
