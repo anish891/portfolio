@@ -59,12 +59,6 @@ export const heroContent = {
     "Product Engineer",
     "Full-Stack Developer",
   ],
-  focusAreas: [
-    "Systems Architecture",
-    "AI & Automation",
-    "Product Engineering",
-    "Scalable Systems"
-  ]
 };
 
 // ─── About ───────────────────────────────────────────────────────────────────
