@@ -13,7 +13,6 @@ Personal portfolio of **Anish Tejwani** — AI Engineer, Full-Stack Developer, a
 - **Projects Gallery** — Filterable project cards with a full detail modal (description, features, tech stack)
 - **Contact Section** — Direct email / social links with a contact form layout
 - **Dark / Light Mode** — System-preference aware, flash-free theme toggle persisted to `localStorage`
-- **Visitor Counter** — Live visit counter via the Abacus API
 - **Glassmorphism UI** — Frosted-glass cards, glowing borders, and ambient orb effects throughout
 - **Fully Responsive** — Mobile-first layout with animated hamburger mobile menu
 - **Scroll-aware Navbar** — Active section tracking with smooth-scroll navigation
@@ -77,7 +76,6 @@ anish-portfolio/
 │       ├── ThemeToggle.tsx  # Dark/light mode toggle (Sun ↔ Moon)
 │       ├── GlassCard.tsx    # Glassmorphism card wrapper
 │       ├── ProjectModal.tsx # Full-screen project detail dialog
-│       ├── VisitorCounter.tsx # Live visit counter
 │       ├── badge.tsx        # shadcn Badge
 │       ├── button.tsx       # shadcn Button
 │       ├── dialog.tsx       # shadcn Dialog (Radix UI)

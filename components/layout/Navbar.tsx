@@ -5,7 +5,6 @@ import { motion, AnimatePresence } from "framer-motion";
 import { navItems } from "@/lib/data";
 import { Menu, X } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { VisitorCounter } from "@/components/ui/VisitorCounter";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
 
 export function Navbar() {
@@ -58,7 +57,7 @@ export function Navbar() {
       >
         <div className="max-w-6xl mx-auto px-4 sm:px-6">
           <div className="flex items-center justify-between h-16">
-            {/* Logo & Visitor Counter */}
+            {/* Logo */}
             <div className="flex items-center gap-3">
               <button
                 onClick={() => handleClick("#home")}
@@ -66,7 +65,6 @@ export function Navbar() {
               >
                 AT
               </button>
-              <VisitorCounter />
             </div>
 
             {/* Desktop Nav */}
