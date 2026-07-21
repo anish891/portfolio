@@ -16,6 +16,9 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "Anish Tejwani — AI • Full Stack • Product Engineering",
+  icons: {
+    icon: "/vercel.svg",
+  },
   description:
     "Personal portfolio of Anish Tejwani — AI Engineer, Full-Stack Developer, and Builder. Building intelligent software systems, AI-powered applications, and scalable web platforms.",
   keywords: [
