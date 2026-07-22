@@ -1,194 +1,63 @@
-# Anish Tejwani — Portfolio
+# Anish Tejwani — Personal Portfolio
 
-Personal portfolio of **Anish Tejwani** — AI Engineer, Full-Stack Developer, and Builder. A modern, animated, fully responsive single-page portfolio showcasing projects, skills, and experience.
+Welcome to the repository for my personal portfolio website: **[anishtejwani.dev](https://anishtejwani.dev)**.
 
-**Live at:** [anishtejwani.dev](https://anishtejwani.dev) *(or your deployed URL)*
-
----
-
-## ✨ Features
-
-- **Animated Hero** — Typed.js multi-string typing animation with a live mouse-tracking radial gradient
-- **Tech Stack Showcase** — Categorised skill grid with in-view reveal animations
-- **Projects Gallery** — Filterable project cards with a full detail modal (description, features, tech stack)
-- **Contact Section** — Direct email / social links with a contact form layout
-- **Dark / Light Mode** — System-preference aware, flash-free theme toggle persisted to `localStorage`
-- **Glassmorphism UI** — Frosted-glass cards, glowing borders, and ambient orb effects throughout
-- **Fully Responsive** — Mobile-first layout with animated hamburger mobile menu
-- **Scroll-aware Navbar** — Active section tracking with smooth-scroll navigation
-- **Animated scroll reveals** — Sections and cards animate in as they enter the viewport via `IntersectionObserver`
+I am an **AI Engineer**, **Software Architect**, and **Full-Stack Developer** based in Mumbai, India. I specialize in building intelligent software systems, AI-powered applications, and scalable web platforms.
 
 ---
 
-## 🛠 Tech Stack
+## 🚀 About Me
 
-### Core Framework
-| Tech | Purpose |
-|---|---|
-| [Next.js 16](https://nextjs.org/) | React framework (App Router, static export) |
-| [React 19](https://react.dev/) | UI library |
-| [TypeScript 5](https://www.typescriptlang.org/) | Type safety |
-
-### Styling
-| Tech | Purpose |
-|---|---|
-| [Tailwind CSS v4](https://tailwindcss.com/) | Utility-first CSS |
-| [tw-animate-css](https://github.com/jamiebuilds/tw-animate-css) | Pre-built Tailwind animation utilities |
-| [OKLCH color space](https://developer.mozilla.org/en-US/docs/Web/CSS/color_value/oklch) | Perceptually uniform, accessible color tokens |
-
-### UI & Animation
-| Tech | Purpose |
-|---|---|
-| [Framer Motion 12](https://www.framer.com/motion/) | Page & component animations |
-| [Lucide React](https://lucide.dev/) | Icon library |
-| [Typed.js](https://mattboldt.com/demos/typed-js/) | Typing animation in the hero |
-| [Radix UI](https://www.radix-ui.com/) | Accessible headless dialog primitives (via shadcn) |
-| [shadcn/ui](https://ui.shadcn.com/) | Component scaffolding (Badge, Button, Dialog, Input, Textarea) |
-
-### Utilities
-| Tech | Purpose |
-|---|---|
-| [clsx](https://github.com/lukeed/clsx) + [tailwind-merge](https://github.com/nicedoc/tailwind-merge) | Conditional class merging (`cn()` utility) |
-| [class-variance-authority](https://cva.style/) | Variant-based component styling |
-| [Inter](https://fonts.google.com/specimen/Inter) (Google Fonts) | Primary sans-serif typeface |
+- 💡 **Passionate About:** AI Agents, Machine Learning Integrations, Distributed Systems, System Design, and Modern Web Engineering.
+- 📍 **Location:** Mumbai, India
+- ✉️ **Contact:** [anishtejwani891@gmail.com](mailto:anishtejwani891@gmail.com)
+- 🔗 **Connect:** [GitHub](https://github.com/anish891) | [LinkedIn](https://linkedin.com/in/anishtejwani)
 
 ---
 
-## 🗂 Project Structure
+## 🌟 Featured Projects
 
-```
-anish-portfolio/
-├── app/
-│   ├── globals.css          # Design tokens, dark mode, utilities, animations
-│   ├── layout.tsx           # Root layout — fonts, metadata, theme flash prevention
-│   └── page.tsx             # Main single-page composition
-├── components/
-│   ├── layout/
-│   │   ├── Navbar.tsx       # Scroll-aware nav, mobile menu, theme toggle
-│   │   └── Footer.tsx       # Social links, copyright
-│   ├── sections/
-│   │   ├── Hero.tsx         # Typing animation, mouse-tracking gradient, CTA
-│   │   ├── About.tsx        # Bio, interests, in-view animation
-│   │   ├── TechStack.tsx    # Skill categories grid
-│   │   ├── Projects.tsx     # Filterable project cards + modal
-│   │   └── Contact.tsx      # Contact form layout, social links
-│   └── ui/
-│       ├── ThemeToggle.tsx  # Dark/light mode toggle (Sun ↔ Moon)
-│       ├── GlassCard.tsx    # Glassmorphism card wrapper
-│       ├── ProjectModal.tsx # Full-screen project detail dialog
-│       ├── badge.tsx        # shadcn Badge
-│       ├── button.tsx       # shadcn Button
-│       ├── dialog.tsx       # shadcn Dialog (Radix UI)
-│       ├── icons.tsx        # Custom SVG icons (GitHub, LinkedIn)
-│       ├── input.tsx        # shadcn Input
-│       └── textarea.tsx     # shadcn Textarea
-├── hooks/
-│   ├── useInView.ts         # IntersectionObserver hook for scroll reveal
-│   ├── useTypingEffect.ts   # Typed.js wrapper hook
-│   └── useMousePosition.ts  # Mouse coordinate tracking hook
-└── lib/
-    ├── data.ts              # All site content — nav, hero, projects, tech stack, socials
-    └── utils.ts             # cn() class merging utility
-```
+### 1. 📈 [AI Trading System](https://github.com/anish891)
+Real-time trading engine powered by deep learning models for market signal generation and automated trade execution.
+- **Key Features:** Real-time stream processing, low-latency execution, ML-driven predictions, scalable architecture.
+- **Tech Stack:** Python, TensorFlow, WebSocket, Redis, Docker
+
+### 2. 👁️ [Image Analysis Platform](https://github.com/anish891)
+Python-based image intelligence platform utilizing computer vision and OCR to extract rich structured data and insights.
+- **Key Features:** Optical Character Recognition (OCR), image processing pipeline, automated data extraction, visual analytics.
+- **Tech Stack:** Python, OpenCV, Tesseract, Flask, NumPy
+
+### 3. 📱 [Notes Application](https://github.com/anish891)
+Cross-platform note-taking app with real-time cloud sync and secure authentication.
+- **Key Features:** Real-time cloud sync, secure authentication, offline capability, mobile-first UX.
+- **Tech Stack:** Flutter, Dart, Firebase, Cloud Firestore
 
 ---
 
-## 🚀 Getting Started
+## 🛠️ Skills & Technologies
 
-### Prerequisites
-
-- Node.js **18+**
-- npm / yarn / pnpm / bun
-
-### Installation
-
-```bash
-# Clone the repository
-git clone https://github.com/anish891/anish-portfolio.git
-cd anish-portfolio
-
-# Install dependencies
-npm install
-```
-
-### Development
-
-```bash
-npm run dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) in your browser.
-
-### Production Build
-
-```bash
-npm run build
-npm run start
-```
+- **Languages:** Java, Python, TypeScript, JavaScript
+- **Frontend:** React, Next.js 16, HTML5, CSS3, Tailwind CSS v4, Framer Motion
+- **Backend:** Node.js, Express, REST APIs
+- **AI & ML:** LangChain, AI Agents, Prompt Engineering, LLM Integrations
+- **Mobile:** Flutter
+- **Databases:** SQL, Firebase, Cloud Firestore
+- **Tools & Practices:** Git, GitHub, CI/CD, Agile/Scrum, System Architecture
 
 ---
 
-## 🎨 Customisation
+## 💻 Tech Stack of This Portfolio
 
-All site content lives in a single file — **[`lib/data.ts`](./lib/data.ts)**. Update it to personalise the portfolio:
+This website was crafted with a modern, glassmorphism UI design:
 
-```ts
-// Hero
-export const heroContent = { name: "Your Name", ... }
-
-// Projects
-export const projects: Project[] = [ { title: "My Project", ... } ]
-
-// Tech stack categories
-export const techStack: SkillCategory[] = [ ... ]
-
-// Social links
-export const socialLinks: SocialLink[] = [ ... ]
-```
-
-Design tokens (colours, spacing, typography) are defined as CSS custom properties in **[`app/globals.css`](./app/globals.css)** using the OKLCH colour space for both light and dark themes.
+- **Framework:** Next.js 16 (App Router), React 19, TypeScript
+- **Styling & UI:** Tailwind CSS v4, OKLCH Color Tokens, Radix UI primitives, Lucide Icons
+- **Animations:** Framer Motion 12, Typed.js typing hero animation
+- **Theme:** System-aware Dark / Light mode persisted in `localStorage`
 
 ---
 
-## 🌙 Dark Mode
+<p align="center">
+  Built with ❤️ by <strong>Anish Tejwani</strong>
+</p>
 
-The theme toggle appears in the navbar. The preferred theme is:
-
-1. **Read from `localStorage`** on every page load via an inline script injected into `<head>` — this runs before the first paint, preventing any flash of the wrong theme.
-2. **Falls back to the OS preference** (`prefers-color-scheme: dark`) if no saved preference exists.
-3. **Persisted to `localStorage`** whenever the user manually toggles.
-
----
-
-## 📦 Scripts
-
-| Command | Description |
-|---|---|
-| `npm run dev` | Start dev server with Turbopack |
-| `npm run build` | Create optimised production build |
-| `npm run start` | Serve the production build |
-| `npm run lint` | Run ESLint |
-
----
-
-## 🚢 Deployment
-
-The easiest way to deploy is via [Vercel](https://vercel.com/):
-
-```bash
-npx vercel
-```
-
-Or connect your GitHub repo to Vercel for automatic deployments on every push.
-
-For other platforms (Netlify, Cloudflare Pages, etc.), run `npm run build` and deploy the `.next` output directory.
-
----
-
-## 📄 License
-
-MIT — feel free to use this as a template for your own portfolio.
-
----
-
-<p align="center">Built with ❤️ by <a href="https://github.com/anish891">Anish Tejwani</a></p>
