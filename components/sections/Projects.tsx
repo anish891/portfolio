@@ -53,16 +53,6 @@ export function Projects() {
           </p>
         </motion.div>
 
-        {/* Filter Tabs */}
-        <motion.div
-          className="flex justify-center gap-2 mb-10"
-          initial={{ opacity: 0, y: 20 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.5, delay: 0.2 }}
-        >
-          
-        </motion.div>
-
         {/* Project Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
           <AnimatePresence mode="popLayout">

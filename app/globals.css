@@ -377,20 +377,6 @@
   animation: float 6s ease-in-out infinite;
 }
 
-/* ─── Typing Cursor ─────────────────────────────────────────────────────────── */
-
-.typed-cursor {
-  color: oklch(0.70 0.14 55);
-  font-weight: 100;
-  animation: blink 0.7s infinite;
-}
-
-@keyframes blink {
-  50% {
-    opacity: 0;
-  }
-}
-
 /* ─── Selection Color ───────────────────────────────────────────────────────── */
 
 ::selection {
