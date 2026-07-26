@@ -5,29 +5,33 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useInView } from "@/hooks/useInView";
 import { projects } from "@/lib/data";
 import { ProjectModal } from "@/components/ui/ProjectModal";
-import { Badge } from "@/components/ui/badge";
-import {
-  TrendingUp,
-  ScanEye,
-  FileText,
-  Sparkles,
-  ExternalLink,
-} from "lucide-react";
+import { Globe } from "lucide-react";
+import { Github } from "@/components/ui/icons";
 import type { Project } from "@/lib/data";
 
-const iconMap: Record<string, React.ElementType> = {
-  TrendingUp,
-  ScanEye,
-  FileText,
-  Sparkles,
+const techBadges: Record<string, { label: string; icon: string; bg: string; text: string }> = {
+  "Next.js": { label: "N", icon: "N", bg: "bg-black text-white dark:bg-white dark:text-black", text: "font-black" },
+  "React": { label: "⚛", icon: "⚛", bg: "bg-cyan-500/10 text-cyan-400 border border-cyan-500/20", text: "font-bold" },
+  "Tailwind": { label: "≈", icon: "≈", bg: "bg-teal-500/10 text-teal-400 border border-teal-500/20", text: "font-bold" },
+  "Node.js": { label: "JS", icon: "JS", bg: "bg-emerald-500/10 text-emerald-500 border border-emerald-500/20", text: "font-bold text-[10px]" },
+  "JavaScript": { label: "JS", icon: "JS", bg: "bg-yellow-500/10 text-yellow-500 border border-yellow-500/20", text: "font-bold text-[10px]" },
+  "TypeScript": { label: "TS", icon: "TS", bg: "bg-blue-500/10 text-blue-500 border border-blue-500/20", text: "font-bold text-[10px]" },
+  "HTML5": { label: "H5", icon: "H5", bg: "bg-orange-500/10 text-orange-500 border border-orange-500/20", text: "font-bold text-[10px]" },
+  "CSS3": { label: "C3", icon: "C3", bg: "bg-blue-400/10 text-blue-400 border border-blue-400/20", text: "font-bold text-[10px]" },
+  "Express.js": { label: "ex", icon: "ex", bg: "bg-neutral-500/10 text-neutral-400 border border-neutral-500/20", text: "font-medium lowercase text-xs" },
+  "Supabase": { label: "⚡", icon: "⚡", bg: "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20", text: "font-bold" },
+  "PostgreSQL": { label: "PG", icon: "PG", bg: "bg-sky-500/10 text-sky-400 border border-sky-500/20", text: "font-bold text-[10px]" },
+  "Vercel": { label: "▲", icon: "▲", bg: "bg-black text-white dark:bg-white dark:text-black", text: "font-bold text-[9px]" },
+  "Python": { label: "Py", icon: "Py", bg: "bg-amber-500/10 text-amber-400 border border-amber-500/20", text: "font-bold text-[10px]" },
+  "OpenCV": { label: "CV", icon: "CV", bg: "bg-blue-600/10 text-blue-500 border border-blue-600/20", text: "font-bold text-[10px]" },
+  "Flutter": { label: "F", icon: "F", bg: "bg-sky-400/10 text-sky-400 border border-sky-400/20", text: "font-bold text-xs" },
+  "Firebase": { label: "🔥", icon: "🔥", bg: "bg-amber-500/10 text-amber-500 border border-amber-500/20", text: "font-bold" },
 };
-
 
 export function Projects() {
   const { ref, isInView } = useInView<HTMLDivElement>({ threshold: 0.05 });
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
-
 
   const handleProjectClick = (project: Project) => {
     setSelectedProject(project);
@@ -35,81 +39,118 @@ export function Projects() {
   };
 
   return (
-    <section id="projects" className="section-padding">
-      <div className="max-w-5xl mx-auto" ref={ref}>
+    <section id="projects" className="py-12 px-4 md:px-6">
+      <div className="max-w-6xl mx-auto" ref={ref}>
         {/* Section Header */}
         <motion.div
-          className="text-center mb-12"
-          initial={{ opacity: 0, y: 30 }}
+          className="mb-6"
+          initial={{ opacity: 0, y: 15 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6 }}
+          transition={{ duration: 0.4 }}
         >
-          <h2 className="section-heading mb-4">
-            Featured <span className="gradient-text">Projects</span>
+          <h2 className="text-xs font-semibold tracking-widest text-muted-foreground uppercase">
+            FEATURED PROJECTS
           </h2>
-          <p className="section-subheading mx-auto">
-            A selection of projects showcasing engineering impact and technical
-            depth
-          </p>
         </motion.div>
 
-        {/* Project Cards */}
+        {/* Project Cards Grid - 3 Columns on lg screens */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
           <AnimatePresence mode="popLayout">
             {projects.map((project, i) => {
-              const Icon = iconMap[project.icon] || Sparkles;
               return (
                 <motion.div
                   key={project.id}
                   layout
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.9 }}
-                  transition={{ duration: 0.4, delay: i * 0.1 }}
+                  initial={{ opacity: 0, y: 15 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, scale: 0.95 }}
+                  transition={{ duration: 0.3, delay: i * 0.08 }}
                   className="group cursor-pointer"
                   onClick={() => handleProjectClick(project)}
                 >
-                  <div className="relative glass rounded-2xl p-5 h-full flex flex-col hover:border-primary/15 transition-all duration-500 hover:scale-[1.02] overflow-hidden">
-                    {/* Gradient border glow on hover */}
-                    <div
-                      className={`absolute inset-0 rounded-2xl bg-gradient-to-br ${project.gradient} opacity-0 group-hover:opacity-5 transition-opacity duration-500`}
-                    />
-
-                    <div className="relative z-10 flex flex-col h-full">
-                      {/* Icon & Title */}
-                      <div className="flex items-center gap-3 mb-3">
-                        <div
-                          className={`p-2.5 rounded-xl bg-gradient-to-br ${project.gradient} text-white`}
-                        >
-                          <Icon className="size-5" />
+                  <div className="bg-card border border-border/60 hover:border-border rounded-2xl p-4 flex flex-col h-full transition-all duration-300 hover:shadow-md hover:shadow-primary/5">
+                    {/* Live iFrame Webpage Preview Container */}
+                    <div className="relative w-full aspect-[16/10] rounded-xl overflow-hidden bg-background border border-border/40 mb-3.5 group/frame">
+                      {project.deployedUrl ? (
+                        <div className="w-full h-full relative overflow-hidden pointer-events-none select-none">
+                          <iframe
+                            src={project.deployedUrl}
+                            title={project.title}
+                            className="w-[1280px] h-[800px] origin-top-left scale-[0.25] sm:scale-[0.28] lg:scale-[0.25] border-0 pointer-events-none"
+                            loading="lazy"
+                            tabIndex={-1}
+                          />
+                          <div className="absolute inset-0 bg-transparent" />
                         </div>
-                        <h3 className="font-bold text-foreground text-base">
-                          {project.title}
+                      ) : (
+                        <div className="w-full h-full flex flex-col items-center justify-center p-3 text-center bg-gradient-to-br from-purple-900/10 via-background to-blue-900/10">
+                          <h4 className="text-sm font-bold text-foreground">{project.title}</h4>
+                          <p className="text-[10px] text-muted-foreground mt-1 line-clamp-1">
+                            {project.description}
+                          </p>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Card Content */}
+                    <div className="flex flex-col flex-1">
+                      {/* Title & External Link Icons */}
+                      <div className="flex items-center justify-between gap-2 mb-1.5">
+                        <h3 className="font-semibold text-base text-foreground tracking-tight">
+                          {project.title.toLowerCase()}
                         </h3>
+                        <div className="flex items-center gap-1.5 text-muted-foreground">
+                          {project.githubUrl && (
+                            <a
+                              href={project.githubUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              onClick={(e) => e.stopPropagation()}
+                              className="hover:text-foreground transition-colors p-1"
+                              title="GitHub Repository"
+                            >
+                              <Github className="size-3.5" />
+                            </a>
+                          )}
+                          {project.deployedUrl && (
+                            <a
+                              href={project.deployedUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              onClick={(e) => e.stopPropagation()}
+                              className="hover:text-foreground transition-colors p-1"
+                              title="Live Website"
+                            >
+                              <Globe className="size-3.5" />
+                            </a>
+                          )}
+                        </div>
                       </div>
 
-                      {/* Description */}
-                      <p className="text-sm text-muted-foreground leading-relaxed mb-4 flex-1">
+                      {/* Short Description */}
+                      <p className="text-xs text-muted-foreground leading-relaxed mb-4 flex-1 line-clamp-2">
                         {project.description}
                       </p>
 
-                      {/* Features */}
-                      <div className="flex flex-wrap gap-1.5 mb-4">
-                        {project.features.map((feature) => (
-                          <Badge
-                            key={feature}
-                            variant="secondary"
-                            className="bg-primary/5 border-primary/5 text-muted-foreground text-xs"
-                          >
-                            {feature}
-                          </Badge>
-                        ))}
-                      </div>
-
-                      {/* View Details */}
-                      <div className="flex items-center gap-1.5 text-xs text-muted-foreground group-hover:text-primary transition-colors">
-                        <span>View Details</span>
-                        <ExternalLink className="size-3 group-hover:translate-x-0.5 transition-transform" />
+                      {/* Circular Tech Stack Icons */}
+                      <div className="flex items-center flex-wrap gap-1.5 pt-1">
+                        {project.techStack.slice(0, 5).map((tech) => {
+                          const badge = techBadges[tech] || {
+                            label: tech.slice(0, 2),
+                            icon: tech.slice(0, 2),
+                            bg: "bg-muted text-muted-foreground",
+                            text: "font-semibold text-[9px]",
+                          };
+                          return (
+                            <div
+                              key={tech}
+                              className={`size-6 rounded-full ${badge.bg} flex items-center justify-center ${badge.text} shrink-0` }
+                              title={tech}
+                            >
+                              {badge.icon}
+                            </div>
+                          );
+                        })}
                       </div>
                     </div>
                   </div>

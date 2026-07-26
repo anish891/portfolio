@@ -15,6 +15,9 @@ import {
   SiNodedotjs,
   SiExpress,
   SiFirebase,
+  SiPostgresql,
+  SiSupabase,
+  SiVercel,
   SiGit,
   SiGithub,
   SiFlutter,
@@ -52,6 +55,15 @@ const skillConfig: Record<string, { icon: React.ElementType; colorClass: string;
   "Express": { icon: SiExpress, colorClass: "group-hover:text-foreground dark:group-hover:text-white group-hover:border-foreground/20 dark:group-hover:border-white/20", shadowClass: "hover:shadow-foreground/10" },
   "REST APIs": { icon: Network, colorClass: "group-hover:text-[#00BFFF] group-hover:border-[#00BFFF]/25", shadowClass: "hover:shadow-[#00BFFF]/10" },
   
+  // Databases & Cloud
+  "PostgreSQL": { icon: SiPostgresql, colorClass: "group-hover:text-[#4169E1] group-hover:border-[#4169E1]/25", shadowClass: "hover:shadow-[#4169E1]/10" },
+  "Supabase": { icon: SiSupabase, colorClass: "group-hover:text-[#3ECF8E] group-hover:border-[#3ECF8E]/25", shadowClass: "hover:shadow-[#3ECF8E]/10" },
+  "SQL": { icon: Database, colorClass: "group-hover:text-[#4479A1] group-hover:border-[#4479A1]/25", shadowClass: "hover:shadow-[#4479A1]/10" },
+  "Firebase": { icon: SiFirebase, colorClass: "group-hover:text-[#FFCA28] group-hover:border-[#FFCA28]/25", shadowClass: "hover:shadow-[#FFCA28]/10" },
+  
+  // Deployment & Infra
+  "Vercel": { icon: SiVercel, colorClass: "group-hover:text-foreground dark:group-hover:text-white group-hover:border-foreground/20 dark:group-hover:border-white/20", shadowClass: "hover:shadow-foreground/10" },
+
   // AI & ML
   "LangChain": { icon: Brain, colorClass: "group-hover:text-[#12B886] group-hover:border-[#12B886]/25", shadowClass: "hover:shadow-[#12B886]/10" },
   "AI Agents": { icon: Bot, colorClass: "group-hover:text-[#8A2BE2] group-hover:border-[#8A2BE2]/25", shadowClass: "hover:shadow-[#8A2BE2]/10" },
@@ -60,10 +72,6 @@ const skillConfig: Record<string, { icon: React.ElementType; colorClass: string;
   
   // Mobile
   "Flutter": { icon: SiFlutter, colorClass: "group-hover:text-[#02569B] group-hover:border-[#02569B]/25", shadowClass: "hover:shadow-[#02569B]/10" },
-  
-  // Databases
-  "SQL": { icon: Database, colorClass: "group-hover:text-[#4479A1] group-hover:border-[#4479A1]/25", shadowClass: "hover:shadow-[#4479A1]/10" },
-  "Firebase": { icon: SiFirebase, colorClass: "group-hover:text-[#FFCA28] group-hover:border-[#FFCA28]/25", shadowClass: "hover:shadow-[#FFCA28]/10" },
   
   // Engineering
   "Git": { icon: SiGit, colorClass: "group-hover:text-[#F05032] group-hover:border-[#F05032]/25", shadowClass: "hover:shadow-[#F05032]/10" },

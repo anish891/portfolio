@@ -15,6 +15,9 @@ export interface Project {
   category: "ai" | "web" | "mobile";
   gradient: string;
   icon: string;
+  deployedUrl?: string;
+  githubUrl?: string;
+  image?: string;
 }
 
 export interface SkillCategory {
@@ -27,8 +30,6 @@ export interface Skill {
   name: string;
   icon?: string;
 }
-
-
 
 export interface SocialLink {
   name: string;
@@ -85,6 +86,8 @@ export const techStack: SkillCategory[] = [
       { name: "Python" },
       { name: "TypeScript" },
       { name: "JavaScript" },
+      { name: "HTML5" },
+      { name: "CSS3" },
     ],
   },
   {
@@ -93,8 +96,6 @@ export const techStack: SkillCategory[] = [
     skills: [
       { name: "React" },
       { name: "Next.js" },
-      { name: "HTML" },
-      { name: "CSS" },
       { name: "Tailwind" },
     ],
   },
@@ -103,8 +104,24 @@ export const techStack: SkillCategory[] = [
     icon: "Server",
     skills: [
       { name: "Node.js" },
-      { name: "Express" },
+      { name: "Express.js" },
       { name: "REST APIs" },
+    ],
+  },
+  {
+    name: "Databases & Cloud",
+    icon: "Database",
+    skills: [
+      { name: "PostgreSQL" },
+      { name: "Supabase" },
+      { name: "Firebase" },
+    ],
+  },
+  {
+    name: "Deployment & Infra",
+    icon: "Server",
+    skills: [
+      { name: "Vercel" },
     ],
   },
   {
@@ -123,11 +140,6 @@ export const techStack: SkillCategory[] = [
     skills: [{ name: "Flutter" }],
   },
   {
-    name: "Databases",
-    icon: "Database",
-    skills: [{ name: "SQL" }, { name: "Firebase" }],
-  },
-  {
     name: "Engineering",
     icon: "GitBranch",
     skills: [
@@ -135,33 +147,38 @@ export const techStack: SkillCategory[] = [
       { name: "GitHub" },
       { name: "CI/CD" },
       { name: "Agile" },
-      { name: "Scrum" },
     ],
   },
 ];
-
-
 
 // ─── Projects ────────────────────────────────────────────────────────────────
 
 export const projects: Project[] = [
   {
-    id: "ai-trading",
-    title: "AI Trading System",
+    id: "nifty-oi-tracker",
+    title: "NIFTY OI Tracker",
     description:
-      "Real-time trading engine powered by deep learning models for market signal generation and automated execution.",
+      "A real-time analytics dashboard for NIFTY 50 computing Open Interest buildup, Max Pain, Gamma Exposure, and volatility regimes directly from live NSE data.",
     longDescription:
-      "A sophisticated real-time trading engine that leverages deep learning models to generate market signals and execute trades automatically. The system processes live market data, applies ML-driven predictions, and executes trades with low latency. Built with scalable architecture to handle high-frequency data streams.",
+      "Nifty OI Tracker is a real-time analytics dashboard built for options traders to monitor NIFTY 50 derivatives data — Open Interest buildup, Put-Call Ratio, Max Pain, Central Pivot Range, and Gamma Exposure — sourced live from the NSE.\n\nBeyond surfacing raw data, the project focuses on turning it into statistically grounded signals: buildup classification uses a sliding-window trend analysis instead of single-tick comparisons to cut noise, Max Pain was rearchitected from a brute-force O(n²) calculation to a prefix-sum-based O(n log n) approach, and OI anomalies and IV volatility regimes are both detected using Welford\u0027s online algorithm for numerically stable, constant-time running statistics — the same statistical core reused across two different features.\n\nThe system persists every session to Postgres (Supabase), enabling day-over-day pattern matching (cosine similarity across session feature vectors) to surface historically similar trading days, and a 20-session rolling z-score to flag when current implied volatility is running unusually high or low relative to its own recent history.\n\nDeployed entirely on free-tier infrastructure (Vercel + Supabase), with a lightweight Express proxy layer handling NSE\u0027s CORS/cookie requirements and Supabase Realtime and pg_cron used to work around serverless platform constraints (no long-lived connections, limited cron frequency) without adding paid infrastructure.",
     features: [
-      "Real-time processing",
-      "Low latency execution",
-      "ML-driven predictions",
-      "Scalable architecture",
+      "Live NSE Derivatives Data & Express Proxy",
+      "O(n log n) Max Pain & Gamma Exposure Calculation",
+      "Welford\u0027s Online Algorithm for Anomaly & IV Detection",
+      "Cosine Similarity Historical Session Matching",
+      "Supabase Realtime & pg_cron Serverless Architecture",
     ],
-    techStack: ["Python", "TensorFlow", "WebSocket", "Redis", "Docker"],
-    category: "ai",
+    techStack: [
+      "JavaScript",
+      "Node.js",
+      "Express.js",
+      "Supabase",
+      "Vercel",
+    ],
+    category: "web",
     gradient: "from-violet-500 via-purple-500 to-fuchsia-500",
     icon: "TrendingUp",
+    deployedUrl: "https://nifty-oi-tracker.vercel.app/",
   },
   {
     id: "image-analysis",
@@ -171,7 +188,7 @@ export const projects: Project[] = [
     longDescription:
       "An intelligent image analysis platform that combines computer vision and OCR capabilities to extract meaningful insights from images. The platform supports multiple image formats, provides automated text extraction, and generates analytical reports from visual data.",
     features: ["OCR", "Image Processing", "Data Extraction", "Analytics"],
-    techStack: ["Python", "OpenCV", "Tesseract", "Flask", "NumPy"],
+    techStack: ["Python", "OpenCV", "Tesseract", "Flask"],
     category: "ai",
     gradient: "from-cyan-500 via-blue-500 to-indigo-500",
     icon: "ScanEye",
@@ -189,14 +206,12 @@ export const projects: Project[] = [
       "Real-time Updates",
       "Mobile-first UX",
     ],
-    techStack: ["Flutter", "Dart", "Firebase", "Cloud Firestore"],
+    techStack: ["Flutter", "Dart", "Firebase"],
     category: "mobile",
     gradient: "from-emerald-500 via-teal-500 to-cyan-500",
     icon: "FileText",
   },
 ];
-
-
 
 // ─── Social Links ────────────────────────────────────────────────────────────
 
@@ -217,5 +232,3 @@ export const socialLinks: SocialLink[] = [
     icon: "Mail",
   },
 ];
-
-

@@ -14,6 +14,7 @@ import {
   ScanEye,
   FileText,
   Sparkles,
+  ExternalLink,
 } from "lucide-react";
 
 const iconMap: Record<string, React.ElementType> = {
@@ -40,19 +41,32 @@ export function ProjectModal({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-lg glass border-border bg-popover/95 shadow-lg shadow-foreground/5">
+      <DialogContent className="sm:max-w-xl glass border-border bg-popover/95 shadow-lg shadow-foreground/5 max-h-[85vh] overflow-y-auto">
         <DialogHeader>
-          <div className="flex items-center gap-3 mb-2">
-            <div
-              className={`p-2.5 rounded-xl bg-gradient-to-br ${project.gradient} text-white`}
-            >
-              <Icon className="size-5" />
+          <div className="flex items-center justify-between gap-3 mb-2">
+            <div className="flex items-center gap-3">
+              <div
+                className={`p-2.5 rounded-xl bg-gradient-to-br ${project.gradient} text-white`}
+              >
+                <Icon className="size-5" />
+              </div>
+              <DialogTitle className="text-xl font-bold">
+                {project.title}
+              </DialogTitle>
             </div>
-            <DialogTitle className="text-xl font-bold">
-              {project.title}
-            </DialogTitle>
+            {project.deployedUrl && (
+              <a
+                href={project.deployedUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-primary text-primary-foreground font-medium text-xs shadow hover:opacity-90 transition-opacity"
+              >
+                <span>Live Demo</span>
+                <ExternalLink className="size-3.5" />
+              </a>
+            )}
           </div>
-          <DialogDescription className="text-muted-foreground leading-relaxed">
+          <DialogDescription className="text-muted-foreground leading-relaxed whitespace-pre-line text-left pt-2">
             {project.longDescription}
           </DialogDescription>
         </DialogHeader>
@@ -61,7 +75,7 @@ export function ProjectModal({
           {/* Features */}
           <div>
             <h4 className="text-sm font-semibold text-foreground mb-2">
-              Key Features
+              Key Features & Architectural Highlights
             </h4>
             <ul className="space-y-1.5">
               {project.features.map((feature) => (
@@ -81,7 +95,7 @@ export function ProjectModal({
           {/* Tech Stack */}
           <div>
             <h4 className="text-sm font-semibold text-foreground mb-2">
-              Tech Stack
+              Tech Stack & Techniques
             </h4>
             <div className="flex flex-wrap gap-1.5">
               {project.techStack.map((tech) => (
