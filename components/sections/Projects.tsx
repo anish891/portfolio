@@ -144,7 +144,7 @@ export function Projects() {
                           return (
                             <div
                               key={tech}
-                              className={`size-6 rounded-full ${badge.bg} flex items-center justify-center ${badge.text} shrink-0` }
+                              className={`size-6 rounded-full ${badge.bg} flex items-center justify-center ${badge.text} shrink-0`}
                               title={tech}
                             >
                               {badge.icon}
