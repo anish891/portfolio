@@ -9,8 +9,6 @@ import {
   SiJavascript,
   SiReact,
   SiNextdotjs,
-  SiHtml5,
-  SiCss,
   SiTailwindcss,
   SiNodedotjs,
   SiExpress,
@@ -27,7 +25,6 @@ import {
   Brain,
   Cpu,
   Bot,
-  Terminal,
   Network,
   GitCompare,
   RotateCw,
@@ -46,8 +43,6 @@ const skillConfig: Record<string, { icon: React.ElementType; colorClass: string;
   // Frontend
   "React": { icon: SiReact, colorClass: "group-hover:text-[#61DAFB] group-hover:border-[#61DAFB]/25", shadowClass: "hover:shadow-[#61DAFB]/10" },
   "Next.js": { icon: SiNextdotjs, colorClass: "group-hover:text-foreground dark:group-hover:text-white group-hover:border-foreground/20 dark:group-hover:border-white/20", shadowClass: "hover:shadow-foreground/10" },
-  "HTML": { icon: SiHtml5, colorClass: "group-hover:text-[#E34F26] group-hover:border-[#E34F26]/25", shadowClass: "hover:shadow-[#E34F26]/10" },
-  "CSS": { icon: SiCss, colorClass: "group-hover:text-[#1572B6] group-hover:border-[#1572B6]/25", shadowClass: "hover:shadow-[#1572B6]/10" },
   "Tailwind": { icon: SiTailwindcss, colorClass: "group-hover:text-[#06B6D4] group-hover:border-[#06B6D4]/25", shadowClass: "hover:shadow-[#06B6D4]/10" },
 
   // Backend
@@ -67,7 +62,6 @@ const skillConfig: Record<string, { icon: React.ElementType; colorClass: string;
   // AI & ML
   "LangChain": { icon: Brain, colorClass: "group-hover:text-[#12B886] group-hover:border-[#12B886]/25", shadowClass: "hover:shadow-[#12B886]/10" },
   "AI Agents": { icon: Bot, colorClass: "group-hover:text-[#8A2BE2] group-hover:border-[#8A2BE2]/25", shadowClass: "hover:shadow-[#8A2BE2]/10" },
-  "Prompt Engineering": { icon: Terminal, colorClass: "group-hover:text-[#32CD32] group-hover:border-[#32CD32]/25", shadowClass: "hover:shadow-[#32CD32]/10" },
   "LLM Integrations": { icon: Cpu, colorClass: "group-hover:text-[#FF4500] group-hover:border-[#FF4500]/25", shadowClass: "hover:shadow-[#FF4500]/10" },
 
   // Mobile

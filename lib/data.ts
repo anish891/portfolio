@@ -86,8 +86,6 @@ export const techStack: SkillCategory[] = [
       { name: "Python" },
       { name: "TypeScript" },
       { name: "JavaScript" },
-      { name: "HTML5" },
-      { name: "CSS3" },
     ],
   },
   {
@@ -130,7 +128,6 @@ export const techStack: SkillCategory[] = [
     skills: [
       { name: "LangChain" },
       { name: "AI Agents" },
-      { name: "Prompt Engineering" },
       { name: "LLM Integrations" },
     ],
   },
