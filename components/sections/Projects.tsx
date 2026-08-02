@@ -69,27 +69,45 @@ export function Projects() {
                   onClick={() => handleProjectClick(project)}
                 >
                   <div className="bg-card border border-border/60 hover:border-border rounded-2xl p-4 flex flex-col h-full transition-all duration-300 hover:shadow-md hover:shadow-primary/5">
-                    {/* Live iFrame Webpage Preview Container */}
-                    <div className="relative w-full aspect-[16/10] rounded-xl overflow-hidden bg-background border border-border/40 mb-3.5 group/frame">
-                      {project.deployedUrl ? (
+                    {/* Live iFrame / Image Webpage Preview Container with Hover Zoom */}
+                    <div className="relative w-full aspect-[16/10] rounded-xl overflow-hidden bg-background border border-border/40 mb-3.5 group/frame transition-all duration-500">
+                      {project.image ? (
+                        <div className="w-full h-full overflow-hidden relative">
+                          <img
+                            src={project.image}
+                            alt={project.title}
+                            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                          />
+                        </div>
+                      ) : project.deployedUrl ? (
                         <div className="w-full h-full relative overflow-hidden pointer-events-none select-none">
                           <iframe
                             src={project.deployedUrl}
                             title={project.title}
-                            className="w-[1280px] h-[800px] origin-top-left scale-[0.25] sm:scale-[0.28] lg:scale-[0.25] border-0 pointer-events-none"
+                            className="w-[1280px] h-[800px] origin-top-left scale-[0.25] sm:scale-[0.28] lg:scale-[0.25] border-0 pointer-events-none transition-transform duration-500 group-hover:scale-[0.26] sm:group-hover:scale-[0.29]"
                             loading="lazy"
                             tabIndex={-1}
                           />
-                          <div className="absolute inset-0 bg-transparent" />
+                          <div className="absolute inset-0 bg-gradient-to-t from-background/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                         </div>
                       ) : (
-                        <div className="w-full h-full flex flex-col items-center justify-center p-3 text-center bg-gradient-to-br from-purple-900/10 via-background to-blue-900/10">
+                        <div className="w-full h-full flex flex-col items-center justify-center p-4 text-center bg-gradient-to-br from-purple-900/20 via-background to-blue-900/20 transition-transform duration-500 group-hover:scale-105">
+                          <div className="size-10 rounded-full bg-primary/10 flex items-center justify-center text-primary mb-2">
+                            <Globe className="size-5" />
+                          </div>
                           <h4 className="text-sm font-bold text-foreground">{project.title}</h4>
                           <p className="text-[10px] text-muted-foreground mt-1 line-clamp-1">
                             {project.description}
                           </p>
                         </div>
                       )}
+
+                      {/* Quick View Hover Overlay */}
+                      <div className="absolute inset-0 bg-black/40 backdrop-blur-[2px] opacity-0 group-hover:opacity-100 transition-all duration-300 flex items-center justify-center">
+                        <span className="px-3.5 py-1.5 rounded-full bg-background/90 text-foreground text-xs font-semibold shadow-lg border border-border transform translate-y-2 group-hover:translate-y-0 transition-transform duration-300 flex items-center gap-1.5">
+                          Quick View
+                        </span>
+                      </div>
                     </div>
 
                     {/* Card Content */}
