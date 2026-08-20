@@ -57,23 +57,26 @@ export function Hero() {
       id="home"
       className="relative flex items-start justify-center overflow-hidden pt-28 pb-12"
     >
-      {/* Mouse-following gradient */}
+      {/* Dynamic Animated Gradient Mesh Layer */}
+      <div className="pointer-events-none absolute inset-0 opacity-40 dark:opacity-30">
+        <div className="absolute top-[-10%] left-[-10%] w-[50vw] h-[50vw] max-w-[600px] max-h-[600px] rounded-full bg-gradient-to-br from-violet-600/20 via-purple-500/15 to-transparent blur-[120px] animate-pulse" />
+        <div className="absolute top-[20%] right-[-5%] w-[45vw] h-[45vw] max-w-[500px] max-h-[500px] rounded-full bg-gradient-to-bl from-amber-500/15 via-orange-500/10 to-transparent blur-[110px] animate-float" style={{ animationDelay: "2s" }} />
+        <div className="absolute bottom-[-10%] left-[20%] w-[40vw] h-[40vw] max-w-[450px] max-h-[450px] rounded-full bg-gradient-to-tr from-cyan-500/15 via-blue-600/10 to-transparent blur-[100px] animate-float" style={{ animationDelay: "4s" }} />
+      </div>
+
+      {/* Interactive Mouse-following Dual Light Glow */}
       <div
-        className="pointer-events-none absolute inset-0 transition-opacity duration-300"
+        className="pointer-events-none absolute inset-0 transition-opacity duration-500"
         style={{
-          background: `radial-gradient(800px circle at ${mouse.x}px ${mouse.y}px, oklch(0.70 0.14 55 / 6%), transparent 60%)`,
+          background: `
+            radial-gradient(400px circle at ${mouse.x}px ${mouse.y}px, var(--primary) 0.07, transparent 80%),
+            radial-gradient(800px circle at ${mouse.x}px ${mouse.y}px, oklch(0.70 0.14 55 / 12%), transparent 70%)
+          `,
         }}
       />
 
       {/* Background dot grid */}
-      <div className="absolute inset-0 bg-dot-grid opacity-30" />
-
-      {/* Ambient glow orbs */}
-      <div className="absolute top-1/3 left-1/4 w-80 h-80 rounded-full bg-[oklch(0.70_0.14_55/4%)] blur-[120px] animate-float" />
-      <div
-        className="absolute bottom-1/4 right-1/4 w-64 h-64 rounded-full bg-[oklch(0.82_0.09_70/4%)] blur-[100px] animate-float"
-        style={{ animationDelay: "3s" }}
-      />
+      <div className="absolute inset-0 bg-dot-grid opacity-30 pointer-events-none" />
 
       {/* Content */}
       <div className="relative z-10 max-w-3xl mx-auto px-4 sm:px-6 w-full">
@@ -83,13 +86,14 @@ export function Hero() {
           className="flex items-center gap-4 mb-7"
           {...fadeUp(0.05)}
         >
-          {/* Avatar */}
-          <div className="relative flex-shrink-0">
-            <div className="w-[68px] h-[68px] rounded-2xl bg-gradient-to-br from-[oklch(0.70_0.14_55)] to-[oklch(0.82_0.09_70)] flex items-center justify-center text-white text-xl font-bold shadow-lg shadow-primary/20 select-none">
+          {/* Avatar with Animated Glow Ring */}
+          <div className="relative flex-shrink-0 group">
+            <div className="absolute -inset-0.5 rounded-2xl bg-gradient-to-r from-primary via-violet-500 to-amber-500 opacity-60 blur-sm group-hover:opacity-100 transition duration-500 animate-tilt" />
+            <div className="relative w-[68px] h-[68px] rounded-2xl bg-gradient-to-br from-[oklch(0.70_0.14_55)] to-[oklch(0.82_0.09_70)] flex items-center justify-center text-white text-xl font-bold shadow-lg shadow-primary/20 select-none">
               AT
             </div>
             {/* Availability dot */}
-            <span className="absolute -bottom-0.5 -right-0.5 flex h-3.5 w-3.5">
+            <span className="absolute -bottom-0.5 -right-0.5 flex h-3.5 w-3.5 z-10">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-50" />
               <span className="relative inline-flex rounded-full h-3.5 w-3.5 bg-emerald-400 border-2 border-background" />
             </span>

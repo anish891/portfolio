@@ -55,6 +55,8 @@ export const metadata: Metadata = {
   },
 };
 
+import { ScrollProgress } from "@/components/ui/ScrollProgress";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -75,6 +77,7 @@ export default function RootLayout({
         />
       </head>
       <body className="min-h-full flex flex-col bg-background text-foreground overflow-x-hidden">
+        <ScrollProgress />
         {children}
       </body>
     </html>

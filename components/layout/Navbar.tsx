@@ -6,6 +6,7 @@ import { navItems } from "@/lib/data";
 import { Menu, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
+import { CommandPalette } from "@/components/ui/CommandPalette";
 
 export function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -41,6 +42,19 @@ export function Navbar() {
       el.scrollIntoView({ behavior: "smooth" });
     }
   };
+
+  const [isCommandOpen, setIsCommandOpen] = useState(false);
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
+        e.preventDefault();
+        setIsCommandOpen((prev) => !prev);
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
 
   return (
     <>
@@ -87,24 +101,52 @@ export function Navbar() {
                   </button>
                 );
               })}
+
+              {/* Command Palette Trigger */}
+              <button
+                onClick={() => setIsCommandOpen(true)}
+                className="flex items-center gap-2 px-2.5 py-1.5 ml-1 text-xs text-muted-foreground bg-primary/5 border border-primary/15 rounded-lg hover:bg-primary/10 hover:text-foreground transition-all duration-200 cursor-pointer"
+                title="Search / Command Palette (⌘K)"
+              >
+                <span>Search</span>
+                <kbd className="px-1.5 py-0.5 text-[10px] font-mono rounded bg-muted/80 border border-border">
+                  ⌘K
+                </kbd>
+              </button>
+
               <ThemeToggle />
             </div>
 
             {/* Mobile Toggle */}
-            <button
-              onClick={() => setIsMobileOpen(!isMobileOpen)}
-              className="md:hidden p-2 text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
-              aria-label="Toggle menu"
-            >
-              {isMobileOpen ? (
-                <X className="size-5" />
-              ) : (
-                <Menu className="size-5" />
-              )}
-            </button>
+            <div className="flex items-center gap-2 md:hidden">
+              <button
+                onClick={() => setIsCommandOpen(true)}
+                className="p-2 text-muted-foreground hover:text-foreground bg-primary/5 border border-primary/15 rounded-lg cursor-pointer"
+                aria-label="Open command palette"
+              >
+                <span className="text-xs font-mono font-semibold">⌘K</span>
+              </button>
+              <button
+                onClick={() => setIsMobileOpen(!isMobileOpen)}
+                className="p-2 text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+                aria-label="Toggle menu"
+              >
+                {isMobileOpen ? (
+                  <X className="size-5" />
+                ) : (
+                  <Menu className="size-5" />
+                )}
+              </button>
+            </div>
           </div>
         </div>
       </motion.nav>
+
+      {/* Command Palette Modal */}
+      <CommandPalette
+        isOpen={isCommandOpen}
+        onClose={() => setIsCommandOpen(false)}
+      />
 
       {/* Mobile Menu */}
       <AnimatePresence>
