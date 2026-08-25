@@ -5,6 +5,7 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogDescription,
 } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import type { Project } from "@/lib/data";
@@ -58,6 +59,9 @@ export function ProjectModal({
               </Badge>
             </div>
           </div>
+          <DialogDescription className="sr-only">
+            {project.description}
+          </DialogDescription>
         </DialogHeader>
 
         {/* Minimal Description */}
