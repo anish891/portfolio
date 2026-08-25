@@ -176,6 +176,7 @@ export const projects: Project[] = [
     gradient: "from-violet-500 via-purple-500 to-fuchsia-500",
     icon: "TrendingUp",
     deployedUrl: "https://nifty-oi-tracker.vercel.app/",
+    githubUrl: "https://github.com/anish891/nifty-oi-tracker",
   },
   {
     id: "image-analysis",
@@ -189,6 +190,7 @@ export const projects: Project[] = [
     category: "ai",
     gradient: "from-cyan-500 via-blue-500 to-indigo-500",
     icon: "ScanEye",
+    githubUrl: "https://github.com/anish891",
   },
   {
     id: "notes-app",
@@ -207,6 +209,7 @@ export const projects: Project[] = [
     category: "mobile",
     gradient: "from-emerald-500 via-teal-500 to-cyan-500",
     icon: "FileText",
+    githubUrl: "https://github.com/anish891",
   },
 ];
 
