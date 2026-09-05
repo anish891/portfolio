@@ -17,9 +17,9 @@ export function GlassCard({
   ...props
 }: GlassCardProps) {
   const glowStyles = {
-    purple: "hover:shadow-[0_0_30px_oklch(0.70_0.14_55/15%)]",
-    cyan: "hover:shadow-[0_0_30px_oklch(0.82_0.09_70/15%)]",
-    blue: "hover:shadow-[0_0_30px_oklch(0.78_0.11_62/15%)]",
+    purple: "hover:shadow-[0_0_30px_oklch(0.72_0.18_215/15%)]",
+    cyan: "hover:shadow-[0_0_30px_oklch(0.80_0.15_195/15%)]",
+    blue: "hover:shadow-[0_0_30px_oklch(0.65_0.17_235/15%)]",
     none: "",
   };
 

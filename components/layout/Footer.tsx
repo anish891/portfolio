@@ -16,7 +16,7 @@ export function Footer() {
   return (
     <footer className="relative border-t border-border">
       {/* Gradient divider */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-1/2 h-px bg-gradient-to-r from-transparent via-[oklch(0.70_0.14_55/40%)] to-transparent" />
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-1/2 h-px bg-gradient-to-r from-transparent via-primary/40 to-transparent" />
 
       <div className="max-w-6xl mx-auto px-4 sm:px-6 py-12">
         <div className="flex flex-col md:flex-row items-center justify-between gap-6">

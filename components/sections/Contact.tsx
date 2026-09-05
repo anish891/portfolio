@@ -176,7 +176,7 @@ export function Contact() {
 
                   <Button
                     type="submit"
-                    className="w-full bg-gradient-to-r from-[oklch(0.70_0.14_55)] to-[oklch(0.82_0.09_70)] text-white border-0 h-10 text-sm font-semibold cursor-pointer shadow-sm shadow-primary/20 hover:opacity-90 transition-opacity"
+                    className="w-full bg-gradient-to-r from-primary to-cyan-400 text-white dark:text-black border-0 h-10 text-sm font-semibold cursor-pointer shadow-sm shadow-primary/20 hover:opacity-90 transition-opacity"
                     disabled={isSending}
                   >
                     {isSending ? (

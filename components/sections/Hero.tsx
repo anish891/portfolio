@@ -70,7 +70,7 @@ export function Hero() {
         style={{
           background: `
             radial-gradient(400px circle at ${mouse.x}px ${mouse.y}px, var(--primary) 0.07, transparent 80%),
-            radial-gradient(800px circle at ${mouse.x}px ${mouse.y}px, oklch(0.70 0.14 55 / 12%), transparent 70%)
+            radial-gradient(800px circle at ${mouse.x}px ${mouse.y}px, oklch(0.72 0.18 215 / 12%), transparent 70%)
           `,
         }}
       />
@@ -88,8 +88,8 @@ export function Hero() {
         >
           {/* Avatar with Animated Glow Ring */}
           <div className="relative flex-shrink-0 group">
-            <div className="absolute -inset-0.5 rounded-2xl bg-gradient-to-r from-primary via-violet-500 to-amber-500 opacity-60 blur-sm group-hover:opacity-100 transition duration-500 animate-tilt" />
-            <div className="relative w-[68px] h-[68px] rounded-2xl bg-gradient-to-br from-[oklch(0.70_0.14_55)] to-[oklch(0.82_0.09_70)] flex items-center justify-center text-white text-xl font-bold shadow-lg shadow-primary/20 select-none">
+            <div className="absolute -inset-0.5 rounded-2xl bg-gradient-to-r from-primary via-cyan-500 to-teal-400 opacity-60 blur-sm group-hover:opacity-100 transition duration-500 animate-tilt" />
+            <div className="relative w-[68px] h-[68px] rounded-2xl bg-gradient-to-br from-primary to-cyan-400 flex items-center justify-center text-white text-xl font-bold shadow-lg shadow-primary/20 select-none">
               AT
             </div>
             {/* Availability dot */}
