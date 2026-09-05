@@ -43,7 +43,7 @@ export function ProjectModal({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md p-6 glass border-border/80 bg-background/95 backdrop-blur-2xl shadow-xl rounded-2xl">
-        
+
         {/* Header */}
         <DialogHeader className="p-0 space-y-3">
           <div className="flex items-center gap-3">
