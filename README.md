@@ -1,63 +1,49 @@
-# Anish Tejwani — Personal Portfolio
+# Anish Tejwani — Portfolio
 
-Welcome to the repository for my personal portfolio website: **[anishtejwani.dev](https://anishtejwani.dev)**.
+Source for my personal site: **[anishtejwani.dev](https://anishtejwani.dev)**.
 
-I am an **AI Engineer**, **Software Architect**, and **Full-Stack Developer** based in Mumbai, India. I specialize in building intelligent software systems, AI-powered applications, and scalable web platforms.
+I'm an AI / full-stack engineer based in Mumbai, India, building intelligent software systems, AI-powered applications and scalable web platforms.
 
----
+## Featured projects
 
-## 🚀 About Me
+| Project | What it is | Stack |
+| --- | --- | --- |
+| [NIFTY OI Tracker](https://nifty-oi-tracker.vercel.app/) ([code](https://github.com/anish891/nifty-oi-tracker)) | Real-time NIFTY 50 options analytics: OI buildup, Max Pain, Gamma Exposure and volatility regimes from live NSE data. | JavaScript, Node.js, Express, Supabase, Vercel |
+| Image Analysis Platform | Computer vision and OCR platform that extracts structured insights from images. | Python, OpenCV, Tesseract, Flask |
+| Notes Application | Cross-platform note-taking app with cloud sync and authentication. | Flutter, Dart, Firebase |
 
-- 💡 **Passionate About:** AI Agents, Machine Learning Integrations, Distributed Systems, System Design, and Modern Web Engineering.
-- 📍 **Location:** Mumbai, India
-- ✉️ **Contact:** [anishtejwani891@gmail.com](mailto:anishtejwani891@gmail.com)
-- 🔗 **Connect:** [GitHub](https://github.com/anish891) | [LinkedIn](https://linkedin.com/in/anishtejwani)
+All site content (projects, skills, links) lives in [`lib/data.ts`](lib/data.ts).
 
----
-
-## 🌟 Featured Projects
-
-### 1. 📈 [AI Trading System](https://github.com/anish891)
-Real-time trading engine powered by deep learning models for market signal generation and automated trade execution.
-- **Key Features:** Real-time stream processing, low-latency execution, ML-driven predictions, scalable architecture.
-- **Tech Stack:** Python, TensorFlow, WebSocket, Redis, Docker
-
-### 2. 👁️ [Image Analysis Platform](https://github.com/anish891)
-Python-based image intelligence platform utilizing computer vision and OCR to extract rich structured data and insights.
-- **Key Features:** Optical Character Recognition (OCR), image processing pipeline, automated data extraction, visual analytics.
-- **Tech Stack:** Python, OpenCV, Tesseract, Flask, NumPy
-
-### 3. 📱 [Notes Application](https://github.com/anish891)
-Cross-platform note-taking app with real-time cloud sync and secure authentication.
-- **Key Features:** Real-time cloud sync, secure authentication, offline capability, mobile-first UX.
-- **Tech Stack:** Flutter, Dart, Firebase, Cloud Firestore
-
----
-
-## 🛠️ Skills & Technologies
-
-- **Languages:** Java, Python, TypeScript, JavaScript
-- **Frontend:** React, Next.js 16, HTML5, CSS3, Tailwind CSS v4, Framer Motion
-- **Backend:** Node.js, Express, REST APIs
-- **AI & ML:** LangChain, AI Agents, Prompt Engineering, LLM Integrations
-- **Mobile:** Flutter
-- **Databases:** SQL, Firebase, Cloud Firestore
-- **Tools & Practices:** Git, GitHub, CI/CD, Agile/Scrum, System Architecture
-
----
-
-## 💻 Tech Stack of This Portfolio
-
-This website was crafted with a modern, glassmorphism UI design:
+## Tech stack
 
 - **Framework:** Next.js 16 (App Router), React 19, TypeScript
-- **Styling & UI:** Tailwind CSS v4, OKLCH Color Tokens, Radix UI primitives, Lucide Icons
-- **Animations:** Framer Motion 12, Typed.js typing hero animation
-- **Theme:** System-aware Dark / Light mode persisted in `localStorage`
+- **Styling:** Tailwind CSS v4 with OKLCH colour tokens, Radix UI primitives, Lucide icons
+- **Motion:** Framer Motion (respects `prefers-reduced-motion`)
+- **Theme:** system-aware light / dark mode, saved in `localStorage`
 
----
+## Getting started
 
-<p align="center">
-  Built with ❤️ by <strong>Anish Tejwani</strong>
-</p>
+```bash
+npm install
+cp .env.local.example .env.local   # add your Web3Forms key
+npm run dev
+```
 
+Open <http://localhost:3000>.
+
+| Script | Purpose |
+| --- | --- |
+| `npm run dev` | Start the dev server |
+| `npm run build` | Production build |
+| `npm run lint` | ESLint |
+
+### Environment variables
+
+| Name | Purpose |
+| --- | --- |
+| `NEXT_PUBLIC_WEB3FORMS_ACCESS_KEY` | Contact form delivery via [Web3Forms](https://web3forms.com). Restrict the key to your domain in their dashboard. Without it the form only simulates success in development and shows an error in production. |
+
+## Notes
+
+- The GitHub contribution heatmap is fetched through `app/api/github-contributions` and cached for an hour.
+- CI (`.github/workflows/ci.yml`) runs lint, type-check and build on every push and pull request.

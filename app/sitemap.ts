@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
+import { siteConfig } from "@/lib/data";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  return [{ url: "https://anishtejwani.dev", changeFrequency: "monthly", priority: 1 }];
+  return [{ url: siteConfig.url, changeFrequency: "monthly", priority: 1 }];
 }

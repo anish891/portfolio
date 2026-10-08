@@ -1,9 +1,10 @@
 import { NextResponse } from "next/server";
+import { siteConfig } from "@/lib/data";
 
 export async function GET() {
   try {
     const res = await fetch(
-      "https://github-contributions-api.jogruber.de/v4/anish891?y=last",
+      `https://github-contributions-api.jogruber.de/v4/${siteConfig.githubUsername}?y=last`,
       {
         next: { revalidate: 3600 }, // cache for 1 hour
       }

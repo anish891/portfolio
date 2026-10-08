@@ -1,9 +1,9 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
 import { MapPin, Mail, ArrowRight, ArrowUpRight } from "lucide-react";
-import { heroContent, socialLinks, aboutContent } from "@/lib/data";
+import { heroContent, socialLinks, aboutContent, siteConfig } from "@/lib/data";
 import { Github, Linkedin } from "@/components/ui/icons";
 import { GitHubHeatmap } from "@/components/ui/GitHubHeatmap";
 
@@ -110,16 +110,15 @@ export function Hero() {
           </span>
         </motion.div>
 
-        {/* Headline */}
-        <motion.h1
-          className="text-5xl sm:text-6xl lg:text-7xl font-bold tracking-tighter leading-[1.05]"
-          {...fadeUp(0.1)}
+        {/* Headline: plain element so it paints before hydration (LCP) */}
+        <h1
+          className="text-[2.6rem] sm:text-6xl lg:text-7xl font-bold tracking-tighter leading-[1.08]"
         >
           Hi, I&apos;m <span className="gradient-text">{heroContent.name}</span>.
           <br />
           <span className="text-foreground/90">I build things that</span>{" "}
           <span className="gradient-text">think</span>.
-        </motion.h1>
+        </h1>
 
         {/* Rotating role */}
         <motion.div
@@ -128,18 +127,12 @@ export function Hero() {
         >
           <span className="text-primary">&gt;</span>
           <div className="relative h-6 w-60 overflow-hidden" aria-live="off">
-            <AnimatePresence mode="wait">
-              <motion.span
-                key={heroContent.roles[roleIndex]}
-                initial={{ y: 14, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                exit={{ y: -14, opacity: 0 }}
-                transition={{ duration: 0.25, ease: "easeInOut" }}
-                className="absolute left-0 top-0 whitespace-nowrap text-foreground"
-              >
-                {heroContent.roles[roleIndex]}
-              </motion.span>
-            </AnimatePresence>
+            <span
+              key={heroContent.roles[roleIndex]}
+              className="role-in absolute left-0 top-0 whitespace-nowrap text-foreground"
+            >
+              {heroContent.roles[roleIndex]}
+            </span>
           </div>
         </motion.div>
 
@@ -195,7 +188,7 @@ export function Hero() {
 
         {/* GitHub heatmap */}
         <motion.div className="mt-16" {...fadeUp(0.4)}>
-          <GitHubHeatmap username="anish891" />
+          <GitHubHeatmap username={siteConfig.githubUsername} />
         </motion.div>
 
         {/* Interests */}

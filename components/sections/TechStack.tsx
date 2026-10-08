@@ -116,7 +116,7 @@ export function TechStack() {
                       key={skill.name}
                       className={`group flex items-center gap-2 rounded-xl border border-border/70 bg-muted/40 px-3 py-2 text-sm font-medium transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md ${config.shadowClass} ${config.colorClass}`}
                     >
-                      <SkillIcon className="size-4 shrink-0 text-muted-foreground transition-colors duration-200 group-hover:text-inherit" />
+                      <SkillIcon aria-hidden="true" className="size-4 shrink-0 text-muted-foreground transition-colors duration-200 group-hover:text-inherit" />
                       <span className="text-foreground/90">{skill.name}</span>
                     </li>
                   );

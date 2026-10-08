@@ -46,6 +46,15 @@ export const navItems: NavItem[] = [
   { label: "Contact", href: "#contact" },
 ];
 
+// ─── Site ────────────────────────────────────────────────────────────────────
+
+export const siteConfig = {
+  url: "https://anishtejwani.dev",
+  githubUsername: "anish891",
+  githubUrl: "https://github.com/anish891",
+  linkedinUrl: "https://linkedin.com/in/anishtejwani",
+};
+
 // ─── Hero Content ────────────────────────────────────────────────────────────
 
 export const heroContent = {

@@ -8,7 +8,7 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import { ProjectCover } from "@/components/ui/ProjectCover";
-import type { Project } from "@/lib/data";
+import { siteConfig, type Project } from "@/lib/data";
 import { ExternalLink, X } from "lucide-react";
 import { Github } from "@/components/ui/icons";
 
@@ -70,7 +70,7 @@ export function ProjectModal({
                 </a>
               )}
               <a
-                href={project.githubUrl ?? "https://github.com/anish891"}
+                href={project.githubUrl ?? siteConfig.githubUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-5 py-2.5 text-sm font-semibold text-foreground transition-all hover:-translate-y-0.5 hover:border-primary/40"

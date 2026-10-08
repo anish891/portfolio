@@ -23,7 +23,7 @@ import {
   CornerDownLeft,
 } from "lucide-react";
 import { Github, Linkedin } from "@/components/ui/icons";
-import { heroContent, projects, socialLinks } from "@/lib/data";
+import { heroContent, projects, siteConfig, socialLinks } from "@/lib/data";
 
 type Group = "Navigate" | "Projects" | "Actions" | "Links";
 
@@ -119,7 +119,7 @@ function PalettePanel({ onClose }: { onClose: () => void }) {
         external: true,
         run: () => {
           onClose();
-          open(p.deployedUrl ?? p.githubUrl ?? "https://github.com/anish891");
+          open(p.deployedUrl ?? p.githubUrl ?? siteConfig.githubUrl);
         },
       })),
 

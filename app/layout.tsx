@@ -3,6 +3,7 @@ import { Inter, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ScrollProgress } from "@/components/ui/ScrollProgress";
 import { BackToTop } from "@/components/ui/BackToTop";
+import { siteConfig, heroContent, socialLinks } from "@/lib/data";
 import { Providers } from "@/components/Providers";
 
 const inter = Inter({
@@ -19,7 +20,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "Anish Tejwani — AI • Full Stack • Product Engineering",
-  metadataBase: new URL("https://anishtejwani.dev"),
+  metadataBase: new URL(siteConfig.url),
   alternates: { canonical: "/" },
   description:
     "Personal portfolio of Anish Tejwani — AI Engineer, Full-Stack Developer, and Builder. Building intelligent software systems, AI-powered applications, and scalable web platforms.",
@@ -59,6 +60,17 @@ export const metadata: Metadata = {
 };
 
 
+const personJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  name: heroContent.name,
+  url: siteConfig.url,
+  email: `mailto:${heroContent.email}`,
+  jobTitle: "AI Engineer & Full-Stack Developer",
+  address: { "@type": "PostalAddress", addressLocality: "Mumbai", addressCountry: "IN" },
+  sameAs: socialLinks.filter((l) => l.icon !== "Mail").map((l) => l.url),
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -79,6 +91,10 @@ export default function RootLayout({
         />
       </head>
       <body className="min-h-full flex flex-col bg-background text-foreground overflow-x-hidden">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd) }}
+        />
         <a
           href="#main"
           className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[100] focus:rounded-lg focus:bg-primary focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-primary-foreground"

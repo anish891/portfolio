@@ -79,7 +79,7 @@ export function Navbar() {
           {/* Logo mark */}
           <button
             onClick={() => goTo("#home")}
-            aria-label="Back to top"
+            aria-label="AT, back to top"
             className="flex size-9 cursor-pointer items-center justify-center rounded-full bg-gradient-to-br from-primary to-cyan-400 text-xs font-bold text-white transition-transform hover:scale-105 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary dark:text-black"
           >
             AT
@@ -146,7 +146,7 @@ export function Navbar() {
           <AnimatePresence>
             {isMobileOpen && (
               <motion.div
-                className="absolute inset-x-0 top-full mt-2 overflow-hidden rounded-3xl border border-border bg-background/90 p-2 shadow-xl backdrop-blur-xl md:hidden"
+                className="absolute inset-x-0 top-full mt-2 overflow-hidden rounded-3xl border border-border bg-background p-2 shadow-xl md:hidden"
                 initial={{ opacity: 0, y: -8, scale: 0.98 }}
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 exit={{ opacity: 0, y: -8, scale: 0.98 }}
