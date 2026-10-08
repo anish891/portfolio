@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
 import { MapPin, Mail, ArrowRight, ArrowUpRight } from "lucide-react";
 import { heroContent, socialLinks, aboutContent } from "@/lib/data";
 import { Github, Linkedin } from "@/components/ui/icons";
@@ -26,6 +26,16 @@ const scrollToId = (id: string) => (e: React.MouseEvent) => {
 
 export function Hero() {
   const glowRef = useRef<HTMLDivElement>(null);
+  const sectionRef = useRef<HTMLElement>(null);
+
+  // Parallax: background drifts slower than the page, content eases out
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start start", "end start"],
+  });
+  const bgY = useTransform(scrollYProgress, [0, 1], ["0%", "25%"]);
+  const contentY = useTransform(scrollYProgress, [0, 1], ["0px", "60px"]);
+  const contentOpacity = useTransform(scrollYProgress, [0, 0.8], [1, 0.25]);
   const [roleIndex, setRoleIndex] = useState(0);
 
   // Cursor glow is driven by CSS variables so mouse moves never re-render React
@@ -57,14 +67,18 @@ export function Hero() {
 
   return (
     <section
+      ref={sectionRef}
       id="home"
       className="relative flex items-start justify-center overflow-hidden pt-32 sm:pt-40 pb-16"
     >
       {/* Ambient background: one violet + one cyan glow, kept quiet */}
-      <div className="pointer-events-none absolute inset-0 opacity-40 dark:opacity-30">
+      <motion.div
+        style={{ y: bgY }}
+        className="pointer-events-none absolute inset-0 opacity-40 dark:opacity-30"
+      >
         <div className="absolute top-[-15%] left-[-10%] w-[50vw] h-[50vw] max-w-[640px] max-h-[640px] rounded-full bg-gradient-to-br from-violet-600/25 via-purple-500/10 to-transparent blur-[120px]" />
         <div className="absolute bottom-[-10%] right-[-5%] w-[40vw] h-[40vw] max-w-[500px] max-h-[500px] rounded-full bg-gradient-to-tl from-cyan-500/20 via-blue-600/10 to-transparent blur-[110px] animate-float" />
-      </div>
+      </motion.div>
 
       {/* Cursor glow */}
       <div
@@ -78,7 +92,10 @@ export function Hero() {
 
       <div className="absolute inset-0 bg-dot-grid opacity-25 pointer-events-none [mask-image:radial-gradient(ellipse_at_center,black_30%,transparent_75%)]" />
 
-      <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 w-full">
+      <motion.div
+        style={{ y: contentY, opacity: contentOpacity }}
+        className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 w-full"
+      >
         {/* Status pill */}
         <motion.div {...fadeUp(0.05)} className="mb-8">
           <span className="inline-flex items-center gap-2 rounded-full border border-border/60 bg-card/60 backdrop-blur px-3.5 py-1.5 text-xs font-medium text-muted-foreground font-mono">
@@ -197,7 +214,7 @@ export function Hero() {
             ))}
           </div>
         </motion.div>
-      </div>
+      </motion.div>
     </section>
   );
 }

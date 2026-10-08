@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ScrollProgress } from "@/components/ui/ScrollProgress";
+import { BackToTop } from "@/components/ui/BackToTop";
 import { Providers } from "@/components/Providers";
 
 const inter = Inter({
@@ -87,6 +88,7 @@ export default function RootLayout({
         <Providers>
           <ScrollProgress />
           {children}
+          <BackToTop />
         </Providers>
       </body>
     </html>
