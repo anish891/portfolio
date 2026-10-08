@@ -1,212 +1,190 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { MapPin, Mail, ArrowRight } from "lucide-react";
+import { MapPin, Mail, ArrowRight, ArrowUpRight } from "lucide-react";
 import { heroContent, socialLinks, aboutContent } from "@/lib/data";
-import { useMousePosition } from "@/hooks/useMousePosition";
 import { Github, Linkedin } from "@/components/ui/icons";
 import { GitHubHeatmap } from "@/components/ui/GitHubHeatmap";
 
 const socialIconMap: Record<string, React.ElementType> = {
   Github,
   Linkedin,
-  Mail: ({ className }: { className?: string }) => (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="20"
-      height="20"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      className={className}
-    >
-      <rect width="20" height="16" x="2" y="4" rx="2" />
-      <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
-    </svg>
-  ),
+  Mail,
 };
 
-// Fade-up animation variant
 const fadeUp = (delay = 0) => ({
   initial: { opacity: 0, y: 18 },
   animate: { opacity: 1, y: 0 },
-  transition: { duration: 0.5, delay, ease: "easeOut" as const },
+  transition: { duration: 0.55, delay, ease: "easeOut" as const },
 });
 
+const scrollToId = (id: string) => (e: React.MouseEvent) => {
+  e.preventDefault();
+  document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+};
 
 export function Hero() {
-  const mouse = useMousePosition();
+  const glowRef = useRef<HTMLDivElement>(null);
   const [roleIndex, setRoleIndex] = useState(0);
 
+  // Cursor glow is driven by CSS variables so mouse moves never re-render React
   useEffect(() => {
-    const roleTimer = setInterval(() => {
-      setRoleIndex((prev) => (prev + 1) % (heroContent.roles?.length || 1));
-    }, 2500);
-
-    return () => {
-      clearInterval(roleTimer);
+    const el = glowRef.current;
+    if (!el || !window.matchMedia("(hover: hover)").matches) return;
+    let raf = 0;
+    const onMove = (e: MouseEvent) => {
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(() => {
+        el.style.setProperty("--mx", `${e.clientX}px`);
+        el.style.setProperty("--my", `${e.clientY}px`);
+      });
     };
+    window.addEventListener("mousemove", onMove, { passive: true });
+    return () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener("mousemove", onMove);
+    };
+  }, []);
+
+  useEffect(() => {
+    const t = setInterval(
+      () => setRoleIndex((i) => (i + 1) % heroContent.roles.length),
+      2500
+    );
+    return () => clearInterval(t);
   }, []);
 
   return (
     <section
       id="home"
-      className="relative flex items-start justify-center overflow-hidden pt-28 pb-12"
+      className="relative flex items-start justify-center overflow-hidden pt-32 sm:pt-40 pb-16"
     >
-      {/* Dynamic Animated Gradient Mesh Layer */}
+      {/* Ambient background: one violet + one cyan glow, kept quiet */}
       <div className="pointer-events-none absolute inset-0 opacity-40 dark:opacity-30">
-        <div className="absolute top-[-10%] left-[-10%] w-[50vw] h-[50vw] max-w-[600px] max-h-[600px] rounded-full bg-gradient-to-br from-violet-600/20 via-purple-500/15 to-transparent blur-[120px] animate-pulse" />
-        <div className="absolute top-[20%] right-[-5%] w-[45vw] h-[45vw] max-w-[500px] max-h-[500px] rounded-full bg-gradient-to-bl from-amber-500/15 via-orange-500/10 to-transparent blur-[110px] animate-float" style={{ animationDelay: "2s" }} />
-        <div className="absolute bottom-[-10%] left-[20%] w-[40vw] h-[40vw] max-w-[450px] max-h-[450px] rounded-full bg-gradient-to-tr from-cyan-500/15 via-blue-600/10 to-transparent blur-[100px] animate-float" style={{ animationDelay: "4s" }} />
+        <div className="absolute top-[-15%] left-[-10%] w-[50vw] h-[50vw] max-w-[640px] max-h-[640px] rounded-full bg-gradient-to-br from-violet-600/25 via-purple-500/10 to-transparent blur-[120px]" />
+        <div className="absolute bottom-[-10%] right-[-5%] w-[40vw] h-[40vw] max-w-[500px] max-h-[500px] rounded-full bg-gradient-to-tl from-cyan-500/20 via-blue-600/10 to-transparent blur-[110px] animate-float" />
       </div>
 
-      {/* Interactive Mouse-following Dual Light Glow */}
+      {/* Cursor glow */}
       <div
-        className="pointer-events-none absolute inset-0 transition-opacity duration-500"
+        ref={glowRef}
+        className="pointer-events-none absolute inset-0 hidden md:block"
         style={{
-          background: `
-            radial-gradient(400px circle at ${mouse.x}px ${mouse.y}px, var(--primary) 0.07, transparent 80%),
-            radial-gradient(800px circle at ${mouse.x}px ${mouse.y}px, oklch(0.72 0.18 215 / 12%), transparent 70%)
-          `,
+          background:
+            "radial-gradient(500px circle at var(--mx, -500px) var(--my, -500px), oklch(0.72 0.18 215 / 10%), transparent 70%)",
         }}
       />
 
-      {/* Background dot grid */}
-      <div className="absolute inset-0 bg-dot-grid opacity-30 pointer-events-none" />
+      <div className="absolute inset-0 bg-dot-grid opacity-25 pointer-events-none [mask-image:radial-gradient(ellipse_at_center,black_30%,transparent_75%)]" />
 
-      {/* Content */}
-      <div className="relative z-10 max-w-3xl mx-auto px-4 sm:px-6 w-full">
-
-        {/* ── Profile header ───────────────────────────── */}
-        <motion.div
-          className="flex items-center gap-4 mb-7"
-          {...fadeUp(0.05)}
-        >
-          {/* Avatar with Animated Glow Ring */}
-          <div className="relative flex-shrink-0 group">
-            <div className="absolute -inset-0.5 rounded-2xl bg-gradient-to-r from-primary via-cyan-500 to-teal-400 opacity-60 blur-sm group-hover:opacity-100 transition duration-500 animate-tilt" />
-            <div className="relative w-[68px] h-[68px] rounded-2xl bg-gradient-to-br from-primary to-cyan-400 flex items-center justify-center text-white text-xl font-bold shadow-lg shadow-primary/20 select-none">
-              AT
-            </div>
-            {/* Availability dot */}
-            <span className="absolute -bottom-0.5 -right-0.5 flex h-3.5 w-3.5 z-10">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-50" />
-              <span className="relative inline-flex rounded-full h-3.5 w-3.5 bg-emerald-400 border-2 border-background" />
+      <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 w-full">
+        {/* Status pill */}
+        <motion.div {...fadeUp(0.05)} className="mb-8">
+          <span className="inline-flex items-center gap-2 rounded-full border border-border/60 bg-card/60 backdrop-blur px-3.5 py-1.5 text-xs font-medium text-muted-foreground font-mono">
+            <span className="relative flex size-2">
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-60" />
+              <span className="relative inline-flex size-2 rounded-full bg-emerald-400" />
             </span>
-          </div>
-
-          {/* Name + tagline */}
-          <div>
-            <h1 className="text-3xl sm:text-4xl font-bold tracking-tight">
-              <span className="gradient-text">{heroContent.name}</span>
-            </h1>
-            <div className="text-muted-foreground text-sm sm:text-[15px] mt-1 font-semibold flex items-center h-6 overflow-hidden">
-              <div className="relative h-6 w-56 overflow-hidden">
-                <AnimatePresence mode="wait">
-                  <motion.span
-                    key={heroContent.roles[roleIndex]}
-                    initial={{ y: 12, opacity: 0 }}
-                    animate={{ y: 0, opacity: 1 }}
-                    exit={{ y: -12, opacity: 0 }}
-                    transition={{ duration: 0.25, ease: "easeInOut" }}
-                    className="absolute left-0 top-0 text-primary font-semibold whitespace-nowrap"
-                  >
-                    {heroContent.roles[roleIndex]}
-                  </motion.span>
-                </AnimatePresence>
-              </div>
-            </div>
-          </div>
+            Open to opportunities
+            <span className="text-border">·</span>
+            <MapPin className="size-3" />
+            {heroContent.location}
+          </span>
         </motion.div>
 
-        {/* ── Meta info row ────────────────────────────── */}
-        <motion.div
-          className="grid grid-cols-2 sm:grid-cols-3 gap-x-8 gap-y-4 py-5 border-y border-border/60 mb-6"
-          {...fadeUp(0.12)}
+        {/* Headline */}
+        <motion.h1
+          className="text-5xl sm:text-6xl lg:text-7xl font-bold tracking-tighter leading-[1.05]"
+          {...fadeUp(0.1)}
         >
-          <div>
-            <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/50 mb-1.5">
-              Location
-            </p>
-            <div className="flex items-center gap-1.5">
-              <MapPin className="size-3.5 text-primary flex-shrink-0" />
-              <span className="text-sm text-foreground font-medium">
-                {heroContent.location}
-              </span>
-            </div>
-          </div>
+          Hi, I&apos;m <span className="gradient-text">{heroContent.name}</span>.
+          <br />
+          <span className="text-foreground/90">I build things that</span>{" "}
+          <span className="gradient-text">think</span>.
+        </motion.h1>
 
-          <div>
-            <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/50 mb-1.5">
-              Email
-            </p>
-            <div className="flex items-center gap-1.5">
-              <Mail className="size-3.5 text-primary flex-shrink-0" />
-              <a
-                href={`mailto:${heroContent.email}`}
-                className="text-sm text-foreground font-medium hover:text-primary transition-colors truncate"
+        {/* Rotating role */}
+        <motion.div
+          className="mt-6 flex items-center gap-3 font-mono text-sm sm:text-base text-muted-foreground"
+          {...fadeUp(0.18)}
+        >
+          <span className="text-primary">&gt;</span>
+          <div className="relative h-6 w-60 overflow-hidden" aria-live="off">
+            <AnimatePresence mode="wait">
+              <motion.span
+                key={heroContent.roles[roleIndex]}
+                initial={{ y: 14, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                exit={{ y: -14, opacity: 0 }}
+                transition={{ duration: 0.25, ease: "easeInOut" }}
+                className="absolute left-0 top-0 whitespace-nowrap text-foreground"
               >
-                {heroContent.email}
-              </a>
-            </div>
+                {heroContent.roles[roleIndex]}
+              </motion.span>
+            </AnimatePresence>
           </div>
         </motion.div>
 
-        {/* ── Bio ──────────────────────────────────────── */}
+        {/* Bio */}
         <motion.p
-          className="text-foreground/80 leading-relaxed text-sm sm:text-[15px] mb-6"
-          {...fadeUp(0.19)}
+          className="mt-6 max-w-2xl text-base sm:text-lg leading-relaxed text-muted-foreground"
+          {...fadeUp(0.24)}
         >
           {heroContent.intro}
         </motion.p>
 
-        {/* ── Social links ─────────────────────────────── */}
-        <motion.div className="flex items-center gap-1 mb-8" {...fadeUp(0.25)}>
-          {socialLinks.map((link) => {
-            const Icon = socialIconMap[link.icon];
-            if (!Icon) return null;
-            return (
-              <a
-                key={link.name}
-                href={link.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label={link.name}
-                className="p-2 rounded-xl text-muted-foreground hover:text-primary hover:bg-primary/8 transition-all duration-200"
-              >
-                <Icon className="size-5" />
-              </a>
-            );
-          })}
-
-          {/* CTA */}
+        {/* CTAs */}
+        <motion.div
+          className="mt-9 flex flex-wrap items-center gap-3"
+          {...fadeUp(0.3)}
+        >
           <a
             href="#projects"
-            onClick={(e) => {
-              e.preventDefault();
-              document
-                .getElementById("projects")
-                ?.scrollIntoView({ behavior: "smooth" });
-            }}
-            className="ml-3 inline-flex items-center gap-1.5 text-sm font-semibold text-primary hover:gap-2.5 transition-all duration-200"
+            onClick={scrollToId("projects")}
+            className="group inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-primary to-cyan-400 px-6 py-3 text-sm font-semibold text-white dark:text-black shadow-lg shadow-primary/25 transition-all hover:shadow-primary/40 hover:-translate-y-0.5 active:translate-y-0 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
           >
-            View Projects <ArrowRight className="size-4" />
+            View my work
+            <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" />
           </a>
+          <a
+            href="#contact"
+            onClick={scrollToId("contact")}
+            className="inline-flex items-center gap-2 rounded-full border border-border bg-card/50 px-6 py-3 text-sm font-semibold text-foreground backdrop-blur transition-all hover:border-primary/40 hover:bg-primary/5 hover:-translate-y-0.5 active:translate-y-0 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+          >
+            Get in touch
+            <ArrowUpRight className="size-4" />
+          </a>
+
+          <div className="flex items-center gap-1 sm:ml-3">
+            {socialLinks.map((link) => {
+              const Icon = socialIconMap[link.icon];
+              if (!Icon) return null;
+              return (
+                <a
+                  key={link.name}
+                  href={link.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={link.name}
+                  className="p-2.5 rounded-full text-muted-foreground hover:text-primary hover:bg-primary/10 transition-colors focus-visible:outline-2 focus-visible:outline-primary"
+                >
+                  <Icon className="size-5" />
+                </a>
+              );
+            })}
+          </div>
         </motion.div>
 
-        {/* ── GitHub Heatmap ───────────────────────────── */}
-        <motion.div {...fadeUp(0.32)}>
+        {/* GitHub heatmap */}
+        <motion.div className="mt-16" {...fadeUp(0.4)}>
           <GitHubHeatmap username="anish891" />
         </motion.div>
 
-        {/* ── Interests / Currently Into ───────────────── */}
-        <motion.div className="mt-7" {...fadeUp(0.38)}>
-          <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/50 mb-3">
-            Currently Into
+        {/* Interests */}
+        <motion.div className="mt-8" {...fadeUp(0.46)}>
+          <p className="font-mono text-[11px] uppercase tracking-widest text-muted-foreground/60 mb-3">
+            Currently into
           </p>
           <div className="flex flex-wrap gap-2">
             {aboutContent.interests.map((interest) => (

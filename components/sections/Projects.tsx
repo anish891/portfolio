@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useInView } from "@/hooks/useInView";
 import { projects } from "@/lib/data";
 import { ProjectModal } from "@/components/ui/ProjectModal";
+import Image from "next/image";
 import { Globe } from "lucide-react";
 import { Github } from "@/components/ui/icons";
 import type { Project } from "@/lib/data";
@@ -65,18 +66,29 @@ export function Projects() {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, scale: 0.95 }}
                   transition={{ duration: 0.3, delay: i * 0.08 }}
-                  className="group cursor-pointer"
+                  className="group cursor-pointer rounded-2xl focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2"
+                  role="button"
+                  tabIndex={0}
+                  aria-label={`View details for ${project.title}`}
                   onClick={() => handleProjectClick(project)}
+                  onKeyDown={(e) => {
+                    if (e.target === e.currentTarget && (e.key === "Enter" || e.key === " ")) {
+                      e.preventDefault();
+                      handleProjectClick(project);
+                    }
+                  }}
                 >
                   <div className="bg-card border border-border/60 hover:border-border rounded-2xl p-4 flex flex-col h-full transition-all duration-300 hover:shadow-md hover:shadow-primary/5">
                     {/* Live iFrame / Image Webpage Preview Container with Hover Zoom */}
                     <div className="relative w-full aspect-[16/10] rounded-xl overflow-hidden bg-background border border-border/40 mb-3.5 group/frame transition-all duration-500">
                       {project.image ? (
                         <div className="w-full h-full overflow-hidden relative">
-                          <img
+                          <Image
                             src={project.image}
                             alt={project.title}
-                            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                            fill
+                            sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
+                            className="object-cover transition-transform duration-500 group-hover:scale-105"
                           />
                         </div>
                       ) : project.deployedUrl ? (

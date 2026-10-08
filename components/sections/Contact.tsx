@@ -48,9 +48,19 @@ export function Contact() {
 
     const accessKey = process.env.NEXT_PUBLIC_WEB3FORMS_ACCESS_KEY;
 
+    // Honeypot: bots fill hidden fields, humans don't
+    if (formData.get("botcheck")) {
+      setIsSending(false);
+      return;
+    }
+
+    if (!accessKey && process.env.NODE_ENV === "production") {
+      addToast("The contact form isn't configured. Please email me directly.", "error");
+      setIsSending(false);
+      return;
+    }
+
     if (!accessKey) {
-      console.warn("WARNING: NEXT_PUBLIC_WEB3FORMS_ACCESS_KEY is not defined in environment variables.");
-      
       // Simulate delay for realistic UX testing
       await new Promise((resolve) => setTimeout(resolve, 800));
 
@@ -85,7 +95,7 @@ export function Contact() {
       } else {
         addToast(data.message || "Something went wrong. Please try again.", "error");
       }
-    } catch (err) {
+    } catch {
       addToast("Network error. Please check your connection and try again.", "error");
     } finally {
       setIsSending(false);
@@ -123,6 +133,14 @@ export function Contact() {
             >
               <GlassCard glowColor="purple" hover={false}>
                 <form onSubmit={handleSubmit} className="space-y-4">
+                  <input
+                    type="text"
+                    name="botcheck"
+                    tabIndex={-1}
+                    autoComplete="off"
+                    aria-hidden="true"
+                    className="hidden"
+                  />
                   <div>
                     <label
                       htmlFor="contact-name"

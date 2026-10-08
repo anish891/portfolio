@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Inter, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import { ScrollProgress } from "@/components/ui/ScrollProgress";
+import { Providers } from "@/components/Providers";
 
 const inter = Inter({
   variable: "--font-sans",
@@ -16,9 +18,8 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "Anish Tejwani — AI • Full Stack • Product Engineering",
-  icons: {
-    icon: "/vercel.svg",
-  },
+  metadataBase: new URL("https://anishtejwani.dev"),
+  alternates: { canonical: "/" },
   description:
     "Personal portfolio of Anish Tejwani — AI Engineer, Full-Stack Developer, and Builder. Building intelligent software systems, AI-powered applications, and scalable web platforms.",
   keywords: [
@@ -41,6 +42,7 @@ export const metadata: Metadata = {
     title: "Anish Tejwani — AI Engineer & Full-Stack Developer",
     description:
       "Building intelligent software systems, AI-powered applications, and scalable web platforms.",
+    url: "/",
     siteName: "Anish Tejwani Portfolio",
   },
   twitter: {
@@ -55,7 +57,6 @@ export const metadata: Metadata = {
   },
 };
 
-import { ScrollProgress } from "@/components/ui/ScrollProgress";
 
 export default function RootLayout({
   children,
@@ -77,8 +78,16 @@ export default function RootLayout({
         />
       </head>
       <body className="min-h-full flex flex-col bg-background text-foreground overflow-x-hidden">
-        <ScrollProgress />
-        {children}
+        <a
+          href="#main"
+          className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[100] focus:rounded-lg focus:bg-primary focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-primary-foreground"
+        >
+          Skip to content
+        </a>
+        <Providers>
+          <ScrollProgress />
+          {children}
+        </Providers>
       </body>
     </html>
   );

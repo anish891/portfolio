@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useSyncExternalStore } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Search,
@@ -29,6 +29,15 @@ interface CommandItem {
   shortcut?: string;
 }
 
+function subscribeTheme(cb: () => void) {
+  const observer = new MutationObserver(cb);
+  observer.observe(document.documentElement, {
+    attributes: true,
+    attributeFilter: ["class"],
+  });
+  return () => observer.disconnect();
+}
+
 export function CommandPalette({
   isOpen,
   onClose,
@@ -36,17 +45,19 @@ export function CommandPalette({
   isOpen: boolean;
   onClose: () => void;
 }) {
-  const [query, setQuery] = useState("");
+  const [query, setQueryState] = useState("");
   const [selectedIndex, setSelectedIndex] = useState(0);
+  const setQuery = (q: string) => {
+    setQueryState(q);
+    setSelectedIndex(0);
+  };
   const [copied, setCopied] = useState(false);
-  const [isDark, setIsDark] = useState(false);
+  const isDark = useSyncExternalStore(
+    subscribeTheme,
+    () => document.documentElement.classList.contains("dark"),
+    () => false
+  );
   const [toastMsg, setToastMsg] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      setIsDark(document.documentElement.classList.contains("dark"));
-    }
-  }, [isOpen]);
 
   // Toast feedback banner inside palette / overlay
   const showFeedback = (msg: string) => {
@@ -82,7 +93,6 @@ export function CommandPalette({
     try {
       localStorage.setItem("theme", nextDark ? "dark" : "light");
     } catch {}
-    setIsDark(nextDark);
     showFeedback(`Switched to ${nextDark ? "dark" : "light"} mode`);
     setTimeout(() => onClose(), 800);
   }, [onClose]);
@@ -178,11 +188,6 @@ export function CommandPalette({
     const searchStr = `${cmd.title} ${cmd.subtitle || ""} ${cmd.category}`.toLowerCase();
     return searchStr.includes(query.toLowerCase().trim());
   });
-
-  // Reset selected index when query changes
-  useEffect(() => {
-    setSelectedIndex(0);
-  }, [query]);
 
   // Handle keyboard events
   useEffect(() => {
