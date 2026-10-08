@@ -95,6 +95,7 @@ export const techStack: SkillCategory[] = [
       { name: "React" },
       { name: "Next.js" },
       { name: "Tailwind" },
+      { name: "Flutter" },
     ],
   },
   {
@@ -107,18 +108,12 @@ export const techStack: SkillCategory[] = [
     ],
   },
   {
-    name: "Databases & Cloud",
+    name: "Data & Cloud",
     icon: "Database",
     skills: [
       { name: "PostgreSQL" },
       { name: "Supabase" },
       { name: "Firebase" },
-    ],
-  },
-  {
-    name: "Deployment & Infra",
-    icon: "Server",
-    skills: [
       { name: "Vercel" },
     ],
   },
@@ -130,11 +125,6 @@ export const techStack: SkillCategory[] = [
       { name: "AI Agents" },
       { name: "LLM Integrations" },
     ],
-  },
-  {
-    name: "Mobile",
-    icon: "Smartphone",
-    skills: [{ name: "Flutter" }],
   },
   {
     name: "Engineering",
@@ -176,6 +166,7 @@ export const projects: Project[] = [
     gradient: "from-violet-500 via-purple-500 to-fuchsia-500",
     icon: "TrendingUp",
     deployedUrl: "https://nifty-oi-tracker.vercel.app/",
+    image: "/projects/nifty-oi-tracker.jpg",
     githubUrl: "https://github.com/anish891/nifty-oi-tracker",
   },
   {

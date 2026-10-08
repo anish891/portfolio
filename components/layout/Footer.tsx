@@ -1,6 +1,6 @@
 "use client";
 
-import { Mail, Heart } from "lucide-react";
+import { Mail } from "lucide-react";
 import { Github, Linkedin } from "@/components/ui/icons";
 import { socialLinks } from "@/lib/data";
 
@@ -53,9 +53,7 @@ export function Footer() {
         {/* Copyright */}
         <div className="mt-8 pt-6 border-t border-border text-center">
           <p className="text-xs text-muted-foreground flex items-center justify-center gap-1">
-            © {year} Anish Tejwani. Built with{" "}
-            <Heart className="size-3 text-red-400 inline" /> using Next.js &
-            Tailwind CSS
+            © {year} Anish Tejwani. Built with Next.js &amp; Tailwind CSS
           </p>
         </div>
       </div>

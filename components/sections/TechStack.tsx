@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { useInView } from "@/hooks/useInView";
+import { SectionHeading } from "@/components/ui/SectionHeading";
 import { techStack } from "@/lib/data";
 import {
   SiPython,
@@ -76,66 +76,55 @@ const skillConfig: Record<string, { icon: React.ElementType; colorClass: string;
 };
 
 export function TechStack() {
-  const { ref, isInView } = useInView<HTMLDivElement>({ threshold: 0.1 });
-
-  // Flatten all skills
-  const allSkills = techStack.flatMap((category) =>
-    category.skills.map((skill) => ({
-      ...skill,
-      category: category.name,
-    }))
-  );
-
   return (
     <section id="tech" className="section-padding">
-      <div className="max-w-5xl mx-auto" ref={ref}>
-        {/* Section Header */}
-        <motion.div
-          className="text-center mb-12"
-          initial={{ opacity: 0, y: 30 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6 }}
-        >
-          <h2 className="section-heading mb-4">
-            Tech <span className="gradient-text">Stack</span>
-          </h2>
-          <p className="section-subheading mx-auto">
-            Technologies, frameworks, and tools I work with
-          </p>
-        </motion.div>
+      <div className="mx-auto max-w-6xl">
+        <SectionHeading
+          index="01"
+          eyebrow="Toolbox"
+          title={
+            <>
+              Tech <span className="gradient-text">stack</span>
+            </>
+          }
+          description="The languages, frameworks and tools I reach for."
+        />
 
-        {/* Unified Skills Grid */}
-        <motion.div
-          className="flex flex-wrap justify-center gap-3.5 max-w-4xl mx-auto"
-          initial={{ opacity: 0, y: 20 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.5, delay: 0.2 }}
-        >
-          {allSkills.map((skill) => {
-            const config = skillConfig[skill.name] || { icon: Code2, colorClass: "group-hover:text-primary group-hover:border-primary/20", shadowClass: "hover:shadow-primary/5" };
-            const SkillIcon = config.icon;
-
-            return (
-              <div
-                key={skill.name}
-                className="relative group"
-              >
-                {/* Tooltip */}
-                <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2.5 py-1 bg-card text-foreground text-[10px] font-semibold uppercase tracking-wider rounded-lg shadow-md border border-primary/10 opacity-0 scale-95 translate-y-1 group-hover:opacity-100 group-hover:scale-100 group-hover:translate-y-0 transition-all duration-200 pointer-events-none whitespace-nowrap z-30">
-                  {skill.name}
-                  <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-card" />
-                </div>
-
-                {/* Icon Button */}
-                <div
-                  className={`size-14 rounded-xl glass flex items-center justify-center border border-primary/5 hover:scale-110 transition-all duration-300 cursor-default ${config.shadowClass} ${config.colorClass}`}
-                >
-                  <SkillIcon className="size-6 transition-transform duration-300 group-hover:scale-105" />
-                </div>
-              </div>
-            );
-          })}
-        </motion.div>
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {techStack.map((category, i) => (
+            <motion.div
+              key={category.name}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-40px" }}
+              transition={{ duration: 0.45, delay: (i % 3) * 0.07, ease: "easeOut" }}
+              className="rounded-2xl border border-border/70 bg-card p-5 transition-colors duration-300 hover:border-primary/30"
+            >
+              <h3 className="mb-4 font-mono text-[11px] uppercase tracking-widest text-muted-foreground">
+                {category.name}
+              </h3>
+              <ul className="flex flex-wrap gap-2">
+                {category.skills.map((skill) => {
+                  const config = skillConfig[skill.name] ?? {
+                    icon: Code2,
+                    colorClass: "group-hover:text-primary group-hover:border-primary/20",
+                    shadowClass: "hover:shadow-primary/5",
+                  };
+                  const SkillIcon = config.icon;
+                  return (
+                    <li
+                      key={skill.name}
+                      className={`group flex items-center gap-2 rounded-xl border border-border/70 bg-muted/40 px-3 py-2 text-sm font-medium transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md ${config.shadowClass} ${config.colorClass}`}
+                    >
+                      <SkillIcon className="size-4 shrink-0 text-muted-foreground transition-colors duration-200 group-hover:text-inherit" />
+                      <span className="text-foreground/90">{skill.name}</span>
+                    </li>
+                  );
+                })}
+              </ul>
+            </motion.div>
+          ))}
+        </div>
       </div>
     </section>
   );

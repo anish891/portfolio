@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { useInView } from "@/hooks/useInView";
+import { SectionHeading } from "@/components/ui/SectionHeading";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -106,22 +107,17 @@ export function Contact() {
     <>
       <section id="contact" className="section-padding">
         <div className="max-w-4xl mx-auto" ref={ref}>
-          {/* Section Header */}
-          <motion.div
-            className="text-center mb-12"
-            initial={{ opacity: 0, y: 30 }}
-            animate={isInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.6 }}
-          >
-            <h2 className="section-heading mb-4">
-              Let&apos;s Build Something{" "}
-              <span className="gradient-text">Amazing</span>
-            </h2>
-            <p className="section-subheading mx-auto">
-              Got a project idea or just want to say hi? I&apos;d love to hear
-              from you.
-            </p>
-          </motion.div>
+          <SectionHeading
+            index="03"
+            eyebrow="Contact"
+            align="center"
+            title={
+              <>
+                Let&apos;s work <span className="gradient-text">together</span>
+              </>
+            }
+            description="Got a project idea or just want to say hi? I'd love to hear from you."
+          />
 
           <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
             {/* Contact Form */}
