@@ -3,195 +3,184 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { navItems } from "@/lib/data";
-import { Menu, X } from "lucide-react";
+import { Menu, X, Search } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
 import { CommandPalette } from "@/components/ui/CommandPalette";
+
+const sectionIds = navItems.map((item) => item.href.replace("#", ""));
 
 export function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [activeSection, setActiveSection] = useState("home");
   const [isMobileOpen, setIsMobileOpen] = useState(false);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50);
-
-      // Determine active section
-      const sections = navItems.map((item) => item.href.replace("#", ""));
-      for (let i = sections.length - 1; i >= 0; i--) {
-        const section = document.getElementById(sections[i]);
-        if (section) {
-          const rect = section.getBoundingClientRect();
-          if (rect.top <= 120) {
-            setActiveSection(sections[i]);
-            break;
-          }
-        }
-      }
-    };
-
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
-  const handleClick = (href: string) => {
-    setIsMobileOpen(false);
-    const el = document.querySelector(href);
-    if (el) {
-      el.scrollIntoView({ behavior: "smooth" });
-    }
-  };
-
   const [isCommandOpen, setIsCommandOpen] = useState(false);
 
+  // Scrolled state drives the stronger shadow
   useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
+    const onScroll = () => setIsScrolled(window.scrollY > 20);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  // Active section: whichever section crosses the middle of the viewport
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) setActiveSection(entry.target.id);
+        }
+      },
+      { rootMargin: "-45% 0px -50% 0px" }
+    );
+    sectionIds.forEach((id) => {
+      const el = document.getElementById(id);
+      if (el) observer.observe(el);
+    });
+    return () => observer.disconnect();
+  }, []);
+
+  // ⌘K / Ctrl+K toggles the palette; Escape closes the mobile menu
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
         e.preventDefault();
         setIsCommandOpen((prev) => !prev);
+      } else if (e.key === "Escape") {
+        setIsMobileOpen(false);
       }
     };
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
   }, []);
+
+  const goTo = (href: string) => {
+    setIsMobileOpen(false);
+    document.querySelector(href)?.scrollIntoView({ behavior: "smooth" });
+  };
 
   return (
     <>
-      <motion.nav
-        className={cn(
-          "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
-          isScrolled
-            ? "glass-strong shadow-md shadow-foreground/5 border-b border-border"
-            : "bg-transparent"
-        )}
-        initial={{ y: -100 }}
-        animate={{ y: 0 }}
-        transition={{ duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }}
-      >
-        <div className="max-w-6xl mx-auto px-4 sm:px-6">
-          <div className="flex items-center justify-between h-16">
-            {/* Logo */}
-            <div className="flex items-center gap-3">
-              <button
-                onClick={() => handleClick("#home")}
-                className="text-lg font-bold tracking-tight gradient-text cursor-pointer"
-              >
-                AT
-              </button>
-            </div>
+      <div className="pointer-events-none fixed inset-x-0 top-3 z-50 flex justify-center px-3 sm:top-4 sm:px-4">
+        <motion.nav
+          aria-label="Primary"
+          className={cn(
+            "pointer-events-auto relative w-full max-w-md md:w-auto md:max-w-none",
+            "flex items-center justify-between gap-1 rounded-full border bg-background/70 p-1.5 backdrop-blur-xl transition-shadow duration-300",
+            isScrolled
+              ? "border-border shadow-lg shadow-foreground/10"
+              : "border-border/60 shadow-sm shadow-foreground/5"
+          )}
+          initial={{ y: -80, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ duration: 0.5, ease: "easeOut" }}
+        >
+          {/* Logo mark */}
+          <button
+            onClick={() => goTo("#home")}
+            aria-label="Back to top"
+            className="flex size-9 cursor-pointer items-center justify-center rounded-full bg-gradient-to-br from-primary to-cyan-400 text-xs font-bold text-white transition-transform hover:scale-105 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary dark:text-black"
+          >
+            AT
+          </button>
 
-            {/* Desktop Nav */}
-            <div className="hidden md:flex items-center gap-1">
-              {navItems.map((item) => {
-                const sectionId = item.href.replace("#", "");
-                const isActive = activeSection === sectionId;
-                return (
+          {/* Desktop links */}
+          <ul className="hidden items-center gap-0.5 md:flex md:px-1">
+            {navItems.map((item) => {
+              const id = item.href.replace("#", "");
+              const isActive = activeSection === id;
+              return (
+                <li key={item.href} className="relative">
                   <button
-                    key={item.href}
-                    onClick={() => handleClick(item.href)}
+                    onClick={() => goTo(item.href)}
+                    aria-current={isActive ? "true" : undefined}
                     className={cn(
-                      "px-3 py-1.5 text-sm rounded-lg transition-all duration-200 cursor-pointer font-medium",
+                      "relative z-10 cursor-pointer rounded-full px-3.5 py-1.5 text-sm font-medium transition-colors focus-visible:outline-2 focus-visible:outline-primary",
                       isActive
-                        ? "text-primary bg-primary/10"
-                        : "text-muted-foreground hover:text-foreground hover:bg-primary/5"
+                        ? "text-foreground"
+                        : "text-muted-foreground hover:text-foreground"
                     )}
                   >
                     {item.label}
                   </button>
-                );
-              })}
+                  {isActive && (
+                    <motion.span
+                      layoutId="nav-pill"
+                      className="absolute inset-0 rounded-full bg-primary/12 ring-1 ring-primary/20"
+                      transition={{ type: "spring", stiffness: 420, damping: 34 }}
+                    />
+                  )}
+                </li>
+              );
+            })}
+          </ul>
 
-              {/* Command Palette Trigger */}
-              <button
-                onClick={() => setIsCommandOpen(true)}
-                className="flex items-center gap-2 px-2.5 py-1.5 ml-1 text-xs text-muted-foreground bg-primary/5 border border-primary/15 rounded-lg hover:bg-primary/10 hover:text-foreground transition-all duration-200 cursor-pointer"
-                title="Search / Command Palette (⌘K)"
-              >
-                <span>Search</span>
-                <kbd className="px-1.5 py-0.5 text-[10px] font-mono rounded bg-muted/80 border border-border">
-                  ⌘K
-                </kbd>
-              </button>
+          <span className="mx-1 hidden h-5 w-px bg-border md:block" />
 
-              <ThemeToggle />
-            </div>
+          <div className="flex items-center gap-1">
+            <button
+              onClick={() => setIsCommandOpen(true)}
+              aria-label="Open command palette"
+              className="flex cursor-pointer items-center gap-2 rounded-full px-3 py-2 text-xs text-muted-foreground transition-colors hover:bg-primary/8 hover:text-foreground focus-visible:outline-2 focus-visible:outline-primary"
+            >
+              <Search className="size-4" />
+              <kbd className="hidden rounded border border-border bg-muted/70 px-1.5 py-0.5 font-mono text-[10px] md:inline">
+                ⌘K
+              </kbd>
+            </button>
 
-            {/* Mobile Toggle */}
-            <div className="flex items-center gap-2 md:hidden">
-              <button
-                onClick={() => setIsCommandOpen(true)}
-                className="p-2 text-muted-foreground hover:text-foreground bg-primary/5 border border-primary/15 rounded-lg cursor-pointer"
-                aria-label="Open command palette"
-              >
-                <span className="text-xs font-mono font-semibold">⌘K</span>
-              </button>
-              <button
-                onClick={() => setIsMobileOpen(!isMobileOpen)}
-                className="p-2 text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
-                aria-label="Toggle menu"
-              >
-                {isMobileOpen ? (
-                  <X className="size-5" />
-                ) : (
-                  <Menu className="size-5" />
-                )}
-              </button>
-            </div>
+            <ThemeToggle />
+
+            <button
+              onClick={() => setIsMobileOpen((o) => !o)}
+              aria-label="Toggle menu"
+              aria-expanded={isMobileOpen}
+              className="cursor-pointer rounded-full p-2 text-muted-foreground transition-colors hover:bg-primary/8 hover:text-foreground md:hidden"
+            >
+              {isMobileOpen ? <X className="size-5" /> : <Menu className="size-5" />}
+            </button>
           </div>
-        </div>
-      </motion.nav>
 
-      {/* Command Palette Modal */}
+          {/* Mobile dropdown */}
+          <AnimatePresence>
+            {isMobileOpen && (
+              <motion.div
+                className="absolute inset-x-0 top-full mt-2 overflow-hidden rounded-3xl border border-border bg-background/90 p-2 shadow-xl backdrop-blur-xl md:hidden"
+                initial={{ opacity: 0, y: -8, scale: 0.98 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: -8, scale: 0.98 }}
+                transition={{ duration: 0.18 }}
+              >
+                {navItems.map((item) => {
+                  const id = item.href.replace("#", "");
+                  const isActive = activeSection === id;
+                  return (
+                    <button
+                      key={item.href}
+                      onClick={() => goTo(item.href)}
+                      className={cn(
+                        "flex w-full cursor-pointer items-center justify-between rounded-2xl px-4 py-3 text-left text-base font-medium transition-colors",
+                        isActive
+                          ? "bg-primary/10 text-primary"
+                          : "text-foreground hover:bg-muted"
+                      )}
+                    >
+                      {item.label}
+                      {isActive && <span className="size-1.5 rounded-full bg-primary" />}
+                    </button>
+                  );
+                })}
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </motion.nav>
+      </div>
+
       <CommandPalette
         isOpen={isCommandOpen}
         onClose={() => setIsCommandOpen(false)}
       />
-
-      {/* Mobile Menu */}
-      <AnimatePresence>
-        {isMobileOpen && (
-          <motion.div
-            className="fixed inset-0 z-40 pt-16 glass-strong md:hidden"
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.2 }}
-          >
-            <div className="flex flex-col items-center gap-2 p-6">
-              {navItems.map((item, i) => {
-                const sectionId = item.href.replace("#", "");
-                const isActive = activeSection === sectionId;
-                return (
-                  <motion.button
-                    key={item.href}
-                    onClick={() => handleClick(item.href)}
-                    className={cn(
-                      "w-full text-center py-3 text-lg rounded-xl transition-colors cursor-pointer font-medium",
-                      isActive
-                        ? "text-primary bg-primary/10"
-                        : "text-muted-foreground hover:text-foreground hover:bg-primary/5"
-                    )}
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: i * 0.05 }}
-                  >
-                    {item.label}
-                  </motion.button>
-                );
-              })}
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: navItems.length * 0.05 }}
-                className="pt-2"
-              >
-                <ThemeToggle />
-              </motion.div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
     </>
   );
 }

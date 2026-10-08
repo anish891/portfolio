@@ -1,6 +1,13 @@
 "use client";
 
-import { useState, useEffect, useCallback, useSyncExternalStore } from "react";
+import {
+  useState,
+  useEffect,
+  useRef,
+  useCallback,
+  useMemo,
+  useSyncExternalStore,
+} from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Search,
@@ -8,26 +15,36 @@ import {
   Check,
   Sun,
   Moon,
-  ExternalLink,
+  ArrowUpRight,
   Code2,
-  User,
+  Home,
   Mail,
   FolderGit2,
-  Sparkles,
-  Command as CommandIcon,
-  X,
+  CornerDownLeft,
 } from "lucide-react";
+import { Github, Linkedin } from "@/components/ui/icons";
 import { heroContent, projects, socialLinks } from "@/lib/data";
+
+type Group = "Navigate" | "Projects" | "Actions" | "Links";
 
 interface CommandItem {
   id: string;
   title: string;
   subtitle?: string;
-  category: "Navigation" | "Actions" | "Projects" | "Socials";
+  group: Group;
   icon: React.ElementType;
-  action: () => void;
-  shortcut?: string;
+  external?: boolean;
+  keepOpen?: boolean;
+  run: () => void;
 }
+
+const GROUP_ORDER: Group[] = ["Navigate", "Projects", "Actions", "Links"];
+
+const socialIcon: Record<string, React.ElementType> = {
+  Github,
+  Linkedin,
+  Mail,
+};
 
 function subscribeTheme(cb: () => void) {
   const observer = new MutationObserver(cb);
@@ -45,316 +62,279 @@ export function CommandPalette({
   isOpen: boolean;
   onClose: () => void;
 }) {
-  const [query, setQueryState] = useState("");
-  const [selectedIndex, setSelectedIndex] = useState(0);
-  const setQuery = (q: string) => {
-    setQueryState(q);
-    setSelectedIndex(0);
-  };
+  // The inner panel mounts only while open, so query/selection reset for free
+  // and AnimatePresence can play the exit animation.
+  return (
+    <AnimatePresence>
+      {isOpen && <PalettePanel onClose={onClose} />}
+    </AnimatePresence>
+  );
+}
+
+function PalettePanel({ onClose }: { onClose: () => void }) {
+  const [query, setQuery] = useState("");
+  const [selected, setSelected] = useState(0);
   const [copied, setCopied] = useState(false);
+  const listRef = useRef<HTMLDivElement>(null);
+
   const isDark = useSyncExternalStore(
     subscribeTheme,
     () => document.documentElement.classList.contains("dark"),
     () => false
   );
-  const [toastMsg, setToastMsg] = useState<string | null>(null);
 
-  // Toast feedback banner inside palette / overlay
-  const showFeedback = (msg: string) => {
-    setToastMsg(msg);
-    setTimeout(() => setToastMsg(null), 2500);
-  };
+  // Lock page scroll while open
+  useEffect(() => {
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = prev;
+    };
+  }, []);
 
-  // Scroll to section helper
+
   const scrollTo = useCallback(
     (id: string) => {
       onClose();
-      const el = document.getElementById(id);
-      if (el) {
-        el.scrollIntoView({ behavior: "smooth" });
-      }
+      // Wait a beat so scroll isn't fighting the closing overlay
+      setTimeout(() => document.getElementById(id)?.scrollIntoView({ behavior: "smooth" }), 120);
     },
     [onClose]
   );
 
-  // Copy email action
-  const handleCopyEmail = useCallback(() => {
-    navigator.clipboard.writeText(heroContent.email);
-    setCopied(true);
-    showFeedback("Email copied to clipboard!");
-    setTimeout(() => setCopied(false), 2000);
-    setTimeout(() => onClose(), 1000);
-  }, [onClose]);
+  const commands = useMemo<CommandItem[]>(() => {
+    const open = (url: string) => window.open(url, "_blank", "noopener,noreferrer");
+    return [
+      { id: "nav-home", title: "Home", group: "Navigate", icon: Home, run: () => scrollTo("home") },
+      { id: "nav-tech", title: "Tech stack", group: "Navigate", icon: Code2, run: () => scrollTo("tech") },
+      { id: "nav-projects", title: "Projects", group: "Navigate", icon: FolderGit2, run: () => scrollTo("projects") },
+      { id: "nav-contact", title: "Contact", group: "Navigate", icon: Mail, run: () => scrollTo("contact") },
 
-  // Toggle Theme
-  const handleToggleTheme = useCallback(() => {
-    const nextDark = !document.documentElement.classList.contains("dark");
-    document.documentElement.classList.toggle("dark", nextDark);
-    try {
-      localStorage.setItem("theme", nextDark ? "dark" : "light");
-    } catch {}
-    showFeedback(`Switched to ${nextDark ? "dark" : "light"} mode`);
-    setTimeout(() => onClose(), 800);
-  }, [onClose]);
+      ...projects.map<CommandItem>((p) => ({
+        id: `project-${p.id}`,
+        title: p.title,
+        subtitle: p.deployedUrl ? "Open live site" : "Open source code",
+        group: "Projects",
+        icon: ArrowUpRight,
+        external: true,
+        run: () => {
+          onClose();
+          open(p.deployedUrl ?? p.githubUrl ?? "https://github.com/anish891");
+        },
+      })),
 
-  // Build commands list
-  const commands: CommandItem[] = [
-    // Navigation
-    {
-      id: "nav-home",
-      title: "Go to Overview (Home)",
-      category: "Navigation",
-      icon: User,
-      action: () => scrollTo("home"),
-      shortcut: "H",
-    },
-    {
-      id: "nav-tech",
-      title: "Go to Tech Stack",
-      category: "Navigation",
-      icon: Code2,
-      action: () => scrollTo("tech"),
-      shortcut: "T",
-    },
-    {
-      id: "nav-projects",
-      title: "Go to Projects",
-      category: "Navigation",
-      icon: FolderGit2,
-      action: () => scrollTo("projects"),
-      shortcut: "P",
-    },
-    {
-      id: "nav-contact",
-      title: "Go to Contact",
-      category: "Navigation",
-      icon: Mail,
-      action: () => scrollTo("contact"),
-      shortcut: "C",
-    },
-
-    // Actions
-    {
-      id: "action-copy-email",
-      title: "Copy Email Address",
-      subtitle: heroContent.email,
-      category: "Actions",
-      icon: copied ? Check : Copy,
-      action: handleCopyEmail,
-      shortcut: "⌘E",
-    },
-    {
-      id: "action-toggle-theme",
-      title: `Switch to ${isDark ? "Light" : "Dark"} Mode`,
-      category: "Actions",
-      icon: isDark ? Sun : Moon,
-      action: handleToggleTheme,
-      shortcut: "⌘M",
-    },
-
-    // Projects
-    ...projects.map((proj) => ({
-      id: `project-${proj.id}`,
-      title: proj.title,
-      subtitle: proj.description,
-      category: "Projects" as const,
-      icon: Sparkles,
-      action: () => {
-        onClose();
-        if (proj.deployedUrl) {
-          window.open(proj.deployedUrl, "_blank");
-        } else {
-          scrollTo("projects");
-        }
+      {
+        id: "copy-email",
+        title: copied ? "Email copied" : "Copy email address",
+        subtitle: heroContent.email,
+        group: "Actions",
+        icon: copied ? Check : Copy,
+        keepOpen: true,
+        run: () => {
+          navigator.clipboard?.writeText(heroContent.email).catch(() => {});
+          setCopied(true);
+          setTimeout(onClose, 700);
+        },
       },
-    })),
-
-    // Socials
-    ...socialLinks.map((social) => ({
-      id: `social-${social.name.toLowerCase()}`,
-      title: `Visit ${social.name}`,
-      subtitle: social.url,
-      category: "Socials" as const,
-      icon: ExternalLink,
-      action: () => {
-        onClose();
-        window.open(social.url, "_blank");
+      {
+        id: "toggle-theme",
+        title: isDark ? "Switch to light mode" : "Switch to dark mode",
+        group: "Actions",
+        icon: isDark ? Sun : Moon,
+        run: () => {
+          const next = !document.documentElement.classList.contains("dark");
+          document.documentElement.classList.toggle("dark", next);
+          try {
+            localStorage.setItem("theme", next ? "dark" : "light");
+          } catch {}
+          onClose();
+        },
       },
-    })),
-  ];
 
-  // Filter commands
-  const filtered = commands.filter((cmd) => {
-    const searchStr = `${cmd.title} ${cmd.subtitle || ""} ${cmd.category}`.toLowerCase();
-    return searchStr.includes(query.toLowerCase().trim());
-  });
+      ...socialLinks.map<CommandItem>((s) => ({
+        id: `link-${s.name.toLowerCase()}`,
+        title: s.name,
+        subtitle: s.url.replace(/^(https?:\/\/|mailto:)/, ""),
+        group: "Links",
+        icon: socialIcon[s.icon] ?? ArrowUpRight,
+        external: true,
+        run: () => {
+          onClose();
+          open(s.url);
+        },
+      })),
+    ];
+  }, [copied, isDark, onClose, scrollTo]);
 
-  // Handle keyboard events
+  // Every typed word must match the title, subtitle or group
+  const filtered = useMemo(() => {
+    const words = query.toLowerCase().split(/\s+/).filter(Boolean);
+    if (words.length === 0) return commands;
+    return commands.filter((c) => {
+      const hay = `${c.title} ${c.subtitle ?? ""} ${c.group}`.toLowerCase();
+      return words.every((w) => hay.includes(w));
+    });
+  }, [commands, query]);
+
+  // Keep rows in group order so keyboard order matches visual order
+  const ordered = useMemo(
+    () => GROUP_ORDER.flatMap((g) => filtered.filter((c) => c.group === g)),
+    [filtered]
+  );
+
+  const active = Math.min(selected, Math.max(ordered.length - 1, 0));
+
+  // Keep the highlighted row visible when arrowing through a long list
   useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (!isOpen) return;
+    listRef.current
+      ?.querySelector<HTMLElement>(`[data-index="${active}"]`)
+      ?.scrollIntoView({ block: "nearest" });
+  }, [active]);
 
-      if (e.key === "ArrowDown") {
-        e.preventDefault();
-        setSelectedIndex((prev) => (prev + 1) % (filtered.length || 1));
-      } else if (e.key === "ArrowUp") {
-        e.preventDefault();
-        setSelectedIndex((prev) =>
-          prev === 0 ? Math.max(0, filtered.length - 1) : prev - 1
-        );
-      } else if (e.key === "Enter") {
-        e.preventDefault();
-        if (filtered[selectedIndex]) {
-          filtered[selectedIndex].action();
-        }
-      } else if (e.key === "Escape") {
-        e.preventDefault();
-        onClose();
-      }
-    };
+  const onKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "ArrowDown") {
+      e.preventDefault();
+      setSelected((active + 1) % Math.max(ordered.length, 1));
+    } else if (e.key === "ArrowUp") {
+      e.preventDefault();
+      setSelected((active - 1 + ordered.length) % Math.max(ordered.length, 1));
+    } else if (e.key === "Enter") {
+      e.preventDefault();
+      ordered[active]?.run();
+    } else if (e.key === "Escape") {
+      e.preventDefault();
+      onClose();
+    }
+  };
 
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [isOpen, filtered, selectedIndex, onClose]);
-
-  if (!isOpen) return null;
+  let rowIndex = -1;
 
   return (
-    <AnimatePresence>
-      <div className="fixed inset-0 z-50 flex items-start justify-center pt-16 sm:pt-24 px-4">
-        {/* Backdrop */}
-        <motion.div
-          className="fixed inset-0 bg-background/80 backdrop-blur-md"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          onClick={onClose}
-        />
+    <div
+      className="fixed inset-0 z-[60] flex items-start justify-center px-4 pt-[12vh]"
+      onKeyDown={onKeyDown}
+    >
+      <motion.div
+        className="absolute inset-0 bg-background/70 backdrop-blur-md"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 0.15 }}
+        onClick={onClose}
+      />
 
-        {/* Command Modal */}
-        <motion.div
-          className="relative w-full max-w-xl glass-strong border border-border/80 rounded-2xl shadow-2xl overflow-hidden z-10"
-          initial={{ opacity: 0, scale: 0.95, y: -10 }}
-          animate={{ opacity: 1, scale: 1, y: 0 }}
-          exit={{ opacity: 0, scale: 0.95, y: -10 }}
-          transition={{ duration: 0.2, ease: "easeOut" }}
+      <motion.div
+        role="dialog"
+        aria-modal="true"
+        aria-label="Command palette"
+        className="relative w-full max-w-xl overflow-hidden rounded-3xl border border-border bg-popover shadow-2xl shadow-black/20"
+        initial={{ opacity: 0, scale: 0.97, y: -8 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.97, y: -8 }}
+        transition={{ duration: 0.15, ease: "easeOut" }}
+      >
+        <div className="flex items-center gap-3 border-b border-border px-5">
+          <Search className="size-4 shrink-0 text-muted-foreground" />
+          <input
+            autoFocus
+            type="text"
+            role="combobox"
+            aria-expanded="true"
+            aria-controls="palette-list"
+            aria-activedescendant={ordered[active] ? `palette-${ordered[active].id}` : undefined}
+            value={query}
+            onChange={(e) => {
+              setQuery(e.target.value);
+              setSelected(0);
+            }}
+            placeholder="Search pages, projects, actions…"
+            className="h-14 w-full bg-transparent text-[15px] text-foreground outline-none placeholder:text-muted-foreground"
+          />
+          <kbd className="hidden rounded-md border border-border bg-muted px-1.5 py-0.5 font-mono text-[10px] text-muted-foreground sm:block">
+            esc
+          </kbd>
+        </div>
+
+        <div
+          ref={listRef}
+          id="palette-list"
+          role="listbox"
+          className="max-h-[min(360px,50vh)] overflow-y-auto overscroll-contain p-2"
         >
-          {/* Toast Notification Alert Banner if triggered */}
-          {toastMsg && (
-            <div className="bg-primary text-primary-foreground px-4 py-2 text-xs font-semibold text-center flex items-center justify-center gap-2">
-              <Check className="size-3.5" /> {toastMsg}
-            </div>
-          )}
-
-          {/* Input field */}
-          <div className="flex items-center px-4 border-b border-border/60 py-3">
-            <Search className="size-5 text-muted-foreground mr-3 flex-shrink-0" />
-            <input
-              type="text"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder="Type a command or search..."
-              className="w-full bg-transparent text-foreground placeholder:text-muted-foreground focus:outline-none text-base font-medium"
-              autoFocus
-            />
-            {query ? (
-              <button
-                onClick={() => setQuery("")}
-                className="p-1 rounded-md hover:bg-muted text-muted-foreground"
-              >
-                <X className="size-4" />
-              </button>
-            ) : (
-              <kbd className="hidden sm:inline-flex items-center gap-1 text-[10px] font-semibold text-muted-foreground px-2 py-1 rounded bg-muted/60 border border-border">
-                ESC
-              </kbd>
-            )}
-          </div>
-
-          {/* Command list */}
-          <div className="max-h-[340px] overflow-y-auto p-2">
-            {filtered.length === 0 ? (
-              <div className="py-8 text-center text-sm text-muted-foreground">
-                No matching commands found.
-              </div>
-            ) : (
-              <div className="space-y-1">
-                {filtered.map((item, index) => {
-                  const Icon = item.icon;
-                  const isSelected = index === selectedIndex;
-                  return (
-                    <button
-                      key={item.id}
-                      onClick={() => item.action()}
-                      onMouseEnter={() => setSelectedIndex(index)}
-                      className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-left text-sm transition-all duration-150 cursor-pointer ${
-                        isSelected
-                          ? "bg-primary/10 text-primary font-medium"
-                          : "text-foreground hover:bg-muted/50"
-                      }`}
-                    >
-                      <div className="flex items-center gap-3 min-w-0">
-                        <div
-                          className={`p-2 rounded-lg flex-shrink-0 ${
-                            isSelected
-                              ? "bg-primary/20 text-primary"
-                              : "bg-muted text-muted-foreground"
+          {ordered.length === 0 ? (
+            <p className="px-4 py-10 text-center text-sm text-muted-foreground">
+              Nothing matches &ldquo;{query}&rdquo;
+            </p>
+          ) : (
+            GROUP_ORDER.map((group) => {
+              const items = ordered.filter((c) => c.group === group);
+              if (items.length === 0) return null;
+              return (
+                <div key={group} className="mb-1 last:mb-0">
+                  <p className="px-3 pb-1 pt-2 font-mono text-[10px] uppercase tracking-widest text-muted-foreground/70">
+                    {group}
+                  </p>
+                  {items.map((item) => {
+                    rowIndex += 1;
+                    const index = rowIndex;
+                    const isActive = index === active;
+                    const Icon = item.icon;
+                    return (
+                      <button
+                        key={item.id}
+                        id={`palette-${item.id}`}
+                        role="option"
+                        aria-selected={isActive}
+                        data-index={index}
+                        onClick={item.run}
+                        onMouseMove={() => setSelected(index)}
+                        className={`flex w-full cursor-pointer items-center gap-3 rounded-xl px-3 py-2.5 text-left transition-colors ${
+                          isActive ? "bg-primary/10" : ""
+                        }`}
+                      >
+                        <span
+                          className={`flex size-8 shrink-0 items-center justify-center rounded-lg border ${
+                            isActive
+                              ? "border-primary/30 bg-primary/15 text-primary"
+                              : "border-border bg-muted/60 text-muted-foreground"
                           }`}
                         >
                           <Icon className="size-4" />
-                        </div>
-                        <div className="truncate">
-                          <div className="font-medium text-foreground truncate">
-                            {item.title}
-                          </div>
-                          {item.subtitle && (
-                            <div className="text-xs text-muted-foreground truncate">
-                              {item.subtitle}
-                            </div>
-                          )}
-                        </div>
-                      </div>
-
-                      <div className="flex items-center gap-2 flex-shrink-0 ml-2">
-                        <span className="text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded bg-muted/50 text-muted-foreground">
-                          {item.category}
                         </span>
-                        {item.shortcut && (
-                          <kbd className="text-[10px] font-mono text-muted-foreground px-1.5 py-0.5 rounded bg-muted border border-border">
-                            {item.shortcut}
-                          </kbd>
+                        <span className="min-w-0 flex-1">
+                          <span className="block truncate text-sm font-medium text-foreground">
+                            {item.title}
+                          </span>
+                          {item.subtitle && (
+                            <span className="block truncate text-xs text-muted-foreground">
+                              {item.subtitle}
+                            </span>
+                          )}
+                        </span>
+                        {isActive && (
+                          <CornerDownLeft className="size-3.5 shrink-0 text-muted-foreground" />
                         )}
-                      </div>
-                    </button>
-                  );
-                })}
-              </div>
-            )}
-          </div>
+                      </button>
+                    );
+                  })}
+                </div>
+              );
+            })
+          )}
+        </div>
 
-          {/* Footer hints */}
-          <div className="px-4 py-2 border-t border-border/50 bg-muted/20 flex items-center justify-between text-xs text-muted-foreground">
-            <div className="flex items-center gap-3">
-              <span>
-                <kbd className="px-1.5 py-0.5 rounded bg-muted border border-border font-mono text-[10px]">
-                  ↑↓
-                </kbd>{" "}
-                navigate
-              </span>
-              <span>
-                <kbd className="px-1.5 py-0.5 rounded bg-muted border border-border font-mono text-[10px]">
-                  ↵
-                </kbd>{" "}
-                select
-              </span>
-            </div>
-            <div className="flex items-center gap-1">
-              <CommandIcon className="size-3 text-primary" />
-              <span className="text-[11px] font-medium">Quick Command Palette</span>
-            </div>
-          </div>
-        </motion.div>
-      </div>
-    </AnimatePresence>
+        <div className="flex items-center justify-between border-t border-border bg-muted/30 px-4 py-2.5 text-[11px] text-muted-foreground">
+          <span className="flex items-center gap-3">
+            <span>
+              <kbd className="font-mono">↑↓</kbd> navigate
+            </span>
+            <span>
+              <kbd className="font-mono">↵</kbd> select
+            </span>
+          </span>
+          <span className="font-mono">{ordered.length} {ordered.length === 1 ? "result" : "results"}</span>
+        </div>
+      </motion.div>
+    </div>
   );
 }
