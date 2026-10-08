@@ -26,9 +26,12 @@ const iconMap: Record<string, React.ElementType> = {
   Mail,
 };
 
+const topics = ["Full-time role", "Freelance project", "Just saying hi"] as const;
+
 export function Contact() {
   const [sent, setSent] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [topic, setTopic] = useState<(typeof topics)[number]>(topics[0]);
   const [isSending, setIsSending] = useState(false);
   const [toasts, setToasts] = useState<Array<{ id: string; message: string; type: ToastType }>>([]);
 
@@ -99,7 +102,8 @@ export function Contact() {
           email: email,
           message: message,
           from_name: "Portfolio Contact Form",
-          subject: `New Portfolio Message from ${name}`,
+          subject: `[${topic}] New Portfolio Message from ${name}`,
+          topic,
         }),
       });
 
@@ -245,6 +249,29 @@ export function Contact() {
                       aria-hidden="true"
                       className="hidden"
                     />
+                    <fieldset>
+                      <legend className="mb-2 text-sm font-medium text-foreground">
+                        What&apos;s this about?
+                      </legend>
+                      <div className="flex flex-wrap gap-2">
+                        {topics.map((t) => (
+                          <label key={t} className="cursor-pointer">
+                            <input
+                              type="radio"
+                              name="topic"
+                              value={t}
+                              checked={topic === t}
+                              onChange={() => setTopic(t)}
+                              className="peer sr-only"
+                            />
+                            <span className="inline-block rounded-full border border-border bg-background px-3.5 py-1.5 text-sm text-muted-foreground transition-all hover:border-primary/40 peer-checked:border-primary peer-checked:bg-primary/10 peer-checked:font-medium peer-checked:text-primary peer-focus-visible:outline-2 peer-focus-visible:outline-primary">
+                              {t}
+                            </span>
+                          </label>
+                        ))}
+                      </div>
+                    </fieldset>
+
                     <div className="grid gap-5 sm:grid-cols-2">
                       <div>
                         <label htmlFor="contact-name" className="mb-1.5 block text-sm font-medium text-foreground">

@@ -55,6 +55,25 @@ export const siteConfig = {
   linkedinUrl: "https://linkedin.com/in/anishtejwani",
 };
 
+// ─── Availability, Now & Quote ───────────────────────────────────────────────
+
+export const availability = {
+  headline: "Open to full-time roles and freelance projects",
+  description:
+    "I'm looking for opportunities building AI-powered products and scalable web platforms. If you have a role or a project in mind, the quickest way to reach me is email.",
+  replyTime: "Usually replies within 24–48 hours",
+};
+
+export const nowContent = {
+  label: "Now",
+  text: "Building the NIFTY OI Tracker: options analytics from live NSE data.",
+};
+
+export const quote = {
+  text: "Make it work, make it right, make it fast.",
+  author: "Kent Beck",
+};
+
 // ─── Hero Content ────────────────────────────────────────────────────────────
 
 export const heroContent = {

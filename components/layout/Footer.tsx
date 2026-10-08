@@ -2,7 +2,7 @@
 
 import { Mail } from "lucide-react";
 import { Github, Linkedin } from "@/components/ui/icons";
-import { socialLinks } from "@/lib/data";
+import { socialLinks, nowContent, quote, navItems, heroContent } from "@/lib/data";
 
 const iconMap: Record<string, React.ElementType> = {
   Github,
@@ -14,24 +14,49 @@ export function Footer() {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="relative border-t border-border">
-      {/* Gradient divider */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-1/2 h-px bg-gradient-to-r from-transparent via-primary/40 to-transparent" />
+    <footer className="relative mt-8 border-t border-border">
+      <div className="absolute left-1/2 top-0 h-px w-1/2 -translate-x-1/2 bg-gradient-to-r from-transparent via-primary/40 to-transparent" />
 
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-12">
-        <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-          {/* Branding */}
-          <div className="flex flex-col items-center md:items-start gap-2">
-            <span className="text-lg font-bold gradient-text">
-              Anish Tejwani
-            </span>
+      <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6">
+        {/* Now + quote */}
+        <div className="grid gap-4 md:grid-cols-5">
+          <div className="rounded-2xl border border-border/70 bg-card p-5 md:col-span-3">
+            <p className="mb-2 flex items-center gap-2 font-mono text-[11px] uppercase tracking-widest text-muted-foreground/70">
+              <span className="relative flex size-2">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-60" />
+                <span className="relative inline-flex size-2 rounded-full bg-primary" />
+              </span>
+              {nowContent.label}
+            </p>
+            <p className="text-sm leading-relaxed text-foreground/90">{nowContent.text}</p>
+          </div>
+          <figure className="rounded-2xl border border-border/70 bg-card p-5 md:col-span-2">
+            <blockquote className="text-sm italic leading-relaxed text-foreground/90">
+              &ldquo;{quote.text}&rdquo;
+            </blockquote>
+            <figcaption className="mt-2 font-mono text-xs text-muted-foreground">
+              — {quote.author}
+            </figcaption>
+          </figure>
+        </div>
+
+        <div className="mt-10 flex flex-col items-center justify-between gap-6 border-t border-border/60 pt-8 md:flex-row">
+          <div className="flex flex-col items-center gap-1 md:items-start">
+            <span className="text-lg font-bold gradient-text">{heroContent.name}</span>
             <p className="text-sm text-muted-foreground">
               AI Engineer • Full-Stack Developer • Builder
             </p>
           </div>
 
-          {/* Social Links */}
-          <div className="flex items-center gap-3">
+          <nav aria-label="Footer" className="flex items-center gap-5 text-sm text-muted-foreground">
+            {navItems.map((item) => (
+              <a key={item.href} href={item.href} className="transition-colors hover:text-foreground">
+                {item.label}
+              </a>
+            ))}
+          </nav>
+
+          <div className="flex items-center gap-2">
             {socialLinks.map((link) => {
               const Icon = iconMap[link.icon] || Mail;
               return (
@@ -40,7 +65,7 @@ export function Footer() {
                   href={link.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="p-2.5 rounded-xl bg-primary/5 border border-primary/10 text-muted-foreground hover:text-primary hover:bg-primary/10 hover:border-primary/20 transition-all duration-300 shadow-xs"
+                  className="rounded-full border border-border bg-card p-2.5 text-muted-foreground transition-all hover:border-primary/40 hover:text-primary"
                   aria-label={link.name}
                 >
                   <Icon className="size-4" />
@@ -50,12 +75,9 @@ export function Footer() {
           </div>
         </div>
 
-        {/* Copyright */}
-        <div className="mt-8 pt-6 border-t border-border text-center">
-          <p className="text-xs text-muted-foreground flex items-center justify-center gap-1">
-            © {year} Anish Tejwani. Built with Next.js &amp; Tailwind CSS
-          </p>
-        </div>
+        <p className="mt-8 text-center text-xs text-muted-foreground">
+          © {year} {heroContent.name}. Built with Next.js &amp; Tailwind CSS
+        </p>
       </div>
     </footer>
   );

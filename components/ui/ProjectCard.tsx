@@ -103,6 +103,12 @@ export function ProjectCard({ project, index, featured, onOpen }: Props) {
           <span className="absolute left-4 top-4 rounded-full border border-white/20 bg-black/40 px-2.5 py-1 font-mono text-[10px] uppercase tracking-wider text-white backdrop-blur-md">
             {categoryLabel[project.category]}
           </span>
+          {project.deployedUrl && (
+            <span className="absolute right-4 top-4 inline-flex items-center gap-1.5 rounded-full border border-white/20 bg-black/40 px-2.5 py-1 font-mono text-[10px] uppercase tracking-wider text-white backdrop-blur-md">
+              <span className="size-1.5 rounded-full bg-emerald-400" />
+              Live
+            </span>
+          )}
         </div>
 
         {/* Body */}
