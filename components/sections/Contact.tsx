@@ -2,21 +2,17 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
+import { useInView } from "@/hooks/useInView";
 import { SectionHeading } from "@/components/ui/SectionHeading";
+import { GlassCard } from "@/components/ui/GlassCard";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { socialLinks, heroContent } from "@/lib/data";
+import { socialLinks } from "@/lib/data";
 import {
   Mail,
   Send,
   Loader2,
-  Copy,
-  Check,
-  MapPin,
-  Clock,
-  Briefcase,
-  CheckCircle2,
 } from "lucide-react";
 import { Github, Linkedin } from "@/components/ui/icons";
 import { ToastContainer, ToastType } from "@/components/ui/Toast";
@@ -27,12 +23,8 @@ const iconMap: Record<string, React.ElementType> = {
   Mail,
 };
 
-const topics = ["Full-time role", "Freelance project", "Just saying hi"] as const;
-
 export function Contact() {
-  const [sent, setSent] = useState(false);
-  const [copied, setCopied] = useState(false);
-  const [topic, setTopic] = useState<(typeof topics)[number]>(topics[0]);
+  const { ref, isInView } = useInView<HTMLDivElement>({ threshold: 0.1 });
   const [isSending, setIsSending] = useState(false);
   const [toasts, setToasts] = useState<Array<{ id: string; message: string; type: ToastType }>>([]);
 
@@ -43,16 +35,6 @@ export function Contact() {
 
   const removeToast = (id: string) => {
     setToasts((prev) => prev.filter((t) => t.id !== id));
-  };
-
-  const copyEmail = async () => {
-    try {
-      await navigator.clipboard.writeText(heroContent.email);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    } catch {
-      addToast("Couldn't copy. Please select the email manually.", "error");
-    }
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -85,7 +67,6 @@ export function Contact() {
 
       addToast("Local test successful! To send real emails, please define NEXT_PUBLIC_WEB3FORMS_ACCESS_KEY in your .env.local file.", "success");
       form.reset();
-      setSent(true);
       setIsSending(false);
       return;
     }
@@ -103,16 +84,15 @@ export function Contact() {
           email: email,
           message: message,
           from_name: "Portfolio Contact Form",
-          subject: `[${topic}] New Portfolio Message from ${name}`,
-          topic,
+          subject: `New Portfolio Message from ${name}`,
         }),
       });
 
       const data = await response.json();
 
       if (data.success) {
+        addToast("Message sent successfully! I will get back to you soon.", "success");
         form.reset();
-        setSent(true);
       } else {
         addToast(data.message || "Something went wrong. Please try again.", "error");
       }
@@ -126,228 +106,155 @@ export function Contact() {
   return (
     <>
       <section id="contact" className="section-padding">
-        <div className="mx-auto max-w-6xl">
+        <div className="max-w-4xl mx-auto" ref={ref}>
           <SectionHeading
             index="03"
             eyebrow="Contact"
+            align="center"
             title={
               <>
                 Let&apos;s work <span className="gradient-text">together</span>
               </>
             }
-            description="Got a project idea, a role, or just want to say hi? Send a message and I'll reply within a day or two."
+            description="Got a project idea or just want to say hi? I'd love to hear from you."
           />
 
-          <div className="grid gap-6 lg:grid-cols-5">
-            {/* Direct contact */}
+          <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
+            {/* Contact Form */}
             <motion.div
-              className="space-y-4 lg:col-span-2"
-              initial={{ opacity: 0, y: 24 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-60px" }}
-              transition={{ duration: 0.5, ease: "easeOut" }}
+              className="md:col-span-3"
+              initial={{ opacity: 0, x: -30 }}
+              animate={isInView ? { opacity: 1, x: 0 } : {}}
+              transition={{ duration: 0.6, delay: 0.2 }}
             >
-              <div className="rounded-3xl border border-border/70 bg-card p-6">
-                <p className="mb-2 font-mono text-[11px] uppercase tracking-widest text-muted-foreground/70">
-                  Email
-                </p>
-                <div className="flex items-center justify-between gap-3">
-                  <a
-                    href={`mailto:${heroContent.email}`}
-                    className="min-w-0 truncate text-base font-semibold text-foreground transition-colors hover:text-primary sm:text-lg"
-                  >
-                    {heroContent.email}
-                  </a>
-                  <button
-                    type="button"
-                    onClick={copyEmail}
-                    aria-label="Copy email address"
-                    className="flex size-9 shrink-0 cursor-pointer items-center justify-center rounded-full border border-border text-muted-foreground transition-colors hover:border-primary/40 hover:text-primary focus-visible:outline-2 focus-visible:outline-primary"
-                  >
-                    {copied ? <Check className="size-4 text-emerald-500" /> : <Copy className="size-4" />}
-                  </button>
-                </div>
-
-                <ul className="mt-5 space-y-2.5 border-t border-border/60 pt-5 text-sm text-muted-foreground">
-                  <li className="flex items-center gap-2.5">
-                    <MapPin className="size-4 text-primary" />
-                    {heroContent.location}
-                  </li>
-                  <li className="flex items-center gap-2.5">
-                    <Briefcase className="size-4 text-primary" />
-                    Open to full-time roles and freelance projects
-                  </li>
-                  <li className="flex items-center gap-2.5">
-                    <Clock className="size-4 text-primary" />
-                    Usually replies within 24–48 hours
-                  </li>
-                </ul>
-              </div>
-
-              <div className="rounded-3xl border border-border/70 bg-card p-3">
-                {socialLinks
-                  .filter((l) => l.icon !== "Mail")
-                  .map((link) => {
-                    const Icon = iconMap[link.icon] || Mail;
-                    return (
-                      <a
-                        key={link.name}
-                        href={link.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="group flex items-center gap-3 rounded-2xl p-3 transition-colors hover:bg-primary/5"
-                      >
-                        <span className="flex size-10 items-center justify-center rounded-xl border border-border bg-muted/50 text-muted-foreground transition-colors group-hover:border-primary/30 group-hover:text-primary">
-                          <Icon className="size-4" />
-                        </span>
-                        <span className="min-w-0">
-                          <span className="block text-sm font-medium text-foreground">
-                            {link.name}
-                          </span>
-                          <span className="block truncate text-xs text-muted-foreground">
-                            {link.url.replace(/^https?:\/\//, "")}
-                          </span>
-                        </span>
-                      </a>
-                    );
-                  })}
-              </div>
-            </motion.div>
-
-            {/* Form */}
-            <motion.div
-              className="lg:col-span-3"
-              initial={{ opacity: 0, y: 24 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-60px" }}
-              transition={{ duration: 0.5, delay: 0.1, ease: "easeOut" }}
-            >
-              <div className="relative overflow-hidden rounded-3xl border border-border/70 bg-card p-6 sm:p-8">
-                {sent ? (
-                  <motion.div
-                    className="flex min-h-[380px] flex-col items-center justify-center text-center"
-                    initial={{ opacity: 0, scale: 0.96 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                  >
-                    <span className="mb-5 flex size-14 items-center justify-center rounded-full bg-emerald-500/10 text-emerald-500">
-                      <CheckCircle2 className="size-7" />
-                    </span>
-                    <h3 className="text-xl font-semibold text-foreground">Message sent</h3>
-                    <p className="mt-2 max-w-xs text-sm text-muted-foreground">
-                      Thanks for reaching out. I&apos;ll get back to you soon.
-                    </p>
-                    <button
-                      type="button"
-                      onClick={() => setSent(false)}
-                      className="mt-6 cursor-pointer rounded-full border border-border px-5 py-2 text-sm font-medium text-foreground transition-colors hover:border-primary/40 hover:text-primary"
+              <GlassCard glowColor="purple" hover={false}>
+                <form onSubmit={handleSubmit} className="space-y-4">
+                  <input
+                    type="text"
+                    name="botcheck"
+                    tabIndex={-1}
+                    autoComplete="off"
+                    aria-hidden="true"
+                    className="hidden"
+                  />
+                  <div>
+                    <label
+                      htmlFor="contact-name"
+                      className="text-sm font-medium text-foreground mb-1.5 block"
                     >
-                      Send another
-                    </button>
-                  </motion.div>
-                ) : (
-                  <form onSubmit={handleSubmit} className="space-y-5">
-                    <input
-                      type="text"
-                      name="botcheck"
-                      tabIndex={-1}
-                      autoComplete="off"
-                      aria-hidden="true"
-                      className="hidden"
-                    />
-                    <fieldset>
-                      <legend className="mb-2 text-sm font-medium text-foreground">
-                        What&apos;s this about?
-                      </legend>
-                      <div className="flex flex-wrap gap-2">
-                        {topics.map((t) => (
-                          <label key={t} className="cursor-pointer">
-                            <input
-                              type="radio"
-                              name="topic"
-                              value={t}
-                              checked={topic === t}
-                              onChange={() => setTopic(t)}
-                              className="peer sr-only"
-                            />
-                            <span className="inline-block rounded-full border border-border bg-background px-3.5 py-1.5 text-sm text-muted-foreground transition-all hover:border-primary/40 peer-checked:border-primary peer-checked:bg-primary/10 peer-checked:font-medium peer-checked:text-primary peer-focus-visible:outline-2 peer-focus-visible:outline-primary">
-                              {t}
-                            </span>
-                          </label>
-                        ))}
-                      </div>
-                    </fieldset>
-
-                    <div className="grid gap-5 sm:grid-cols-2">
-                      <div>
-                        <label htmlFor="contact-name" className="mb-1.5 block text-sm font-medium text-foreground">
-                          Name
-                        </label>
-                        <Input
-                          id="contact-name"
-                          name="name"
-                          autoComplete="name"
-                          placeholder="Jane Doe"
-                          required
-                          disabled={isSending}
-                          className="h-11 rounded-xl border-border bg-background px-3.5 text-sm placeholder:text-muted-foreground/60 focus-visible:border-primary/50 focus-visible:ring-primary/20"
-                        />
-                      </div>
-                      <div>
-                        <label htmlFor="contact-email" className="mb-1.5 block text-sm font-medium text-foreground">
-                          Email
-                        </label>
-                        <Input
-                          id="contact-email"
-                          name="email"
-                          type="email"
-                          autoComplete="email"
-                          placeholder="jane@company.com"
-                          required
-                          disabled={isSending}
-                          className="h-11 rounded-xl border-border bg-background px-3.5 text-sm placeholder:text-muted-foreground/60 focus-visible:border-primary/50 focus-visible:ring-primary/20"
-                        />
-                      </div>
-                    </div>
-                    <div>
-                      <label htmlFor="contact-message" className="mb-1.5 block text-sm font-medium text-foreground">
-                        Message
-                      </label>
-                      <Textarea
-                        id="contact-message"
-                        name="message"
-                        placeholder="Tell me about your project, role or idea…"
-                        rows={6}
-                        required
-                        disabled={isSending}
-                        className="min-h-40 resize-none rounded-xl border-border bg-background px-3.5 py-3 text-sm placeholder:text-muted-foreground/60 focus-visible:border-primary/50 focus-visible:ring-primary/20"
-                      />
-                    </div>
-
-                    <Button
-                      type="submit"
+                      Name
+                    </label>
+                    <Input
+                      id="contact-name"
+                      name="name"
+                      placeholder="Your name"
+                      required
                       disabled={isSending}
-                      className="h-12 w-full cursor-pointer rounded-xl border-0 bg-gradient-to-r from-primary to-cyan-400 text-sm font-semibold text-white shadow-lg shadow-primary/20 transition-all hover:-translate-y-0.5 hover:opacity-95 dark:text-black"
+                      className="bg-primary/5 border-primary/10 focus:border-primary/40 placeholder:text-muted-foreground/50 text-foreground"
+                    />
+                  </div>
+                  <div>
+                    <label
+                      htmlFor="contact-email"
+                      className="text-sm font-medium text-foreground mb-1.5 block"
                     >
-                      {isSending ? (
-                        <>
-                          <Loader2 className="mr-2 size-4 animate-spin" />
-                          Sending…
-                        </>
-                      ) : (
-                        <>
-                          <Send className="mr-2 size-4" />
-                          Send message
-                        </>
-                      )}
-                    </Button>
-                  </form>
-                )}
-              </div>
+                      Email
+                    </label>
+                    <Input
+                      id="contact-email"
+                      name="email"
+                      type="email"
+                      placeholder="your@email.com"
+                      required
+                      disabled={isSending}
+                      className="bg-primary/5 border-primary/10 focus:border-primary/40 placeholder:text-muted-foreground/50 text-foreground"
+                    />
+                  </div>
+                  <div>
+                    <label
+                      htmlFor="contact-message"
+                      className="text-sm font-medium text-foreground mb-1.5 block"
+                    >
+                      Message
+                    </label>
+                    <Textarea
+                      id="contact-message"
+                      name="message"
+                      placeholder="Tell me about your project or just say hello..."
+                      rows={4}
+                      required
+                      disabled={isSending}
+                      className="bg-primary/5 border-primary/10 focus:border-primary/40 placeholder:text-muted-foreground/50 resize-none text-foreground"
+                    />
+                  </div>
+
+                  <Button
+                    type="submit"
+                    className="w-full bg-gradient-to-r from-primary to-cyan-400 text-white dark:text-black border-0 h-10 text-sm font-semibold cursor-pointer shadow-sm shadow-primary/20 hover:opacity-90 transition-opacity"
+                    disabled={isSending}
+                  >
+                    {isSending ? (
+                      <>
+                        <Loader2 className="size-4 mr-1.5 animate-spin" />
+                        Sending...
+                      </>
+                    ) : (
+                      <>
+                        <Send className="size-4 mr-1.5" />
+                        Send Message
+                      </>
+                    )}
+                  </Button>
+                </form>
+              </GlassCard>
             </motion.div>
-          </div>
+
+          {/* Sidebar */}
+          <motion.div
+            className="md:col-span-2 space-y-4"
+            initial={{ opacity: 0, x: 30 }}
+            animate={isInView ? { opacity: 1, x: 0 } : {}}
+            transition={{ duration: 0.6, delay: 0.3 }}
+          >
+            {/* Social Links */}
+            <GlassCard hover={false}>
+              <h3 className="font-semibold text-foreground text-sm mb-4">
+                Connect
+              </h3>
+              <div className="space-y-2.5">
+                {socialLinks.map((link) => {
+                  const Icon = iconMap[link.icon] || Mail;
+                  return (
+                    <a
+                      key={link.name}
+                      href={link.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-3 p-2.5 rounded-xl hover:bg-primary/5 transition-colors group"
+                    >
+                      <div className="p-2 rounded-lg bg-primary/5 group-hover:bg-primary/10 transition-colors">
+                        <Icon className="size-4 text-muted-foreground group-hover:text-primary transition-colors" />
+                      </div>
+                      <div>
+                        <div className="text-sm font-medium text-foreground">
+                          {link.name}
+                        </div>
+                        <div className="text-xs text-muted-foreground">
+                          {link.url.replace(/^(https?:\/\/|mailto:)/, "")}
+                        </div>
+                      </div>
+                    </a>
+                  );
+                })}
+              </div>
+            </GlassCard>
+
+
+          </motion.div>
         </div>
-      </section>
-      <ToastContainer toasts={toasts} removeToast={removeToast} />
+      </div>
+    </section>
+    <ToastContainer toasts={toasts} removeToast={removeToast} />
     </>
   );
 }
