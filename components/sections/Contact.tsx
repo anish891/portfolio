@@ -15,6 +15,7 @@ import {
   Check,
   MapPin,
   Clock,
+  Briefcase,
   CheckCircle2,
 } from "lucide-react";
 import { Github, Linkedin } from "@/components/ui/icons";
@@ -171,6 +172,10 @@ export function Contact() {
                   <li className="flex items-center gap-2.5">
                     <MapPin className="size-4 text-primary" />
                     {heroContent.location}
+                  </li>
+                  <li className="flex items-center gap-2.5">
+                    <Briefcase className="size-4 text-primary" />
+                    Open to full-time roles and freelance projects
                   </li>
                   <li className="flex items-center gap-2.5">
                     <Clock className="size-4 text-primary" />

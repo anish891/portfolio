@@ -3,7 +3,6 @@ import { Footer } from "@/components/layout/Footer";
 import { Hero } from "@/components/sections/Hero";
 import { TechStack } from "@/components/sections/TechStack";
 import { Projects } from "@/components/sections/Projects";
-import { Availability } from "@/components/sections/Availability";
 import { Contact } from "@/components/sections/Contact";
 
 export default function Home() {
@@ -14,7 +13,6 @@ export default function Home() {
         <Hero />
         <TechStack />
         <Projects />
-        <Availability />
         <Contact />
       </main>
       <Footer />

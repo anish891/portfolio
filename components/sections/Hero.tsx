@@ -103,7 +103,7 @@ export function Hero() {
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-60" />
               <span className="relative inline-flex size-2 rounded-full bg-emerald-400" />
             </span>
-            Open to opportunities
+            Open to full-time &amp; freelance
             <span className="text-border">·</span>
             <MapPin className="size-3" />
             {heroContent.location}
