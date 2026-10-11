@@ -10,8 +10,7 @@ I'm an AI / full-stack engineer based in Mumbai, India, building intelligent sof
 | --- | --- | --- |
 | [ChainDeck](https://chaindeck.vercel.app/) ([code](https://github.com/anish891/chaindeck)) | Live NIFTY 50 options analytics (formerly Nifty OI Tracker): OI buildup, Max Pain, Gamma Exposure, volatility panels and alerts from live NSE data. | JavaScript, Node.js, Express, Upstash Redis, Vercel |
 | [Unbake](https://unbake.vercel.app/) ([code](https://github.com/anish891/unbake)) | Recovers the formulas behind a spreadsheet exported as plain values and finds the cells someone typed wrong. Runs entirely in the browser. | JavaScript, Web Workers, SheetJS |
-| Image Analysis Platform | Computer vision and OCR platform that extracts structured insights from images. | Python, OpenCV, Tesseract, Flask |
-| Notes Application | Cross-platform note-taking app with cloud sync and authentication. | Flutter, Dart, Firebase |
+| [GraphSentinel AI](https://github.com/anish891/graph_sentinel) | Explainable security investigation agent that traces attacks through a FalkorDB graph and proposes response actions for human approval. | Python, FastAPI, FalkorDB, React, TypeScript, Docker |
 
 All site content (projects, skills, links) lives in [`lib/data.ts`](lib/data.ts).
 

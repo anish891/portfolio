@@ -217,37 +217,25 @@ export const projects: Project[] = [
     githubUrl: "https://github.com/anish891/unbake",
   },
   {
-    id: "image-analysis",
-    title: "Image Analysis Platform",
+    id: "graph-sentinel",
+    title: "GraphSentinel AI",
     description:
-      "Python-based image intelligence platform utilizing computer vision and OCR for extracting insights from images.",
+      "An explainable security investigation agent that traces attacks through a FalkorDB graph of identities, devices, services and incidents, then proposes response actions for human approval.",
     longDescription:
-      "An intelligent image analysis platform that combines computer vision and OCR capabilities to extract meaningful insights from images. The platform supports multiple image formats, provides automated text extraction, and generates analytical reports from visual data.",
-    features: ["OCR", "Image Processing", "Data Extraction", "Analytics"],
-    techStack: ["Python", "OpenCV", "Tesseract", "Flask"],
+      "GraphSentinel investigates a security alert by traversing the relationships between identities, IPs, devices, services, vulnerabilities, indicators, evidence and past incidents stored in FalkorDB. An LLM agent (Azure OpenAI, Groq, or an offline deterministic planner) chooses which bounded, read-only graph tools to run. Deterministic engines then compute the risk score and decide which simulated response actions are eligible, and a human approves them.\n\nOn the demo dataset it finds a real 5-hop attack chain from the graph, links the alert to two earlier incidents through a shared indicator, collects supporting and contradicting evidence with provenance, and flags and ignores a prompt-injection attempt hidden in a helpdesk ticket. Every finding cites the graph records behind it, completed investigations are written back into the graph so related alerts can recall them, and every step lands in a hash-chained audit trail.\n\nThe backend is FastAPI and the frontend is React and TypeScript with React Flow, run together with Docker Compose. Access is role-based with four-eyes approval, so an investigator cannot approve their own investigation, plus CSRF protection and rate limiting. An evaluation suite runs 14 scenarios against a real FalkorDB (14 of 14 passing, 64 of 64 checks), and CI covers lint, type checks, tests, dependency audits, Trivy and gitleaks. All data is synthetic and all response actions are simulated.",
+    features: [
+      "Bounded agent loop over typed, read-only graph tools",
+      "Multi-hop attack paths and graph algorithms run inside FalkorDB",
+      "Deterministic risk scoring and policy engine, with human approval",
+      "Evidence with provenance, contradictions and prompt-injection detection",
+      "Hash-chained audit trail and four-eyes approvals",
+      "14-scenario evaluation and CI with security scans",
+    ],
+    techStack: ["Python", "FastAPI", "FalkorDB", "React", "TypeScript", "Docker"],
     category: "ai",
     gradient: "from-cyan-500 via-blue-500 to-indigo-500",
     icon: "ScanEye",
-    githubUrl: "https://github.com/anish891",
-  },
-  {
-    id: "notes-app",
-    title: "Notes Application",
-    description:
-      "Cross-platform note-taking application built with Flutter and Firebase.",
-    longDescription:
-      "A feature-rich cross-platform note-taking application built with Flutter for the frontend and Firebase for the backend. Supports real-time cloud synchronization, secure authentication, and a mobile-first user experience designed for productivity on the go.",
-    features: [
-      "Cloud Sync",
-      "Authentication",
-      "Real-time Updates",
-      "Mobile-first UX",
-    ],
-    techStack: ["Flutter", "Dart", "Firebase"],
-    category: "mobile",
-    gradient: "from-emerald-500 via-teal-500 to-cyan-500",
-    icon: "FileText",
-    githubUrl: "https://github.com/anish891",
+    githubUrl: "https://github.com/anish891/graph_sentinel",
   },
 ];
 
