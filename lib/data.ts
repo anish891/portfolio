@@ -194,6 +194,29 @@ export const projects: Project[] = [
     githubUrl: "https://github.com/anish891/chaindeck",
   },
   {
+    id: "unbake",
+    title: "Unbake",
+    description:
+      "Recovers the formulas behind a spreadsheet exported as plain values, and finds the cells someone typed wrong. Runs entirely in the browser.",
+    longDescription:
+      "Unbake is formula archaeology for spreadsheets. When a billing system, bank or payroll tool exports a sheet as plain values, every formula is replaced by the number it happened to produce. Unbake works backwards from those numbers: it figures out the formulas that must have made them, then uses those formulas to flag the cells someone typed wrong and to say what kind of slip it was, such as swapped digits or a slipped decimal point.\n\nFor each numeric column it builds a library of candidate terms (other columns, products, ratios, the previous row, lookup tables keyed by text columns) and fits combinations with RANSAC, so a few wrong cells cannot bend the answer. Coefficients snap to the simplest number that loses no rows, so 0.0824999 becomes 0.0825. It also finds rate tables, running totals and threshold IF rules such as overtime and tiered commission. A blame solver then picks the single cell whose correction repairs the most broken calculations without breaking any that hold.\n\nEverything runs in the browser with plain JavaScript and a Web Worker. There is no upload, no server and no AI service, and the deployment sets a strict Content-Security-Policy. It exports an Excel report with the formulas restored and suspect cells highlighted with explanations, ships a command-line version, and is covered by 22 tests, including a fuzz test that recovers 12 random hidden formulas and a check that random data yields no false formulas.",
+    features: [
+      "RANSAC fitting that survives typos in the data",
+      "Recovers lookups, rate tables, running totals and IF rules",
+      "Blame solver finds the single most likely mistyped cell",
+      "Excel report with formulas restored and suspects highlighted",
+      "Runs fully in the browser: no upload, no server, strict CSP",
+      "22 tests including a fuzz test, plus a command-line version",
+    ],
+    techStack: ["JavaScript", "HTML5", "CSS3", "Vercel"],
+    category: "web",
+    gradient: "from-blue-500 via-indigo-500 to-violet-500",
+    icon: "FileText",
+    deployedUrl: "https://unbake.vercel.app/",
+    image: "/projects/unbake.jpg",
+    githubUrl: "https://github.com/anish891/unbake",
+  },
+  {
     id: "image-analysis",
     title: "Image Analysis Platform",
     description:
