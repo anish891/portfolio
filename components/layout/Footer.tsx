@@ -1,12 +1,13 @@
 "use client";
 
 import { Mail } from "lucide-react";
-import { Github, Linkedin } from "@/components/ui/icons";
+import { Github, Linkedin, X } from "@/components/ui/icons";
 import { socialLinks, nowContent, quote, navItems, heroContent } from "@/lib/data";
 
 const iconMap: Record<string, React.ElementType> = {
   Github,
   Linkedin,
+  X,
   Mail,
 };
 

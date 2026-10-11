@@ -53,6 +53,7 @@ export const siteConfig = {
   githubUsername: "anish891",
   githubUrl: "https://github.com/anish891",
   linkedinUrl: "https://linkedin.com/in/anishtejwani",
+  xUrl: "https://x.com/anish_891",
 };
 
 // ─── Now & Quote ───────────────────────────────────────────────
@@ -125,6 +126,7 @@ export const techStack: SkillCategory[] = [
     skills: [
       { name: "Node.js" },
       { name: "Express.js" },
+      { name: "FastAPI" },
       { name: "REST APIs" },
     ],
   },
@@ -135,6 +137,8 @@ export const techStack: SkillCategory[] = [
       { name: "PostgreSQL" },
       { name: "Supabase" },
       { name: "Firebase" },
+      { name: "Redis" },
+      { name: "FalkorDB" },
       { name: "Vercel" },
     ],
   },
@@ -154,6 +158,8 @@ export const techStack: SkillCategory[] = [
       { name: "Git" },
       { name: "GitHub" },
       { name: "CI/CD" },
+      { name: "GitHub Actions" },
+      { name: "Docker" },
       { name: "Agile" },
     ],
   },
@@ -253,6 +259,11 @@ export const socialLinks: SocialLink[] = [
     name: "LinkedIn",
     url: "https://linkedin.com/in/anishtejwani",
     icon: "Linkedin",
+  },
+  {
+    name: "X",
+    url: "https://x.com/anish_891",
+    icon: "X",
   },
   {
     name: "Email",

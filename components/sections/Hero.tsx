@@ -4,12 +4,13 @@ import { useState, useEffect, useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { MapPin, Mail, ArrowRight, ArrowUpRight } from "lucide-react";
 import { heroContent, socialLinks, aboutContent, siteConfig } from "@/lib/data";
-import { Github, Linkedin } from "@/components/ui/icons";
+import { Github, Linkedin, X } from "@/components/ui/icons";
 import { GitHubHeatmap } from "@/components/ui/GitHubHeatmap";
 
 const socialIconMap: Record<string, React.ElementType> = {
   Github,
   Linkedin,
+  X,
   Mail,
 };
 

@@ -19,6 +19,10 @@ import {
   SiGit,
   SiGithub,
   SiFlutter,
+  SiFastapi,
+  SiRedis,
+  SiDocker,
+  SiGithubactions,
 } from "react-icons/si";
 import { FaJava } from "react-icons/fa";
 import {
@@ -30,6 +34,7 @@ import {
   RotateCw,
   Kanban,
   Database,
+  Share2,
   Code2
 } from "lucide-react";
 
@@ -55,6 +60,12 @@ const skillConfig: Record<string, { icon: React.ElementType; colorClass: string;
   "Supabase": { icon: SiSupabase, colorClass: "group-hover:text-[#3ECF8E] group-hover:border-[#3ECF8E]/25", shadowClass: "hover:shadow-[#3ECF8E]/10" },
   "SQL": { icon: Database, colorClass: "group-hover:text-[#4479A1] group-hover:border-[#4479A1]/25", shadowClass: "hover:shadow-[#4479A1]/10" },
   "Firebase": { icon: SiFirebase, colorClass: "group-hover:text-[#FFCA28] group-hover:border-[#FFCA28]/25", shadowClass: "hover:shadow-[#FFCA28]/10" },
+
+  "FastAPI": { icon: SiFastapi, colorClass: "group-hover:text-[#009688] group-hover:border-[#009688]/25", shadowClass: "hover:shadow-[#009688]/10" },
+  "Redis": { icon: SiRedis, colorClass: "group-hover:text-[#DC382D] group-hover:border-[#DC382D]/25", shadowClass: "hover:shadow-[#DC382D]/10" },
+  "FalkorDB": { icon: Share2, colorClass: "group-hover:text-[#E91E8C] group-hover:border-[#E91E8C]/25", shadowClass: "hover:shadow-[#E91E8C]/10" },
+  "Docker": { icon: SiDocker, colorClass: "group-hover:text-[#2496ED] group-hover:border-[#2496ED]/25", shadowClass: "hover:shadow-[#2496ED]/10" },
+  "GitHub Actions": { icon: SiGithubactions, colorClass: "group-hover:text-[#2088FF] group-hover:border-[#2088FF]/25", shadowClass: "hover:shadow-[#2088FF]/10" },
 
   // Deployment & Infra
   "Vercel": { icon: SiVercel, colorClass: "group-hover:text-foreground dark:group-hover:text-white group-hover:border-foreground/20 dark:group-hover:border-white/20", shadowClass: "hover:shadow-foreground/10" },

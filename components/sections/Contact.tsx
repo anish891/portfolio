@@ -14,12 +14,13 @@ import {
   Send,
   Loader2,
 } from "lucide-react";
-import { Github, Linkedin } from "@/components/ui/icons";
+import { Github, Linkedin, X } from "@/components/ui/icons";
 import { ToastContainer, ToastType } from "@/components/ui/Toast";
 
 const iconMap: Record<string, React.ElementType> = {
   Github,
   Linkedin,
+  X,
   Mail,
 };
 

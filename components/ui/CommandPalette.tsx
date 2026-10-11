@@ -22,7 +22,7 @@ import {
   FolderGit2,
   CornerDownLeft,
 } from "lucide-react";
-import { Github, Linkedin } from "@/components/ui/icons";
+import { Github, Linkedin, X } from "@/components/ui/icons";
 import { heroContent, projects, siteConfig, socialLinks } from "@/lib/data";
 
 type Group = "Navigate" | "Projects" | "Actions" | "Links";
@@ -43,6 +43,7 @@ const GROUP_ORDER: Group[] = ["Navigate", "Projects", "Actions", "Links"];
 const socialIcon: Record<string, React.ElementType> = {
   Github,
   Linkedin,
+  X,
   Mail,
 };
 
