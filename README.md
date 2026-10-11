@@ -8,7 +8,7 @@ I'm an AI / full-stack engineer based in Mumbai, India, building intelligent sof
 
 | Project | What it is | Stack |
 | --- | --- | --- |
-| [NIFTY OI Tracker](https://nifty-oi-tracker.vercel.app/) ([code](https://github.com/anish891/nifty-oi-tracker)) | Real-time NIFTY 50 options analytics: OI buildup, Max Pain, Gamma Exposure and volatility regimes from live NSE data. | JavaScript, Node.js, Express, Supabase, Vercel |
+| [ChainDeck](https://chaindeck.vercel.app/) ([code](https://github.com/anish891/chaindeck)) | Live NIFTY 50 options analytics (formerly Nifty OI Tracker): OI buildup, Max Pain, Gamma Exposure, volatility panels and alerts from live NSE data. | JavaScript, Node.js, Express, Upstash Redis, Vercel |
 | Image Analysis Platform | Computer vision and OCR platform that extracts structured insights from images. | Python, OpenCV, Tesseract, Flask |
 | Notes Application | Cross-platform note-taking app with cloud sync and authentication. | Flutter, Dart, Firebase |
 

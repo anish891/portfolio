@@ -21,6 +21,7 @@ const techBadges: Record<string, { label: string; icon: string; bg: string; text
   "CSS3": { label: "C3", icon: "C3", bg: "bg-blue-400/10 text-blue-400 border border-blue-400/20", text: "font-bold text-[10px]" },
   "Express.js": { label: "ex", icon: "ex", bg: "bg-neutral-500/10 text-neutral-400 border border-neutral-500/20", text: "font-medium lowercase text-xs" },
   "Supabase": { label: "⚡", icon: "⚡", bg: "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20", text: "font-bold" },
+  "Upstash Redis": { label: "UR", icon: "UR", bg: "bg-rose-500/10 text-rose-400 border border-rose-500/20", text: "font-bold text-[10px]" },
   "PostgreSQL": { label: "PG", icon: "PG", bg: "bg-sky-500/10 text-sky-400 border border-sky-500/20", text: "font-bold text-[10px]" },
   "Vercel": { label: "▲", icon: "▲", bg: "bg-black text-white dark:bg-white dark:text-black", text: "font-bold text-[9px]" },
   "Python": { label: "Py", icon: "Py", bg: "bg-amber-500/10 text-amber-400 border border-amber-500/20", text: "font-bold text-[10px]" },

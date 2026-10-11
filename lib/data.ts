@@ -59,7 +59,7 @@ export const siteConfig = {
 
 export const nowContent = {
   label: "Now",
-  text: "Building the NIFTY OI Tracker: options analytics from live NSE data.",
+  text: "Building ChainDeck: NIFTY options analytics from live NSE data.",
 };
 
 export const quote = {
@@ -163,32 +163,35 @@ export const techStack: SkillCategory[] = [
 
 export const projects: Project[] = [
   {
-    id: "nifty-oi-tracker",
-    title: "NIFTY OI Tracker",
+    id: "chaindeck",
+    title: "ChainDeck",
     description:
-      "A real-time analytics dashboard for NIFTY 50 computing Open Interest buildup, Max Pain, Gamma Exposure, and volatility regimes directly from live NSE data.",
+      "A live NIFTY 50 options analytics dashboard: OI buildup, Max Pain, Gamma Exposure, volatility panels and alerts, computed from live NSE data.",
     longDescription:
-      "Nifty OI Tracker is a real-time analytics dashboard built for options traders to monitor NIFTY 50 derivatives data — Open Interest buildup, Put-Call Ratio, Max Pain, Central Pivot Range, and Gamma Exposure — sourced live from the NSE.\n\nBeyond surfacing raw data, the project focuses on turning it into statistically grounded signals: buildup classification uses a sliding-window trend analysis instead of single-tick comparisons to cut noise, Max Pain was rearchitected from a brute-force O(n²) calculation to a prefix-sum-based O(n log n) approach, and OI anomalies and IV volatility regimes are both detected using Welford\u0027s online algorithm for numerically stable, constant-time running statistics — the same statistical core reused across two different features.\n\nThe system persists every session to Postgres (Supabase), enabling day-over-day pattern matching (cosine similarity across session feature vectors) to surface historically similar trading days, and a 20-session rolling z-score to flag when current implied volatility is running unusually high or low relative to its own recent history.\n\nDeployed entirely on free-tier infrastructure (Vercel + Supabase), with a lightweight Express proxy layer handling NSE\u0027s CORS/cookie requirements and Supabase Realtime and pg_cron used to work around serverless platform constraints (no long-lived connections, limited cron frequency) without adding paid infrastructure.",
+      "ChainDeck (formerly Nifty OI Tracker) is a live, auto-refreshing dashboard for NIFTY 50 options traders. It pulls the option chain from NSE and turns it into signals: Open Interest buildup, Put-Call Ratio, Max Pain, Central Pivot Range, Gamma Exposure with the zero-gamma level, 25-delta risk reversal and a composite market regime that feeds a plain-language trade setup.\n\nRecent work added a rolling ATM straddle panel, an IV vs realised volatility view on a trading-time basis (with IV percentile against saved sessions), a strike-wise OI structure chart, and configurable browser alerts. Under the hood, Max Pain uses prefix sums instead of a brute-force O(n²) scan, unusual OI flow is flagged with Welford\u0027s online algorithm, and cosine similarity over session feature vectors surfaces days that looked like today.\n\nIntraday snapshots (about one a minute) are stored on Upstash Redis over REST, which powers the timeline chart, the 5m/15m rate-of-change figures and end-of-day session summaries, with an in-memory fallback when no database is configured. A caching Express proxy with request coalescing handles NSE\u0027s cookie and header requirements. The app is hardened with a strict Content-Security-Policy, no third-party assets, input validation, rate limiting and authenticated cron endpoints, and ships with a verification test suite.",
     features: [
-      "Live NSE Derivatives Data & Express Proxy",
-      "O(n log n) Max Pain & Gamma Exposure Calculation",
-      "Welford\u0027s Online Algorithm for Anomaly & IV Detection",
-      "Cosine Similarity Historical Session Matching",
-      "Supabase Realtime & pg_cron Serverless Architecture",
+      "Live NSE option chain through a caching Express proxy",
+      "Max Pain via prefix sums, plus Gamma Exposure and zero-gamma level",
+      "Composite market regime and auto-generated trade setup",
+      "Rolling ATM straddle and IV vs realised volatility panels",
+      "Welford\u0027s algorithm for unusual-flow detection, cosine similarity for session matching",
+      "Intraday history on Upstash Redis with in-memory fallback",
+      "Configurable browser alerts and strike-wise OI structure chart",
+      "Strict CSP, input validation, rate limiting and a test suite",
     ],
     techStack: [
       "JavaScript",
       "Node.js",
       "Express.js",
-      "Supabase",
+      "Upstash Redis",
       "Vercel",
     ],
     category: "web",
     gradient: "from-violet-500 via-purple-500 to-fuchsia-500",
     icon: "TrendingUp",
-    deployedUrl: "https://nifty-oi-tracker.vercel.app/",
-    image: "/projects/nifty-oi-tracker.jpg",
-    githubUrl: "https://github.com/anish891/nifty-oi-tracker",
+    deployedUrl: "https://chaindeck.vercel.app/",
+    image: "/projects/chaindeck.jpg",
+    githubUrl: "https://github.com/anish891/chaindeck",
   },
   {
     id: "image-analysis",
