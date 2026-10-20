@@ -8,6 +8,7 @@ import {
   useMemo,
   useSyncExternalStore,
 } from "react";
+import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Search,
@@ -16,7 +17,6 @@ import {
   Sun,
   Moon,
   ArrowUpRight,
-  Code2,
   Home,
   Mail,
   FolderGit2,
@@ -94,22 +94,21 @@ function PalettePanel({ onClose }: { onClose: () => void }) {
   }, []);
 
 
-  const scrollTo = useCallback(
-    (id: string) => {
+  const router = useRouter();
+  const go = useCallback(
+    (href: string) => {
       onClose();
-      // Wait a beat so scroll isn't fighting the closing overlay
-      setTimeout(() => document.getElementById(id)?.scrollIntoView({ behavior: "smooth" }), 120);
+      router.push(href);
     },
-    [onClose]
+    [onClose, router]
   );
 
   const commands = useMemo<CommandItem[]>(() => {
     const open = (url: string) => window.open(url, "_blank", "noopener,noreferrer");
     return [
-      { id: "nav-home", title: "Home", group: "Navigate", icon: Home, run: () => scrollTo("home") },
-      { id: "nav-tech", title: "Tech stack", group: "Navigate", icon: Code2, run: () => scrollTo("tech") },
-      { id: "nav-projects", title: "Projects", group: "Navigate", icon: FolderGit2, run: () => scrollTo("projects") },
-      { id: "nav-contact", title: "Contact", group: "Navigate", icon: Mail, run: () => scrollTo("contact") },
+      { id: "nav-home", title: "Home", group: "Navigate", icon: Home, run: () => go("/") },
+      { id: "nav-projects", title: "Work", group: "Navigate", icon: FolderGit2, run: () => go("/#projects") },
+      { id: "nav-contact", title: "Contact", group: "Navigate", icon: Mail, run: () => go("/#contact") },
 
       ...projects.map<CommandItem>((p) => ({
         id: `project-${p.id}`,
@@ -165,7 +164,7 @@ function PalettePanel({ onClose }: { onClose: () => void }) {
         },
       })),
     ];
-  }, [copied, isDark, onClose, scrollTo]);
+  }, [copied, isDark, onClose, go]);
 
   // Every typed word must match the title, subtitle or group
   const filtered = useMemo(() => {

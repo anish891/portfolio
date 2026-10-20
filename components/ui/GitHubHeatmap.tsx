@@ -13,7 +13,7 @@ interface Props {
 }
 
 // Distinct color stops (not opacity steps on one color) so each level
-// is actually distinguishable against the glass background, light or dark.
+// is actually distinguishable against the page background, light or dark.
 const levelStyles = [
   "bg-primary/[0.06] border-primary/10",   // 0 – empty
   "bg-primary/30 border-primary/30",       // 1 – low
@@ -150,14 +150,14 @@ export function GitHubHeatmap({ username }: Props) {
 
   if (loading) {
     return (
-      <div className="glass rounded-2xl p-4 h-28 animate-pulse" />
+      <div className="rounded-lg border border-border p-4 h-28 animate-pulse" />
     );
   }
 
   if (contributions.length === 0) return null;
 
   return (
-    <div className="glass rounded-2xl p-4 relative">
+    <div className="rounded-lg border border-border p-4 relative">
       {/* Floating tooltip — shows exact count for the hovered day */}
       {hovered && (
         <div

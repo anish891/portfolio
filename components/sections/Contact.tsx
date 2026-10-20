@@ -1,31 +1,14 @@
 "use client";
 
 import { useState } from "react";
-import { motion } from "framer-motion";
-import { useInView } from "@/hooks/useInView";
-import { SectionHeading } from "@/components/ui/SectionHeading";
-import { GlassCard } from "@/components/ui/GlassCard";
+import { Section } from "@/components/ui/Section";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { socialLinks } from "@/lib/data";
-import {
-  Mail,
-  Send,
-  Loader2,
-} from "lucide-react";
-import { Github, Linkedin, X } from "@/components/ui/icons";
+import { Loader2 } from "lucide-react";
 import { ToastContainer, ToastType } from "@/components/ui/Toast";
 
-const iconMap: Record<string, React.ElementType> = {
-  Github,
-  Linkedin,
-  X,
-  Mail,
-};
-
 export function Contact() {
-  const { ref, isInView } = useInView<HTMLDivElement>({ threshold: 0.1 });
   const [isSending, setIsSending] = useState(false);
   const [toasts, setToasts] = useState<Array<{ id: string; message: string; type: ToastType }>>([]);
 
@@ -106,156 +89,66 @@ export function Contact() {
 
   return (
     <>
-      <section id="contact" className="section-padding">
-        <div className="max-w-4xl mx-auto" ref={ref}>
-          <SectionHeading
-            index="03"
-            eyebrow="Contact"
-            align="center"
-            title={
-              <>
-                Let&apos;s work <span className="gradient-text">together</span>
-              </>
-            }
-            description="Got a project idea or just want to say hi? I'd love to hear from you."
+      <Section id="contact" title="Contact">
+        <p className="mb-6 text-sm leading-relaxed text-muted-foreground">
+          Got a project idea or just want to say hi? Send a note and I&apos;ll reply
+          soon.
+        </p>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <input
+            type="text"
+            name="botcheck"
+            tabIndex={-1}
+            autoComplete="off"
+            aria-hidden="true"
+            className="hidden"
           />
-
-          <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
-            {/* Contact Form */}
-            <motion.div
-              className="md:col-span-3"
-              initial={{ opacity: 0, x: -30 }}
-              animate={isInView ? { opacity: 1, x: 0 } : {}}
-              transition={{ duration: 0.6, delay: 0.2 }}
-            >
-              <GlassCard glowColor="purple" hover={false}>
-                <form onSubmit={handleSubmit} className="space-y-4">
-                  <input
-                    type="text"
-                    name="botcheck"
-                    tabIndex={-1}
-                    autoComplete="off"
-                    aria-hidden="true"
-                    className="hidden"
-                  />
-                  <div>
-                    <label
-                      htmlFor="contact-name"
-                      className="text-sm font-medium text-foreground mb-1.5 block"
-                    >
-                      Name
-                    </label>
-                    <Input
-                      id="contact-name"
-                      name="name"
-                      placeholder="Your name"
-                      required
-                      disabled={isSending}
-                      className="bg-primary/5 border-primary/10 focus:border-primary/40 placeholder:text-muted-foreground/50 text-foreground"
-                    />
-                  </div>
-                  <div>
-                    <label
-                      htmlFor="contact-email"
-                      className="text-sm font-medium text-foreground mb-1.5 block"
-                    >
-                      Email
-                    </label>
-                    <Input
-                      id="contact-email"
-                      name="email"
-                      type="email"
-                      placeholder="your@email.com"
-                      required
-                      disabled={isSending}
-                      className="bg-primary/5 border-primary/10 focus:border-primary/40 placeholder:text-muted-foreground/50 text-foreground"
-                    />
-                  </div>
-                  <div>
-                    <label
-                      htmlFor="contact-message"
-                      className="text-sm font-medium text-foreground mb-1.5 block"
-                    >
-                      Message
-                    </label>
-                    <Textarea
-                      id="contact-message"
-                      name="message"
-                      placeholder="Tell me about your project or just say hello..."
-                      rows={4}
-                      required
-                      disabled={isSending}
-                      className="bg-primary/5 border-primary/10 focus:border-primary/40 placeholder:text-muted-foreground/50 resize-none text-foreground"
-                    />
-                  </div>
-
-                  <Button
-                    type="submit"
-                    className="w-full bg-gradient-to-r from-primary to-cyan-400 text-white dark:text-black border-0 h-10 text-sm font-semibold cursor-pointer shadow-sm shadow-primary/20 hover:opacity-90 transition-opacity"
-                    disabled={isSending}
-                  >
-                    {isSending ? (
-                      <>
-                        <Loader2 className="size-4 mr-1.5 animate-spin" />
-                        Sending...
-                      </>
-                    ) : (
-                      <>
-                        <Send className="size-4 mr-1.5" />
-                        Send Message
-                      </>
-                    )}
-                  </Button>
-                </form>
-              </GlassCard>
-            </motion.div>
-
-          {/* Sidebar */}
-          <motion.div
-            className="md:col-span-2 space-y-4"
-            initial={{ opacity: 0, x: 30 }}
-            animate={isInView ? { opacity: 1, x: 0 } : {}}
-            transition={{ duration: 0.6, delay: 0.3 }}
-          >
-            {/* Social Links */}
-            <GlassCard hover={false}>
-              <h3 className="font-semibold text-foreground text-sm mb-4">
-                Connect
-              </h3>
-              <div className="space-y-2.5">
-                {socialLinks.map((link) => {
-                  const Icon = iconMap[link.icon] || Mail;
-                  return (
-                    <a
-                      key={link.name}
-                      href={link.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center gap-3 p-2.5 rounded-xl hover:bg-primary/5 transition-colors group"
-                    >
-                      <div className="p-2 rounded-lg bg-primary/5 group-hover:bg-primary/10 transition-colors">
-                        <Icon className="size-4 text-muted-foreground group-hover:text-primary transition-colors" />
-                      </div>
-                      <div>
-                        <div className="text-sm font-medium text-foreground">
-                          {link.name}
-                        </div>
-                        <div className="text-xs text-muted-foreground">
-                          {link.url.replace(/^(https?:\/\/|mailto:)/, "")}
-                        </div>
-                      </div>
-                    </a>
-                  );
-                })}
-              </div>
-            </GlassCard>
-
-
-          </motion.div>
-        </div>
-      </div>
-    </section>
-    <ToastContainer toasts={toasts} removeToast={removeToast} />
+          <div className="grid gap-4 sm:grid-cols-2">
+            <div>
+              <label htmlFor="contact-name" className="mb-1.5 block text-sm font-medium">
+                Name
+              </label>
+              <Input id="contact-name" name="name" required disabled={isSending} />
+            </div>
+            <div>
+              <label htmlFor="contact-email" className="mb-1.5 block text-sm font-medium">
+                Email
+              </label>
+              <Input
+                id="contact-email"
+                name="email"
+                type="email"
+                required
+                disabled={isSending}
+              />
+            </div>
+          </div>
+          <div>
+            <label htmlFor="contact-message" className="mb-1.5 block text-sm font-medium">
+              Message
+            </label>
+            <Textarea
+              id="contact-message"
+              name="message"
+              rows={4}
+              required
+              disabled={isSending}
+              className="resize-none"
+            />
+          </div>
+          <Button type="submit" disabled={isSending} className="cursor-pointer">
+            {isSending ? (
+              <>
+                <Loader2 className="mr-1.5 size-4 animate-spin" />
+                Sending...
+              </>
+            ) : (
+              "Send message"
+            )}
+          </Button>
+        </form>
+      </Section>
+      <ToastContainer toasts={toasts} removeToast={removeToast} />
     </>
   );
 }

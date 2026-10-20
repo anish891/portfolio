@@ -13,8 +13,6 @@ export interface Project {
   features: string[];
   techStack: string[];
   category: "ai" | "web" | "mobile";
-  gradient: string;
-  icon: string;
   deployedUrl?: string;
   githubUrl?: string;
   image?: string;
@@ -40,10 +38,8 @@ export interface SocialLink {
 // ─── Navigation ──────────────────────────────────────────────────────────────
 
 export const navItems: NavItem[] = [
-  { label: "Home", href: "#home" },
-  { label: "Tech", href: "#tech" },
-  { label: "Projects", href: "#projects" },
-  { label: "Contact", href: "#contact" },
+  { label: "Work", href: "/#projects" },
+  { label: "Contact", href: "/#contact" },
 ];
 
 // ─── Site ────────────────────────────────────────────────────────────────────
@@ -193,8 +189,6 @@ export const projects: Project[] = [
       "Vercel",
     ],
     category: "web",
-    gradient: "from-violet-500 via-purple-500 to-fuchsia-500",
-    icon: "TrendingUp",
     deployedUrl: "https://chaindeck.vercel.app/",
     image: "/projects/chaindeck.jpg",
     githubUrl: "https://github.com/anish891/chaindeck",
@@ -216,8 +210,6 @@ export const projects: Project[] = [
     ],
     techStack: ["JavaScript", "HTML5", "CSS3", "Vercel"],
     category: "web",
-    gradient: "from-blue-500 via-indigo-500 to-violet-500",
-    icon: "FileText",
     deployedUrl: "https://unbake.vercel.app/",
     image: "/projects/unbake.jpg",
     githubUrl: "https://github.com/anish891/unbake",
@@ -239,8 +231,6 @@ export const projects: Project[] = [
     ],
     techStack: ["Python", "FastAPI", "FalkorDB", "React", "TypeScript", "Docker"],
     category: "ai",
-    gradient: "from-cyan-500 via-blue-500 to-indigo-500",
-    icon: "ScanEye",
     deployedUrl: "https://graphsentinel-ai.vercel.app/",
     image: "/projects/graphsentinel.jpg",
     githubUrl: "https://github.com/anish891/graph_sentinel",

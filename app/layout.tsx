@@ -1,8 +1,6 @@
 import type { Metadata } from "next";
 import { Inter, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { ScrollProgress } from "@/components/ui/ScrollProgress";
-import { BackToTop } from "@/components/ui/BackToTop";
 import { siteConfig, heroContent, socialLinks } from "@/lib/data";
 import { Providers } from "@/components/Providers";
 
@@ -102,9 +100,7 @@ export default function RootLayout({
           Skip to content
         </a>
         <Providers>
-          <ScrollProgress />
           {children}
-          <BackToTop />
         </Providers>
       </body>
     </html>
