@@ -2,6 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 import matter from "gray-matter";
 import GithubSlugger from "github-slugger";
+import { projects } from "@/lib/data";
 
 const BLOG_DIR = path.join(process.cwd(), "content", "blog");
 
@@ -18,6 +19,7 @@ export interface PostMeta {
 
 export interface Post extends PostMeta {
   content: string;
+  draft: boolean;
 }
 
 function readingMinutes(text: string): number {
@@ -27,17 +29,37 @@ function readingMinutes(text: string): number {
 
 function parsePost(file: string): Post {
   const slug = file.replace(/\.mdx?$/, "");
+  const fail = (msg: string): never => {
+    throw new Error(`content/blog/${file}: ${msg}`);
+  };
+
   const raw = fs.readFileSync(path.join(BLOG_DIR, file), "utf8");
   const { data, content } = matter(raw);
+
+  if (!data.title) fail('missing "title" in frontmatter');
+  if (!data.description) fail('missing "description" in frontmatter');
+  const date = new Date(data.date);
+  if (!data.date || Number.isNaN(date.getTime())) {
+    fail('"date" is missing or not a valid date (use yyyy-mm-dd)');
+  }
+  if (data.project && !projects.some((p) => p.id === data.project)) {
+    fail(
+      `"project: ${data.project}" does not match any project id (${projects
+        .map((p) => p.id)
+        .join(", ")})`
+    );
+  }
+
   return {
     slug,
     title: String(data.title),
-    description: String(data.description ?? ""),
-    date: new Date(data.date).toISOString().slice(0, 10),
+    description: String(data.description),
+    date: date.toISOString().slice(0, 10),
     tags: Array.isArray(data.tags) ? data.tags.map(String) : [],
     project: data.project ? String(data.project) : undefined,
     readingMinutes: readingMinutes(content),
     content,
+    draft: Boolean(data.draft),
   };
 }
 
@@ -47,14 +69,8 @@ export function getAllPosts(): Post[] {
   return fs
     .readdirSync(BLOG_DIR)
     .filter((f) => /\.mdx?$/.test(f))
-    .map((file) => ({
-      post: parsePost(file),
-      draft: Boolean(
-        matter(fs.readFileSync(path.join(BLOG_DIR, file), "utf8")).data.draft
-      ),
-    }))
+    .map(parsePost)
     .filter((p) => !p.draft)
-    .map((p) => p.post)
     .sort((a, b) => b.date.localeCompare(a.date));
 }
 

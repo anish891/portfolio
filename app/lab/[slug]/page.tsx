@@ -10,6 +10,14 @@ interface Props {
 }
 
 export function generateStaticParams() {
+  const missing = labEntries.filter((e) => !labDemos[e.slug]);
+  if (missing.length) {
+    throw new Error(
+      `lib/lab.ts entries without a demo in components/lab/index.tsx: ${missing
+        .map((e) => e.slug)
+        .join(", ")}`
+    );
+  }
   return labEntries.map((e) => ({ slug: e.slug }));
 }
 
