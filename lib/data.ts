@@ -29,6 +29,17 @@ export interface Skill {
   icon?: string;
 }
 
+export interface TimelineEntry {
+  title: string;
+  organization: string;
+  url?: string;
+  location?: string;
+  start: string; // e.g. "Jun 2025"
+  end: string; // e.g. "Present"
+  highlights?: string[];
+  tags?: string[];
+}
+
 export interface SocialLink {
   name: string;
   url: string;
@@ -40,6 +51,7 @@ export interface SocialLink {
 export const navItems: NavItem[] = [
   { label: "Work", href: "/projects" },
   { label: "Blog", href: "/blog" },
+  { label: "About", href: "/about" },
   { label: "Contact", href: "/#contact" },
 ];
 
@@ -93,6 +105,17 @@ export const aboutContent = {
     "Open Source",
   ],
 };
+
+// ─── Experience & Education ──────────────────────────────────────────────────
+// Sections stay hidden while these arrays are empty. Newest entry first.
+// Example entry:
+//   { title: "Backend Developer", organization: "Acme", location: "Remote",
+//     start: "Jun 2025", end: "Present", highlights: ["Did X, which led to Y"],
+//     tags: ["Python", "FastAPI"] }
+
+export const experience: TimelineEntry[] = [];
+
+export const education: TimelineEntry[] = [];
 
 // ─── Tech Stack ──────────────────────────────────────────────────────────────
 
