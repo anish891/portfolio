@@ -23,7 +23,7 @@ import {
   CornerDownLeft,
 } from "lucide-react";
 import { Github, Linkedin, X } from "@/components/ui/icons";
-import { heroContent, projects, siteConfig, socialLinks } from "@/lib/data";
+import { heroContent, projects, socialLinks } from "@/lib/data";
 
 type Group = "Navigate" | "Projects" | "Actions" | "Links";
 
@@ -107,20 +107,16 @@ function PalettePanel({ onClose }: { onClose: () => void }) {
     const open = (url: string) => window.open(url, "_blank", "noopener,noreferrer");
     return [
       { id: "nav-home", title: "Home", group: "Navigate", icon: Home, run: () => go("/") },
-      { id: "nav-projects", title: "Work", group: "Navigate", icon: FolderGit2, run: () => go("/#projects") },
+      { id: "nav-projects", title: "Projects", group: "Navigate", icon: FolderGit2, run: () => go("/projects") },
       { id: "nav-contact", title: "Contact", group: "Navigate", icon: Mail, run: () => go("/#contact") },
 
       ...projects.map<CommandItem>((p) => ({
         id: `project-${p.id}`,
         title: p.title,
-        subtitle: p.deployedUrl ? "Open live site" : "Open source code",
+        subtitle: "Case study",
         group: "Projects",
         icon: ArrowUpRight,
-        external: true,
-        run: () => {
-          onClose();
-          open(p.deployedUrl ?? p.githubUrl ?? siteConfig.githubUrl);
-        },
+        run: () => go(`/projects/${p.id}`),
       })),
 
       {
