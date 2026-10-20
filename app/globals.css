@@ -223,6 +223,7 @@ section[id] {
 }
 
 .prose-minimal h2 {
+  scroll-margin-top: 5rem;
   margin-top: 2.5em;
   font-size: 1.25rem;
   font-weight: 600;

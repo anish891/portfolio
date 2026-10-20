@@ -1,6 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import matter from "gray-matter";
+import GithubSlugger from "github-slugger";
 
 const BLOG_DIR = path.join(process.cwd(), "content", "blog");
 
@@ -87,4 +88,27 @@ export function formatDate(iso: string, style: "short" | "long" = "long"): strin
     day: "numeric",
     timeZone: "UTC",
   });
+}
+
+export interface Heading {
+  id: string;
+  text: string;
+}
+
+/** Level-2 headings of a post, with the same ids rehype-slug gives them. */
+export function getHeadings(markdown: string): Heading[] {
+  const slugger = new GithubSlugger();
+  const withoutCode = markdown.replace(/^```[\s\S]*?^```/gm, "");
+  return [...withoutCode.matchAll(/^##\s+(.+?)\s*$/gm)].map((m) => {
+    const text = m[1].replace(/[`*_]/g, "");
+    return { id: slugger.slug(text), text };
+  });
+}
+
+/** Neighbouring posts in date order: `newer` is the next-published, `older` the previous. */
+export function getAdjacentPosts(slug: string): { newer?: Post; older?: Post } {
+  const posts = getAllPosts();
+  const i = posts.findIndex((p) => p.slug === slug);
+  if (i === -1) return {};
+  return { newer: posts[i - 1], older: posts[i + 1] };
 }
