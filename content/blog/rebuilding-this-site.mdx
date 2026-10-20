@@ -1,0 +1,33 @@
+---
+title: Rebuilding this site as a quiet place to read
+description: Why I stripped the portfolio down to one column, and how the blog, case studies and search fit together.
+date: 2026-10-20
+tags: [meta, nextjs]
+---
+
+The first version of this portfolio was a landing page: gradients, glass cards and a lot of motion. It looked fine in a screenshot and said very little.
+
+This version is built around the opposite idea. The work and the writing are the content, and the design stays out of their way.
+
+## What changed
+
+- **One column.** Everything lives in a single readable column, so the layout never competes with the text.
+- **Real pages.** Each project gets its own case study, and each case study can link to the posts that explain how it was built.
+- **A blog in the repo.** Posts are MDX files in `content/blog`. There is no CMS and no database. A post is a file, and publishing is a commit.
+- **Search anywhere.** Press `⌘K` to jump to a page, a project or a post.
+
+## How posts work
+
+A post is a Markdown file with a little frontmatter:
+
+```yaml
+title: My post
+description: One sentence for the list and for link previews.
+date: 2026-10-20
+tags: [nextjs]
+project: chaindeck
+```
+
+The `project` field ties a post to a project, so the project page can list its write-ups.
+
+Everything is rendered at build time. That keeps pages fast and keeps the hosting bill at zero.

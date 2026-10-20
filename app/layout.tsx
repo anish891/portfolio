@@ -3,6 +3,8 @@ import { Inter, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { siteConfig, heroContent, socialLinks } from "@/lib/data";
 import { Providers } from "@/components/Providers";
+import { Navbar } from "@/components/layout/Navbar";
+import { Footer } from "@/components/layout/Footer";
 
 const inter = Inter({
   variable: "--font-sans",
@@ -17,7 +19,10 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Anish Tejwani — AI • Full Stack • Product Engineering",
+  title: {
+    default: "Anish Tejwani — AI • Full Stack • Product Engineering",
+    template: "%s — Anish Tejwani",
+  },
   metadataBase: new URL(siteConfig.url),
   alternates: { canonical: "/" },
   description:
@@ -100,7 +105,9 @@ export default function RootLayout({
           Skip to content
         </a>
         <Providers>
+          <Navbar />
           {children}
+          <Footer />
         </Providers>
       </body>
     </html>

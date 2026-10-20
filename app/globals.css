@@ -209,3 +209,125 @@ section[id] {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* ─── Prose (blog / case studies) ────────────────────────────────────────────── */
+
+.prose-minimal {
+  font-size: 0.975rem;
+  line-height: 1.75;
+  color: color-mix(in oklab, var(--foreground) 88%, transparent);
+}
+
+.prose-minimal > * + * {
+  margin-top: 1.25em;
+}
+
+.prose-minimal h2 {
+  margin-top: 2.5em;
+  font-size: 1.25rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--foreground);
+}
+
+.prose-minimal h3 {
+  margin-top: 2em;
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--foreground);
+}
+
+.prose-minimal a {
+  color: var(--foreground);
+  text-decoration: underline;
+  text-decoration-color: var(--border);
+  text-underline-offset: 4px;
+  transition: text-decoration-color 0.15s;
+}
+
+.prose-minimal a:hover {
+  text-decoration-color: var(--foreground);
+}
+
+.prose-minimal ul,
+.prose-minimal ol {
+  padding-left: 1.25rem;
+}
+
+.prose-minimal ul {
+  list-style: disc;
+}
+
+.prose-minimal ol {
+  list-style: decimal;
+}
+
+.prose-minimal li + li {
+  margin-top: 0.4em;
+}
+
+.prose-minimal blockquote {
+  border-left: 2px solid var(--border);
+  padding-left: 1rem;
+  color: var(--muted-foreground);
+}
+
+.prose-minimal code {
+  border-radius: 0.25rem;
+  background: var(--muted);
+  padding: 0.15em 0.35em;
+  font-family: var(--font-mono);
+  font-size: 0.85em;
+}
+
+.prose-minimal pre {
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  padding: 1rem;
+  font-size: 0.8125rem;
+  line-height: 1.6;
+}
+
+.prose-minimal pre code {
+  background: none;
+  padding: 0;
+  font-size: inherit;
+}
+
+.prose-minimal hr {
+  border-color: var(--border);
+  margin-block: 2.5em;
+}
+
+.prose-minimal table {
+  display: block;
+  width: 100%;
+  overflow-x: auto;
+  font-size: 0.875rem;
+}
+
+.prose-minimal th,
+.prose-minimal td {
+  border-bottom: 1px solid var(--border);
+  padding: 0.5rem 0.75rem 0.5rem 0;
+  text-align: left;
+}
+
+.prose-minimal img {
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+}
+
+/* rehype-pretty-code: dual themes, switched by the .dark class */
+code[data-theme*=" "] span {
+  color: var(--shiki-light);
+}
+
+.dark code[data-theme*=" "] span {
+  color: var(--shiki-dark);
+}
+
+.prose-minimal pre {
+  background: var(--muted);
+}
