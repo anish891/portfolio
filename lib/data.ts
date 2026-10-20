@@ -53,7 +53,6 @@ export const navItems: NavItem[] = [
   { label: "Blog", href: "/blog" },
   { label: "Lab", href: "/lab" },
   { label: "About", href: "/about" },
-  { label: "Contact", href: "/#contact" },
 ];
 
 // ─── Site ────────────────────────────────────────────────────────────────────

@@ -33,7 +33,8 @@ export function Navbar({ posts }: { posts: PaletteProps["posts"] }) {
             href="/"
             className="text-sm font-semibold tracking-tight text-foreground"
           >
-            {heroContent.name}
+            {heroContent.name.split(" ")[0]}
+            <span className="hidden sm:inline"> {heroContent.name.split(" ").slice(1).join(" ")}</span>
           </Link>
 
           <nav aria-label="Main" className="flex items-center gap-1">
@@ -46,7 +47,7 @@ export function Navbar({ posts }: { posts: PaletteProps["posts"] }) {
                   href={item.href}
                   aria-current={active ? "page" : undefined}
                   className={cn(
-                    "rounded-md px-2.5 py-1.5 text-sm transition-colors hover:text-foreground",
+                    "rounded-md px-2 py-1.5 text-sm sm:px-2.5 transition-colors hover:text-foreground",
                     active ? "text-foreground" : "text-muted-foreground"
                   )}
                 >
