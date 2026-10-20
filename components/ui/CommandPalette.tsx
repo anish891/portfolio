@@ -21,6 +21,7 @@ import {
   Mail,
   FolderGit2,
   PenLine,
+  FlaskConical,
   User,
   CornerDownLeft,
 } from "lucide-react";
@@ -117,6 +118,7 @@ function PalettePanel({
       { id: "nav-home", title: "Home", group: "Navigate", icon: Home, run: () => go("/") },
       { id: "nav-projects", title: "Projects", group: "Navigate", icon: FolderGit2, run: () => go("/projects") },
       { id: "nav-blog", title: "Blog", group: "Navigate", icon: PenLine, run: () => go("/blog") },
+      { id: "nav-lab", title: "Lab", group: "Navigate", icon: FlaskConical, run: () => go("/lab") },
       { id: "nav-about", title: "About", group: "Navigate", icon: User, run: () => go("/about") },
       { id: "nav-contact", title: "Contact", group: "Navigate", icon: Mail, run: () => go("/#contact") },
 

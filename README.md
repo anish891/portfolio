@@ -21,6 +21,7 @@ All site content (projects, skills, links, experience, education) lives in [`lib
 | `/` | Intro, selected work, latest writing, experience, activity, stack, contact |
 | `/projects`, `/projects/[slug]` | Case study per project, with related posts |
 | `/blog`, `/blog/[slug]` | MDX blog, with RSS at `/feed.xml` |
+| `/lab`, `/lab/[slug]` | Small interactive demos (register new ones in `lib/lab.ts` and `components/lab`) |
 | `/about` | Background, interests, timelines, stack |
 
 `⌘K` / `Ctrl+K` opens a palette that searches pages, projects and posts.

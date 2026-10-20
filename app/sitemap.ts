@@ -1,4 +1,5 @@
 import type { MetadataRoute } from "next";
+import { labEntries } from "@/lib/lab";
 import { projects, siteConfig } from "@/lib/data";
 import { getAllPosts } from "@/lib/blog";
 
@@ -19,6 +20,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${siteConfig.url}/blog`, changeFrequency: "weekly", priority: 0.8 },
     { url: `${siteConfig.url}/projects`, changeFrequency: "monthly", priority: 0.8 },
     { url: `${siteConfig.url}/about`, changeFrequency: "yearly", priority: 0.5 },
+    { url: `${siteConfig.url}/lab`, changeFrequency: "monthly", priority: 0.5 },
+    ...labEntries.map((e) => ({
+      url: `${siteConfig.url}/lab/${e.slug}`,
+      changeFrequency: "yearly" as const,
+      priority: 0.4,
+    })),
     ...projectPages,
     ...posts,
   ];
