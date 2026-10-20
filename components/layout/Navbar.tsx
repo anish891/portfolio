@@ -7,9 +7,9 @@ import { Search } from "lucide-react";
 import { navItems, heroContent } from "@/lib/data";
 import { cn } from "@/lib/utils";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
-import { CommandPalette } from "@/components/ui/CommandPalette";
+import { CommandPalette, type PaletteProps } from "@/components/ui/CommandPalette";
 
-export function Navbar() {
+export function Navbar({ posts }: { posts: PaletteProps["posts"] }) {
   const pathname = usePathname();
   const [isCommandOpen, setIsCommandOpen] = useState(false);
 
@@ -69,6 +69,7 @@ export function Navbar() {
       <CommandPalette
         isOpen={isCommandOpen}
         onClose={() => setIsCommandOpen(false)}
+        posts={posts}
       />
     </>
   );

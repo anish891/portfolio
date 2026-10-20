@@ -1,0 +1,37 @@
+---
+title: "GraphSentinel: an investigation agent with a short leash"
+description: Designing an LLM agent for security work that can look at a lot and do almost nothing on its own.
+date: 2026-10-17
+tags: [ai, agents, security, graphs]
+project: graph-sentinel
+---
+
+[GraphSentinel AI](/projects/graph-sentinel) investigates a security alert by walking a graph in FalkorDB: identities, IPs, devices, services, vulnerabilities, indicators, evidence and past incidents. The interesting design question was not how to make the agent powerful. It was how to keep it safe to be wrong.
+
+## Let the model choose, not decide
+
+The LLM picks which graph tool to run next. That is all it does. Each tool is typed, bounded and read-only. The agent cannot write queries of its own and cannot change anything.
+
+The model can be Azure OpenAI, Groq, or an offline deterministic planner. The offline planner means the whole pipeline can be tested without a network or an API key.
+
+## Decisions belong to deterministic code
+
+Risk scoring and the list of eligible response actions come from deterministic engines, not from the model. A model can explain a score, but it cannot raise one. A human then approves any action, and the approvals use a four-eyes rule: an investigator cannot approve their own investigation.
+
+## Evidence, with receipts
+
+Every finding cites the graph records behind it. The agent collects supporting and contradicting evidence with provenance, so a reader can check the claim instead of trusting it.
+
+On the demo dataset it finds a 5-hop attack chain, links the alert to two earlier incidents through a shared indicator, and notices a prompt-injection attempt hidden in a helpdesk ticket. It flags the attempt and ignores the instructions inside it.
+
+## Memory that is also a graph
+
+Finished investigations are written back into the graph, so a later, related alert can recall them. Every step lands in a hash-chained audit trail, which makes after-the-fact tampering detectable.
+
+## Evaluating it
+
+An evaluation suite runs 14 scenarios against a real FalkorDB. All 14 pass, along with 64 of 64 checks. CI runs lint, type checks, tests, dependency audits, Trivy and gitleaks.
+
+## Limits, stated plainly
+
+All data is synthetic and all response actions are simulated. The hosted demo is a recorded replay of a real run, served as a static site. The full stack, a FastAPI backend and a React frontend with React Flow, runs locally with Docker Compose.

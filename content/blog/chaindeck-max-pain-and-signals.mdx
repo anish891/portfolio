@@ -1,0 +1,69 @@
+---
+title: "ChainDeck: turning an option chain into signals"
+description: How a raw NSE option chain becomes Max Pain, gamma exposure and a market regime, and why prefix sums and Welford's algorithm do the heavy lifting.
+date: 2026-10-19
+tags: [algorithms, javascript, finance]
+project: chaindeck
+---
+
+[ChainDeck](/projects/chaindeck) is a live dashboard for NIFTY 50 options traders. It pulls the option chain from NSE every minute and turns thousands of numbers into a handful of readable signals. This post covers the parts I enjoyed building most.
+
+## The data problem first
+
+NSE's option chain endpoint wants specific cookies and headers, and it does not like being hit by every visitor at once. ChainDeck puts a small caching Express proxy in front of it. The proxy coalesces concurrent requests, so ten people loading the page cost one upstream call.
+
+## Max Pain without the O(n²) loop
+
+Max Pain is the strike at which option buyers collectively lose the most at expiry. The obvious implementation checks every candidate strike against every other strike, which is O(n²).
+
+The payout at a candidate strike `K` splits into two sums: calls struck below `K` and puts struck above it. Each sum is a weighted prefix or suffix of the chain, so two passes of running totals replace the nested loop.
+
+```js
+function maxPain(strikes, callOI, putOI) {
+  const n = strikes.length;
+
+  // Prefix sums of call OI and call OI * strike (strikes below K)
+  const cOI = new Array(n + 1).fill(0);
+  const cOIx = new Array(n + 1).fill(0);
+  for (let i = 0; i < n; i++) {
+    cOI[i + 1] = cOI[i] + callOI[i];
+    cOIx[i + 1] = cOIx[i] + callOI[i] * strikes[i];
+  }
+
+  // Suffix sums of put OI and put OI * strike (strikes above K)
+  const pOI = new Array(n + 1).fill(0);
+  const pOIx = new Array(n + 1).fill(0);
+  for (let i = n - 1; i >= 0; i--) {
+    pOI[i] = pOI[i + 1] + putOI[i];
+    pOIx[i] = pOIx[i + 1] + putOI[i] * strikes[i];
+  }
+
+  let best = { strike: strikes[0], pain: Infinity };
+  for (let k = 0; k < n; k++) {
+    const K = strikes[k];
+    const callPain = K * cOI[k] - cOIx[k];
+    const putPain = pOIx[k + 1] - K * pOI[k + 1];
+    const pain = callPain + putPain;
+    if (pain < best.pain) best = { strike: K, pain };
+  }
+  return best.strike;
+}
+```
+
+The result is identical to the brute-force version, and a test suite checks that against random chains.
+
+## Spotting unusual flow
+
+To flag an open-interest change as unusual, you need a running mean and variance without storing the whole history. Welford's online algorithm gives both in one pass and stays numerically stable, which a naive sum-of-squares does not.
+
+## Days that looked like today
+
+Each trading session is summarised as a feature vector, such as PCR, skew and range. Cosine similarity between today's vector and the saved sessions surfaces the days that behaved similarly, which is a useful sanity check next to the composite regime.
+
+## Storage
+
+Snapshots land on Upstash Redis over REST about once a minute. That powers the timeline chart, the 5-minute and 15-minute rate-of-change figures, and end-of-day summaries. With no database configured, the app falls back to an in-memory store, so the project still runs from a fresh clone.
+
+## Hardening
+
+The app ships with a strict Content-Security-Policy, no third-party assets, input validation, rate limiting and authenticated cron endpoints. It is a small app, but it talks to the internet and takes input, so it gets the same care as a bigger one.

@@ -1,0 +1,35 @@
+---
+title: "Unbake: recovering spreadsheet formulas from plain values"
+description: What happens when a system exports numbers with the formulas stripped out, and how RANSAC and a blame solver can work backwards.
+date: 2026-10-18
+tags: [algorithms, javascript, privacy]
+project: unbake
+---
+
+Billing systems, banks and payroll tools often export a spreadsheet as plain values. Every formula is replaced by the number it happened to produce. [Unbake](/projects/unbake) works backwards from those numbers to the formulas that must have made them, then uses the formulas to find the cells someone typed wrong.
+
+## Fitting formulas to numbers
+
+For each numeric column, Unbake builds a library of candidate terms: other columns, products, ratios, the previous row, and lookup tables keyed by text columns. It then searches for a combination of terms that explains the column.
+
+Real data has mistakes in it, and a plain least-squares fit gets dragged around by a single bad cell. So the fit uses RANSAC: repeatedly fit on small random samples, count how many rows agree, and keep the model with the most support. A few wrong cells cannot bend the answer, and they show up as the rows that disagree.
+
+## Snapping to the simple number
+
+A fit might return a coefficient of `0.0824999`. Nobody wrote that. Unbake snaps each coefficient to the simplest number that loses no rows, so it becomes `0.0825`. The recovered formula reads like something a person would have typed.
+
+## Beyond arithmetic
+
+The same machinery finds rate tables, running totals and threshold `IF` rules such as overtime and tiered commission.
+
+## Blaming a cell
+
+Once the formulas are known, rows that break them are suspects. The blame solver picks the single cell whose correction repairs the most broken calculations without breaking any that hold. It can also say what kind of slip it likely was, such as swapped digits or a slipped decimal point.
+
+## Why it runs in the browser
+
+Spreadsheets like these are usually sensitive. Unbake does everything locally with plain JavaScript and a Web Worker. There is no upload, no server and no AI service, and the deployment sets a strict Content-Security-Policy. A command-line version exists too.
+
+## Testing something that guesses
+
+A tool that infers formulas can fail by being wrong in a confident way, so the 22 tests include two checks aimed at that. A fuzz test recovers 12 random hidden formulas. Another feeds in random data and asserts that no formula is found.

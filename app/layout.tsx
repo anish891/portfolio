@@ -3,6 +3,7 @@ import { Inter, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { siteConfig, heroContent, socialLinks } from "@/lib/data";
 import { Providers } from "@/components/Providers";
+import { getAllPosts } from "@/lib/blog";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 
@@ -105,7 +106,7 @@ export default function RootLayout({
           Skip to content
         </a>
         <Providers>
-          <Navbar />
+          <Navbar posts={getAllPosts().map(({ slug, title, description }) => ({ slug, title, description }))} />
           {children}
           <Footer />
         </Providers>

@@ -15,17 +15,17 @@ export default function OpengraphImage() {
           flexDirection: "column",
           justifyContent: "center",
           padding: 80,
-          background: "linear-gradient(135deg, #0b0b14 0%, #1a1238 100%)",
-          color: "white",
+          background: "#fafafa",
+          color: "#171717",
         }}
       >
-        <div style={{ fontSize: 28, color: "#22d3ee", marginBottom: 24 }}>
+        <div style={{ fontSize: 28, color: "#737373", marginBottom: 24 }}>
           anishtejwani.dev
         </div>
         <div style={{ fontSize: 88, fontWeight: 800, letterSpacing: -2 }}>
           Anish Tejwani
         </div>
-        <div style={{ fontSize: 36, color: "#a1a1c0", marginTop: 20 }}>
+        <div style={{ fontSize: 36, color: "#737373", marginTop: 20 }}>
           AI Engineer · Full-Stack Developer · Product Engineering
         </div>
       </div>

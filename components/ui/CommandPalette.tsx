@@ -27,7 +27,7 @@ import {
 import { Github, Linkedin, X } from "@/components/ui/icons";
 import { heroContent, projects, socialLinks } from "@/lib/data";
 
-type Group = "Navigate" | "Projects" | "Actions" | "Links";
+type Group = "Navigate" | "Projects" | "Posts" | "Actions" | "Links";
 
 interface CommandItem {
   id: string;
@@ -40,7 +40,7 @@ interface CommandItem {
   run: () => void;
 }
 
-const GROUP_ORDER: Group[] = ["Navigate", "Projects", "Actions", "Links"];
+const GROUP_ORDER: Group[] = ["Navigate", "Projects", "Posts", "Actions", "Links"];
 
 const socialIcon: Record<string, React.ElementType> = {
   Github,
@@ -58,23 +58,29 @@ function subscribeTheme(cb: () => void) {
   return () => observer.disconnect();
 }
 
-export function CommandPalette({
-  isOpen,
-  onClose,
-}: {
+export interface PaletteProps {
   isOpen: boolean;
   onClose: () => void;
-}) {
+  posts: { slug: string; title: string; description: string }[];
+}
+
+export function CommandPalette({ isOpen, onClose, posts }: PaletteProps) {
   // The inner panel mounts only while open, so query/selection reset for free
   // and AnimatePresence can play the exit animation.
   return (
     <AnimatePresence>
-      {isOpen && <PalettePanel onClose={onClose} />}
+      {isOpen && <PalettePanel onClose={onClose} posts={posts} />}
     </AnimatePresence>
   );
 }
 
-function PalettePanel({ onClose }: { onClose: () => void }) {
+function PalettePanel({
+  onClose,
+  posts,
+}: {
+  onClose: () => void;
+  posts: PaletteProps["posts"];
+}) {
   const [query, setQuery] = useState("");
   const [selected, setSelected] = useState(0);
   const [copied, setCopied] = useState(false);
@@ -123,6 +129,15 @@ function PalettePanel({ onClose }: { onClose: () => void }) {
         run: () => go(`/projects/${p.id}`),
       })),
 
+      ...posts.map<CommandItem>((post) => ({
+        id: `post-${post.slug}`,
+        title: post.title,
+        subtitle: post.description,
+        group: "Posts",
+        icon: PenLine,
+        run: () => go(`/blog/${post.slug}`),
+      })),
+
       {
         id: "copy-email",
         title: copied ? "Email copied" : "Copy email address",
@@ -164,7 +179,7 @@ function PalettePanel({ onClose }: { onClose: () => void }) {
         },
       })),
     ];
-  }, [copied, isDark, onClose, go]);
+  }, [copied, isDark, onClose, go, posts]);
 
   // Every typed word must match the title, subtitle or group
   const filtered = useMemo(() => {
@@ -247,7 +262,7 @@ function PalettePanel({ onClose }: { onClose: () => void }) {
               setQuery(e.target.value);
               setSelected(0);
             }}
-            placeholder="Search pages, projects, actions…"
+            placeholder="Search pages, projects, posts…"
             className="h-14 w-full bg-transparent text-[15px] text-foreground outline-none placeholder:text-muted-foreground"
           />
           <kbd className="hidden rounded-md border border-border bg-muted px-1.5 py-0.5 font-mono text-[10px] text-muted-foreground sm:block">
