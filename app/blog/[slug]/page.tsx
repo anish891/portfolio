@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import { formatDate, getAllPosts, getPost } from "@/lib/blog";
+import { TagList } from "@/components/ui/TagList";
 import { PostBody } from "@/components/ui/PostBody";
 import { heroContent, siteConfig } from "@/lib/data";
 
@@ -67,8 +68,12 @@ export default async function PostPage({ params }: Props) {
           <time dateTime={post.date}>{formatDate(post.date)}</time>
           {" · "}
           {post.readingMinutes} min read
-          {post.tags.length > 0 && <> {" · "}{post.tags.join(", ")}</>}
         </p>
+        {post.tags.length > 0 && (
+          <div className="mt-3">
+            <TagList tags={post.tags} />
+          </div>
+        )}
       </header>
 
       <article className="mt-10">

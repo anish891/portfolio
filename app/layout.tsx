@@ -106,7 +106,7 @@ export default function RootLayout({
           Skip to content
         </a>
         <Providers>
-          <Navbar posts={getAllPosts().map(({ slug, title, description }) => ({ slug, title, description }))} />
+          <Navbar posts={getAllPosts().map(({ slug, title, description, tags }) => ({ slug, title, description, tags }))} />
           {children}
           <Footer />
         </Providers>

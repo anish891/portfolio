@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-import { getAllPosts } from "@/lib/blog";
+import { getAllPosts, getAllTags } from "@/lib/blog";
+import { TagList } from "@/components/ui/TagList";
 import { PostList } from "@/components/ui/PostList";
 
 export const metadata: Metadata = {
@@ -11,6 +12,7 @@ export const metadata: Metadata = {
 
 export default function BlogIndex() {
   const posts = getAllPosts();
+  const tags = getAllTags();
   return (
     <main id="main" className="container-prose pt-16">
       <h1 className="text-2xl font-semibold tracking-tight">Blog</h1>
@@ -23,6 +25,11 @@ export default function BlogIndex() {
           RSS
         </a>
       </p>
+      {tags.length > 0 && (
+        <div className="mt-6">
+          <TagList tags={tags.map((t) => t.tag)} />
+        </div>
+      )}
       <div className="mt-10">
         {posts.length ? (
           <PostList posts={posts} />

@@ -38,6 +38,8 @@ interface CommandItem {
   icon: React.ElementType;
   external?: boolean;
   keepOpen?: boolean;
+  /** Extra words that match the search but are not displayed */
+  keywords?: string;
   run: () => void;
 }
 
@@ -62,7 +64,7 @@ function subscribeTheme(cb: () => void) {
 export interface PaletteProps {
   isOpen: boolean;
   onClose: () => void;
-  posts: { slug: string; title: string; description: string }[];
+  posts: { slug: string; title: string; description: string; tags: string[] }[];
 }
 
 export function CommandPalette({ isOpen, onClose, posts }: PaletteProps) {
@@ -136,6 +138,7 @@ function PalettePanel({
         title: post.title,
         subtitle: post.description,
         group: "Posts",
+        keywords: post.tags.join(" "),
         icon: PenLine,
         run: () => go(`/blog/${post.slug}`),
       })),
@@ -188,7 +191,7 @@ function PalettePanel({
     const words = query.toLowerCase().split(/\s+/).filter(Boolean);
     if (words.length === 0) return commands;
     return commands.filter((c) => {
-      const hay = `${c.title} ${c.subtitle ?? ""} ${c.group}`.toLowerCase();
+      const hay = `${c.title} ${c.subtitle ?? ""} ${c.group} ${c.keywords ?? ""}`.toLowerCase();
       return words.every((w) => hay.includes(w));
     });
   }, [commands, query]);
