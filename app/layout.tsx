@@ -25,7 +25,7 @@ export const metadata: Metadata = {
     template: "%s — Anish Tejwani",
   },
   metadataBase: new URL(siteConfig.url),
-  alternates: { canonical: "/" },
+  alternates: { canonical: "/", types: { "application/rss+xml": "/feed.xml" } },
   description:
     "Personal portfolio of Anish Tejwani — AI Engineer, Full-Stack Developer, and Builder. Building intelligent software systems, AI-powered applications, and scalable web platforms.",
   keywords: [
