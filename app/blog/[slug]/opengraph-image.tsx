@@ -13,11 +13,13 @@ export function generateStaticParams() {
 export default async function Image({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const post = getPost(slug);
+  // Unknown slugs get a real 404 instead of a cached generic image.
+  if (!post) return new Response("Not found", { status: 404 });
   return new ImageResponse(
     ogFrame({
       label: "Flight log",
-      title: post?.title ?? "Blog",
-      titleSize: (post?.title.length ?? 0) > 50 ? 60 : 72,
+      title: post.title,
+      titleSize: post.title.length > 50 ? 60 : 72,
       footer: `${siteConfig.url.replace("https://", "")}/blog`,
     }),
     size

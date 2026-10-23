@@ -39,7 +39,7 @@ export default function BlogIndex() {
       )}
       <div className="mt-10">
         {posts.length ? (
-          <PostList posts={posts} />
+          <PostList posts={posts} headingLevel="h2" />
         ) : (
           <p className="text-sm text-muted-foreground">Nothing here yet.</p>
         )}

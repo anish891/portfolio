@@ -85,7 +85,7 @@ function PalettePanel({
 }) {
   const [query, setQuery] = useState("");
   const [selected, setSelected] = useState(0);
-  const [copied, setCopied] = useState(false);
+  const [copyState, setCopyState] = useState<"idle" | "copied" | "failed">("idle");
   const listRef = useRef<HTMLDivElement>(null);
 
   const isDark = useSyncExternalStore(
@@ -143,15 +143,30 @@ function PalettePanel({
 
       {
         id: "copy-email",
-        title: copied ? "Email copied" : "Copy email address",
+        title:
+          copyState === "copied"
+            ? "Email copied"
+            : copyState === "failed"
+              ? "Couldn't copy, select the address instead"
+              : "Copy email address",
         subtitle: heroContent.email,
         group: "Actions",
-        icon: copied ? Check : Copy,
+        icon: copyState === "copied" ? Check : Copy,
         keepOpen: true,
         run: () => {
-          navigator.clipboard?.writeText(heroContent.email).catch(() => {});
-          setCopied(true);
-          setTimeout(onClose, 700);
+          // Only report success once the browser confirms the write (it can be refused).
+          const write = navigator.clipboard?.writeText(heroContent.email);
+          if (!write) {
+            setCopyState("failed");
+            return;
+          }
+          write.then(
+            () => {
+              setCopyState("copied");
+              setTimeout(onClose, 700);
+            },
+            () => setCopyState("failed")
+          );
         },
       },
       {
@@ -182,7 +197,7 @@ function PalettePanel({
         },
       })),
     ];
-  }, [copied, isDark, onClose, go, posts]);
+  }, [copyState, isDark, onClose, go, posts]);
 
   // Every typed word must match the title, subtitle or group
   const filtered = useMemo(() => {

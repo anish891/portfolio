@@ -22,9 +22,13 @@ const levelStyles = [
   "bg-primary border-primary",             // 4 – max
 ];
 
+// Dates arrive as plain calendar days ("2026-10-23"). Read and format them in UTC so the day
+// never shifts for visitors west of Greenwich (a bare date string is parsed as UTC midnight).
+const utcDate = (dateStr: string) => new Date(`${dateStr}T00:00:00Z`);
+
 function formatTooltipDate(dateStr: string): string {
-  const d = new Date(dateStr);
-  const day = d.getDate();
+  const d = utcDate(dateStr);
+  const day = d.getUTCDate();
   const suffix =
     day % 10 === 1 && day !== 11
       ? "st"
@@ -33,7 +37,7 @@ function formatTooltipDate(dateStr: string): string {
         : day % 10 === 3 && day !== 13
           ? "rd"
           : "th";
-  const month = d.toLocaleString("default", { month: "long" });
+  const month = d.toLocaleString("default", { month: "long", timeZone: "UTC" });
   return `${month} ${day}${suffix}`;
 }
 
@@ -97,12 +101,12 @@ export function GitHubHeatmap({ username }: Props) {
           // Take last 371 days (53 full weeks)
           const last = all.slice(-371);
           const sum = last.reduce((acc, c) => acc + c.count, 0);
-          const first = last[0]?.date ? new Date(last[0].date) : null;
+          const first = last[0]?.date ? utcDate(last[0].date) : null;
           const end = last[last.length - 1]?.date
-            ? new Date(last[last.length - 1].date)
+            ? utcDate(last[last.length - 1].date)
             : null;
           if (first && end) {
-            setYearLabel(`${first.getFullYear()}–${String(end.getFullYear()).slice(2)}`);
+            setYearLabel(`${first.getUTCFullYear()}–${String(end.getUTCFullYear()).slice(2)}`);
           }
           if (last.length > 0) {
             setContributions(last);
@@ -122,6 +126,22 @@ export function GitHubHeatmap({ username }: Props) {
     };
   }, [username]);
 
+  const tipTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  useEffect(() => () => {
+    if (tipTimer.current) clearTimeout(tipTimer.current);
+  }, []);
+
+  const showTip = (cell: HTMLElement, day: Contribution) => {
+    const rect = cell.getBoundingClientRect();
+    const parentRect = cell.closest(".relative")?.getBoundingClientRect();
+    if (!parentRect) return;
+    setHovered({
+      day,
+      x: rect.left - parentRect.left + rect.width / 2,
+      y: rect.top - parentRect.top,
+    });
+  };
+
   // Group flat list into weeks (columns of 7 days)
   const weeks: Contribution[][] = [];
   for (let i = 0; i < contributions.length; i += 7) {
@@ -140,10 +160,10 @@ export function GitHubHeatmap({ username }: Props) {
     let lastX = -Infinity;
     weeks.forEach((week, wi) => {
       if (!week[0]) return;
-      const d = new Date(week[0].date);
+      const d = utcDate(week[0].date);
       const prev =
-        wi > 0 && weeks[wi - 1][0] ? new Date(weeks[wi - 1][0].date) : null;
-      const isMonthChange = !prev || prev.getMonth() !== d.getMonth();
+        wi > 0 && weeks[wi - 1][0] ? utcDate(weeks[wi - 1][0].date) : null;
+      const isMonthChange = !prev || prev.getUTCMonth() !== d.getUTCMonth();
       if (!isMonthChange) return;
 
       const x = colX(wi);
@@ -154,7 +174,7 @@ export function GitHubHeatmap({ username }: Props) {
       }
       monthLabels.push({
         x,
-        text: d.toLocaleString("default", { month: "short" }).toUpperCase(),
+        text: d.toLocaleString("default", { month: "short", timeZone: "UTC" }).toUpperCase(),
       });
       lastX = x;
     });
@@ -167,6 +187,10 @@ export function GitHubHeatmap({ username }: Props) {
   }
 
   if (contributions.length === 0) return null;
+
+  // The cells are visual and mouse-driven, so give assistive technology a text summary instead.
+  const busiest = contributions.reduce((best, d) => (d.count > best.count ? d : best), contributions[0]);
+  const summary = `${total.toLocaleString()} contributions in the last year. Busiest day: ${formatTooltipDate(busiest.date)}, ${busiest.count} contributions.`;
 
   return (
     <div className="rounded-lg border border-border p-4 relative">
@@ -188,7 +212,7 @@ export function GitHubHeatmap({ username }: Props) {
         </div>
       )}
 
-      <div ref={gridWrapRef}>
+      <div ref={gridWrapRef} role="img" aria-label={summary}>
         {/* Month labels row — fixed height, labels float at their
             actual pixel position rather than being squeezed into a
             cellSize-wide column, so they stay legible at any cell size. */}
@@ -230,17 +254,12 @@ export function GitHubHeatmap({ username }: Props) {
                 return (
                   <div
                     key={di}
-                    onMouseEnter={(e) => {
-                      const rect = e.currentTarget.getBoundingClientRect();
-                      const parentRect = e.currentTarget
-                        .closest(".relative")
-                        ?.getBoundingClientRect();
-                      if (!parentRect) return;
-                      setHovered({
-                        day,
-                        x: rect.left - parentRect.left + rect.width / 2,
-                        y: rect.top - parentRect.top,
-                      });
+                    onMouseEnter={(e) => showTip(e.currentTarget, day)}
+                    // Touch screens have no hover: a tap shows the tooltip and it fades after a moment.
+                    onClick={(e) => {
+                      showTip(e.currentTarget, day);
+                      if (tipTimer.current) clearTimeout(tipTimer.current);
+                      tipTimer.current = setTimeout(() => setHovered(null), 3500);
                     }}
                     onMouseLeave={() => setHovered(null)}
                     style={{

@@ -25,7 +25,10 @@ interface Day {
 /** Straight from GitHub's GraphQL API: accurate to within minutes. Needs GITHUB_TOKEN. */
 async function fromGitHub(token: string): Promise<Day[]> {
   const to = new Date();
-  const from = new Date(to.getTime() - 365 * 24 * 60 * 60 * 1000);
+  // Start on the first Sunday within the last 364 days: the heatmap draws whole weeks, and
+  // GitHub limits a request to one year, so this shows every day it fetches (none are dropped).
+  const from = new Date(Date.UTC(to.getUTCFullYear(), to.getUTCMonth(), to.getUTCDate() - 364));
+  from.setUTCDate(from.getUTCDate() + ((7 - from.getUTCDay()) % 7));
   const res = await fetch("https://api.github.com/graphql", {
     method: "POST",
     headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },

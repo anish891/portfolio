@@ -57,9 +57,14 @@ export function Contact() {
       return;
     }
 
+    // Don't leave the button disabled forever if the service never answers.
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 15_000);
+
     try {
       const response = await fetch("https://api.web3forms.com/submit", {
         method: "POST",
+        signal: controller.signal,
         headers: {
           "Content-Type": "application/json",
           "Accept": "application/json",
@@ -74,17 +79,34 @@ export function Contact() {
         }),
       });
 
-      const data = await response.json();
+      // An error page (for example a 429 or 5xx) is not JSON, so don't let parsing failures
+      // look like a network problem.
+      let data: { success?: boolean; message?: string } | null = null;
+      try {
+        data = await response.json();
+      } catch {
+        data = null;
+      }
 
-      if (data.success) {
+      if (data?.success) {
         addToast("Message sent successfully! I will get back to you soon.", "success");
         form.reset();
+      } else if (!data && !response.ok) {
+        addToast(
+          `The message service returned an error (${response.status}). Please try again later or email me directly.`,
+          "error"
+        );
       } else {
-        addToast(data.message || "Something went wrong. Please try again.", "error");
+        addToast(data?.message || "Something went wrong. Please try again.", "error");
       }
-    } catch {
-      addToast("Network error. Please check your connection and try again.", "error");
+    } catch (err) {
+      if (err instanceof DOMException && err.name === "AbortError") {
+        addToast("The request timed out. Please try again or email me directly.", "error");
+      } else {
+        addToast("Network error. Please check your connection and try again.", "error");
+      }
     } finally {
+      clearTimeout(timeout);
       setIsSending(false);
     }
   };

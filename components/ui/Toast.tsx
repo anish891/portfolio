@@ -22,6 +22,8 @@ export function Toast({ message, type, onClose }: ToastProps) {
 
   return (
     <motion.div
+      // Errors interrupt (alert); confirmations wait their turn (status).
+      role={type === "error" ? "alert" : "status"}
       initial={{ opacity: 0, y: -20, scale: 0.95 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
       exit={{ opacity: 0, y: -20, scale: 0.95 }}
@@ -58,7 +60,10 @@ interface ToastContainerProps {
 
 export function ToastContainer({ toasts, removeToast }: ToastContainerProps) {
   return (
-    <div className="fixed top-6 right-6 z-50 flex flex-col gap-3 w-full max-w-sm pointer-events-none">
+    <div
+      aria-live="polite"
+      className="fixed top-6 right-6 z-50 flex flex-col gap-3 w-full max-w-sm pointer-events-none"
+    >
       <AnimatePresence>
         {toasts.map((toast) => (
           <div key={toast.id} className="pointer-events-auto w-full">

@@ -441,3 +441,9 @@ main {
 .prose-minimal li::marker {
   color: var(--signal);
 }
+
+/* The light high-contrast code theme draws comments in #66707B, which is just under 4.5:1 on
+   the code background. Darken only that colour, in light mode. */
+.prose-minimal code span[style*="--shiki-light:#66707B"] {
+  --shiki-light: #4f5862 !important;
+}

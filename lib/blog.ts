@@ -38,7 +38,9 @@ export interface Post extends PostMeta {
 }
 
 function readingMinutes(text: string): number {
-  const words = text.trim().split(/\s+/).length;
+  // Code blocks are skimmed, not read word by word, so they are left out of the estimate.
+  const prose = text.replace(/^```[\s\S]*?^```/gm, "");
+  const words = prose.trim().split(/\s+/).length;
   return Math.max(1, Math.round(words / 220));
 }
 

@@ -86,7 +86,7 @@ export default function ProjectsIndex() {
                     {posts.length > 0 && (
                       <Link
                         href={`/projects/${p.id}#flight-log`}
-                        className="label-mono transition-colors hover:text-foreground"
+                        className="label-mono inline-block py-1.5 transition-colors hover:text-foreground"
                       >
                         {posts.length} {posts.length === 1 ? "write-up" : "write-ups"} →
                       </Link>

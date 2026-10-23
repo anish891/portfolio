@@ -1,7 +1,14 @@
 import Link from "next/link";
 import { formatDate, type PostMeta } from "@/lib/blog";
 
-export function PostList({ posts }: { posts: PostMeta[] }) {
+export function PostList({
+  posts,
+  headingLevel: Heading = "h3",
+}: {
+  posts: PostMeta[];
+  /** Use "h2" on pages whose only heading above the list is the page's h1. */
+  headingLevel?: "h2" | "h3";
+}) {
   return (
     <ul className="divide-y divide-dashed divide-border">
       {posts.map((post, i) => (
@@ -15,9 +22,9 @@ export function PostList({ posts }: { posts: PostMeta[] }) {
             </span>
             <div>
               <div className="flex items-baseline justify-between gap-4">
-                <h3 className="font-display text-lg font-semibold tracking-tight group-hover:underline group-hover:decoration-signal group-hover:decoration-2 group-hover:underline-offset-4">
+                <Heading className="font-display text-lg font-semibold tracking-tight group-hover:underline group-hover:decoration-signal group-hover:decoration-2 group-hover:underline-offset-4">
                   {post.title}
-                </h3>
+                </Heading>
                 <time
                   dateTime={post.date}
                   className="shrink-0 font-mono text-xs text-muted-foreground"
