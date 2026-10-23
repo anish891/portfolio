@@ -19,7 +19,7 @@ export default function ProjectsIndex() {
       </p>
 
       <ul className="mt-10 space-y-12">
-        {projects.map((p) => {
+        {projects.map((p, index) => {
           const posts = getPostsForProject(p.id);
           return (
             <li key={p.id}>
@@ -33,6 +33,7 @@ export default function ProjectsIndex() {
                     src={p.image}
                     alt={`${p.title} preview`}
                     fill
+                    {...(index === 0 ? { preload: true, fetchPriority: "high" as const } : {})}
                     sizes="(min-width: 672px) 624px, 100vw"
                     className="object-cover"
                   />

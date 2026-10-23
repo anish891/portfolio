@@ -17,7 +17,10 @@ export function PostBody({ source }: { source: string }) {
               rehypeSlug,
               [
                 rehypePrettyCode,
-                { theme: { light: "github-light", dark: "github-dark" }, keepBackground: false },
+                {
+                  theme: { light: "github-light-high-contrast", dark: "github-dark-high-contrast" },
+                  keepBackground: false,
+                },
               ],
             ],
           },

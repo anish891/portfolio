@@ -62,7 +62,8 @@ export default async function ProjectPage({ params }: Props) {
             src={project.image}
             alt={`${project.title} preview`}
             fill
-            priority
+            preload
+            fetchPriority="high"
             sizes="(min-width: 672px) 624px, 100vw"
             className="object-cover"
           />

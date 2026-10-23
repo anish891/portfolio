@@ -19,7 +19,7 @@ export function Projects() {
       }
     >
       <ul className="space-y-10">
-        {projects.map((project) => (
+        {projects.map((project, index) => (
           <li key={project.id}>
             {project.image && (
               <Link
@@ -31,6 +31,8 @@ export function Projects() {
                   src={project.image}
                   alt={`${project.title} preview`}
                   fill
+                  // The first card is the largest paint on the home page: load it eagerly.
+                  {...(index === 0 ? { preload: true, fetchPriority: "high" as const } : {})}
                   sizes="(min-width: 672px) 624px, 100vw"
                   className="object-cover transition-transform duration-500 hover:scale-[1.02]"
                 />

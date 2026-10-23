@@ -184,7 +184,7 @@ export function GitHubHeatmap({ username }: Props) {
           {monthLabels.map(({ x, text }, i) => (
             <span
               key={i}
-              className="absolute top-0 text-[9px] font-semibold text-muted-foreground/60 leading-none whitespace-nowrap"
+              className="absolute top-0 text-[10px] font-medium text-muted-foreground leading-none whitespace-nowrap"
               style={{ left: x }}
             >
               {text}
@@ -247,12 +247,12 @@ export function GitHubHeatmap({ username }: Props) {
 
       {/* Footer — count + legend */}
       <div className="flex items-center justify-between mt-3">
-        <span className="text-[10px] text-muted-foreground/60 font-medium">
+        <span className="text-[10px] text-muted-foreground font-medium">
           <span className="text-foreground font-bold">{total.toLocaleString()}</span>{" "}
           CONTRIBUTIONS · {yearLabel}
         </span>
         <div className="flex items-center gap-[3px]">
-          <span className="text-[9px] text-muted-foreground/50 mr-1">LESS</span>
+          <span className="text-[10px] text-muted-foreground mr-1">LESS</span>
           {([0, 1, 2, 3, 4] as const).map((l) => (
             <div
               key={l}
@@ -260,7 +260,7 @@ export function GitHubHeatmap({ username }: Props) {
               className={`border ${levelStyles[l]}`}
             />
           ))}
-          <span className="text-[9px] text-muted-foreground/50 ml-1">MORE</span>
+          <span className="text-[10px] text-muted-foreground ml-1">MORE</span>
         </div>
       </div>
     </div>
