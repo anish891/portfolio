@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft } from "lucide-react";
 import { formatDate, getAdjacentPosts, getAllPosts, getHeadings, getPost } from "@/lib/blog";
 import { TagList } from "@/components/ui/TagList";
 import { PostBody } from "@/components/ui/PostBody";
+import { PageHeader } from "@/components/ui/PageHeader";
 import { heroContent, siteConfig } from "@/lib/data";
 
 interface Props {
@@ -53,41 +53,51 @@ export default async function PostPage({ params }: Props) {
   };
 
   return (
-    <main id="main" className="container-prose pt-16">
+    <main id="main" className="container-prose pt-14 pb-4">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <Link
-        href="/blog"
-        className="inline-flex items-center gap-1 text-sm text-muted-foreground transition-colors hover:text-foreground"
+      <PageHeader
+        back={{ href: "/blog", label: "Blog" }}
+        kicker="Log entry"
+        title={post.title}
+        uppercase={false}
       >
-        <ArrowLeft className="size-3.5" /> Blog
-      </Link>
-
-      <header className="mt-8">
-        <h1 className="text-2xl font-semibold tracking-tight sm:text-3xl">{post.title}</h1>
-        <p className="mt-3 font-mono text-xs text-muted-foreground">
-          <time dateTime={post.date}>{formatDate(post.date)}</time>
-          {" · "}
-          {post.readingMinutes} min read
-        </p>
-        {post.tags.length > 0 && (
-          <div className="mt-3">
-            <TagList tags={post.tags} />
+        <dl className="mt-6">
+          <div className="spec-row">
+            <dt className="label-mono">Date</dt>
+            <dd className="font-mono text-xs">
+              <time dateTime={post.date}>{formatDate(post.date)}</time>
+            </dd>
           </div>
-        )}
-      </header>
+          <div className="spec-row">
+            <dt className="label-mono">Read</dt>
+            <dd className="font-mono text-xs">{post.readingMinutes} min</dd>
+          </div>
+          {post.tags.length > 0 && (
+            <div className="spec-row">
+              <dt className="label-mono pt-0.5">Tags</dt>
+              <dd>
+                <TagList tags={post.tags} />
+              </dd>
+            </div>
+          )}
+        </dl>
+      </PageHeader>
 
       {headings.length >= 3 && (
-        <nav aria-label="On this page" className="mt-8 rounded-lg border border-border/60 p-4">
-          <p className="label-mono mb-2">On this page</p>
-          <ol className="space-y-1 text-sm">
-            {headings.map((h) => (
-              <li key={h.id}>
+        <nav aria-label="On this page" className="mt-8 border border-dashed border-border p-4">
+          <p className="label-mono mb-3 text-signal-ink">Contents</p>
+          <ol className="space-y-1.5 text-sm">
+            {headings.map((h, i) => (
+              <li key={h.id} className="flex gap-3">
+                <span className="font-mono text-xs text-muted-foreground">
+                  {String(i + 1).padStart(2, "0")}
+                </span>
                 <a
                   href={`#${h.id}`}
-                  className="text-muted-foreground transition-colors hover:text-foreground"
+                  className="text-foreground/85 transition-colors hover:text-signal-ink"
                 >
                   {h.text}
                 </a>
@@ -104,12 +114,12 @@ export default async function PostPage({ params }: Props) {
       {(newer || older) && (
         <nav
           aria-label="More posts"
-          className="mt-12 grid gap-6 border-t border-border/60 pt-6 text-sm sm:grid-cols-2"
+          className="mt-14 grid gap-6 border-t border-dashed border-border pt-6 text-sm sm:grid-cols-2"
         >
           {older ? (
             <Link href={`/blog/${older.slug}`} className="group">
-              <p className="label-mono mb-1">Older</p>
-              <p className="group-hover:underline group-hover:decoration-border group-hover:underline-offset-4">
+              <p className="label-mono mb-1">← Previous entry</p>
+              <p className="font-display text-base font-semibold group-hover:underline group-hover:decoration-signal group-hover:decoration-2 group-hover:underline-offset-4">
                 {older.title}
               </p>
             </Link>
@@ -118,8 +128,8 @@ export default async function PostPage({ params }: Props) {
           )}
           {newer && (
             <Link href={`/blog/${newer.slug}`} className="group sm:text-right">
-              <p className="label-mono mb-1">Newer</p>
-              <p className="group-hover:underline group-hover:decoration-border group-hover:underline-offset-4">
+              <p className="label-mono mb-1">Next entry →</p>
+              <p className="font-display text-base font-semibold group-hover:underline group-hover:decoration-signal group-hover:decoration-2 group-hover:underline-offset-4">
                 {newer.title}
               </p>
             </Link>
@@ -128,11 +138,11 @@ export default async function PostPage({ params }: Props) {
       )}
 
       {post.project && (
-        <p className="mt-12 border-t border-border/60 pt-6 text-sm text-muted-foreground">
-          About the project:{" "}
+        <p className="label-mono mt-10 border-t border-dashed border-border pt-6">
+          Related mission:{" "}
           <Link
             href={`/projects/${post.project}`}
-            className="text-foreground underline decoration-border underline-offset-4 hover:decoration-foreground"
+            className="text-foreground underline decoration-border underline-offset-4 hover:decoration-signal"
           >
             {post.project}
           </Link>

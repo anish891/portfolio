@@ -1,6 +1,6 @@
 ---
 title: "Unbake: recovering spreadsheet formulas from plain values"
-description: What happens when a system exports numbers with the formulas stripped out, and how RANSAC and a blame solver can work backwards.
+description: "What happens when a system exports numbers with the formulas stripped out, and how RANSAC, snapping and a blame solver can work backwards to the formulas and the typos."
 date: 2026-10-18
 tags: [algorithms, javascript, privacy]
 project: unbake
@@ -8,28 +8,71 @@ project: unbake
 
 Billing systems, banks and payroll tools often export a spreadsheet as plain values. Every formula is replaced by the number it happened to produce. [Unbake](/projects/unbake) works backwards from those numbers to the formulas that must have made them, then uses the formulas to find the cells someone typed wrong.
 
+The pitch in one line: the formulas are gone, but the numbers still remember them.
+
+## What goes in
+
+Unbake takes a CSV or a values-only Excel file. Before any maths, it has to read the numbers, and real exports are messy. It understands `$1,234.50`, `(12.00)` for negatives, `7.25%`, `-€3`, `1.234,56 €`, `1 234,5` and `1'234.50`. Each column decides for itself whether it uses a decimal comma, based on the cells that are unambiguous.
+
+It also records each column's printed precision. That detail matters more than it sounds, because precision decides how close a formula has to land to count as exact. A value shown to two decimals can only be matched to two decimals.
+
 ## Fitting formulas to numbers
 
-For each numeric column, Unbake builds a library of candidate terms: other columns, products, ratios, the previous row, and lookup tables keyed by text columns. It then searches for a combination of terms that explains the column.
+For each numeric column, Unbake builds a library of candidate terms: the constant 1, every other column, every product of two columns, every ratio of two columns, and the column's own value in the previous row, which covers running totals and sequences. It then searches for a combination of one to four terms that explains the column.
 
-Real data has mistakes in it, and a plain least-squares fit gets dragged around by a single bad cell. So the fit uses RANSAC: repeatedly fit on small random samples, count how many rows agree, and keep the model with the most support. A few wrong cells cannot bend the answer, and they show up as the rows that disagree.
+Real data has mistakes in it, and a plain least-squares fit gets dragged around by a single bad cell. So the search uses RANSAC. It solves exactly from a minimal random set of rows, counts how many other rows agree, repeats, and keeps the combination with the most support. A few wrong cells cannot bend the answer, and they show up as the rows that disagree. The survivors are then refit by least squares on the rows that agreed.
 
 ## Snapping to the simple number
 
-A fit might return a coefficient of `0.0824999`. Nobody wrote that. Unbake snaps each coefficient to the simplest number that loses no rows, so it becomes `0.0825`. The recovered formula reads like something a person would have typed.
+A fit might return a coefficient of `0.0824999`. Nobody wrote that. Unbake snaps each coefficient to the simplest number that loses no rows: fewest decimals first, then small fractions. So `0.0824999` becomes `0.0825` and `1.4999` becomes `1.5`. The recovered formula reads like something a person would have typed.
 
-## Beyond arithmetic
+The same step notices rounding. If every value is consistent with the formula after rounding to two decimals, the formula comes back wrapped in `ROUND`.
 
-The same machinery finds rate tables, running totals and threshold `IF` rules such as overtime and tiered commission.
+## Beyond plain arithmetic
+
+Three more shapes of formula come out of the same machinery.
+
+**Lookups and rate tables.** A column might be a function of a text key, such as a unit price that depends on a SKU, or a numeric column times a per-key rate, such as tax that depends on the state. Unbake finds the table itself: California at 7.25 percent, Texas at 6.25 percent, and so on.
+
+**Threshold rules.** When nothing else explains a column, it looks for an `IF`. It fits a formula to one regime, checks whether the rows it misses are separated from the rest by a threshold on some other column, and fits the other side separately. The threshold it reports is the roundest number that separates the groups, so you see `20000` and not `24500`. That is how it finds overtime above 40 hours and a higher commission rate above a sales target, even when no column says so.
+
+**Totals.** A total row at the bottom is checked against a sum of the rows above it, and text dependencies such as every customer having exactly one state are found along with their violations.
+
+## Preferring the simple explanation
+
+Several formulas can fit nearly as well as each other. Among candidates that explain almost as many rows as the best, the simplest one wins. Spreadsheets also compute left to right, so each column is first explained from the columns to its left. Columns still unexplained after that may use any column that does not depend on them, which keeps the result a clean dependency graph with no loops.
 
 ## Blaming a cell
 
-Once the formulas are known, rows that break them are suspects. The blame solver picks the single cell whose correction repairs the most broken calculations without breaking any that hold. It can also say what kind of slip it likely was, such as swapped digits or a slipped decimal point.
+Once the formulas are known, every row that breaks one is a symptom. The question is which cell is at fault. A quantity typed wrongly and a subtotal typed wrongly break the same equation.
+
+The blame solver takes each cell that the broken rows touch and solves for the value that would repair them. It throws out any candidate that would break a formula that currently holds. It ranks what is left by how many breaks it repairs, and by how much the correction looks like a human slip: two adjacent digits swapped, a decimal point slipped, one wrong digit, a dropped or extra digit, a flipped sign.
+
+That is how it can say "the quantity was mistyped, 12 typed as 21" instead of "the subtotal is wrong", and mark one cell as the root cause of two broken calculations at once. These are inferences from the data, not proof, and the interface says so.
+
+## Getting the result back out
+
+The output is more useful than a list of formulas. An Excel report restores the formulas as real formulas, such as `=ROUND(H2*I2,2)`, with lookups written as `SWITCH` and rules as `IF`. Suspect cells are filled red with a comment explaining each one, repaired inputs are green, and two extra sheets list every suspect cell and every recovered rule. A plain CSV with live formulas is available too.
+
+You can also drop in an Excel file that still has its formulas. Unbake recovers the formulas from the displayed values alone, says whether they match the file's own, and flags cells where someone typed a number over a formula or used a different formula from the rest of the column.
 
 ## Why it runs in the browser
 
-Spreadsheets like these are usually sensitive. Unbake does everything locally with plain JavaScript and a Web Worker. There is no upload, no server and no AI service, and the deployment sets a strict Content-Security-Policy. A command-line version exists too.
+Spreadsheets like these are usually sensitive: payroll, invoices, bank registers. Unbake does everything locally with plain JavaScript and a Web Worker. There is no upload, no server and no AI service, and the deployment sets a strict Content-Security-Policy that blocks outside connections, so the claim is checkable in the browser's network tab. A command-line version exists too.
+
+## How fast it is
+
+The four sample files analyse in under 100 milliseconds. A 3,000-row by 15-column sheet takes about 3.7 seconds in a Web Worker, with a progress bar and a page that stays responsive. If a browser blocks workers, which happens when the page is opened straight from disk, analysis runs on the main thread instead.
 
 ## Testing something that guesses
 
-A tool that infers formulas can fail by being wrong in a confident way, so the 22 tests include two checks aimed at that. A fuzz test recovers 12 random hidden formulas. Another feeds in random data and asserts that no formula is found.
+A tool that infers formulas can fail by being wrong in a confident way, so the 22 tests include checks aimed at exactly that:
+
+- Each sample must recover exactly the planted formulas and exactly the planted typos, with no false positives.
+- A fuzz test recovers 12 random hidden formulas and regenerates the original columns exactly.
+- Random, unrelated columns must produce zero formulas, checked across several seeds.
+- The Excel report is generated and read back, so formulas, comments and colours are verified from the file itself.
+
+## Limits, stated plainly
+
+Unbake finds formulas built from up to three terms (four if they are all plain columns). It will not find dates, string formulas or cross-sheet references. `IF` rules are limited to one threshold on one column. A formula must hold exactly on at least 80 percent of rows, and there must be at least six rows, so noisy measurements correctly yield nothing. When two columns are tied by an exact relation, it may report it the other way round. None of that is hidden: the README lists every one of those limits.

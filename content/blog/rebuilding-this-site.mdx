@@ -1,6 +1,6 @@
 ---
 title: Rebuilding this site as a quiet place to read
-description: Why I stripped the portfolio down to one column, and how the blog, case studies and search fit together.
+description: "Why I stripped the portfolio down to one column, and how the blog, case studies and search fit together."
 date: 2026-10-20
 tags: [meta, nextjs]
 ---
@@ -31,3 +31,17 @@ project: chaindeck
 The `project` field ties a post to a project, so the project page can list its write-ups.
 
 Everything is rendered at build time. That keeps pages fast and keeps the hosting bill at zero.
+
+## A second pass: the flight manual
+
+The first rebuild fixed the structure. A later pass gave it a character. The site is now laid out like a technical manual for a space mission, because the work it describes is about finding structure in noisy data, and that is a space-flavoured problem: faint signals, instruments, telemetry.
+
+The idea shows up in small, practical ways rather than decoration:
+
+- **Sections are numbered automatically.** A CSS counter numbers them in render order, so an empty section never leaves a gap.
+- **Projects are missions.** Each has a status, a type, a stack and a few checkable facts, and the blog is the flight log.
+- **The header strip is real data.** It shows the local time in Mumbai, the position and my availability.
+- **One accent colour.** Signal orange is used sparingly, on small marks and links, over a drafting-paper grey in light mode and a blue-black console in dark mode.
+- **Type that does a job.** A condensed face for headings, a plain face for reading and a monospaced face for labels and data.
+
+Everything is still static, readable in one column, and fast. The theme toggle and the search palette kept working throughout, and motion is turned off for anyone who asks their system for reduced motion.

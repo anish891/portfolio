@@ -1,0 +1,65 @@
+---
+title: "Hosting a demo of something that cannot be hosted"
+description: "GraphSentinel needs a Python API, a graph database and a frontend. Here is how I turned a real run of it into a static site anyone can click through, and why I labelled it a replay."
+date: 2026-10-22
+tags: [demo, react, ai]
+project: graph-sentinel
+---
+
+[GraphSentinel](/projects/graph-sentinel) is the kind of project that is hard to show. Running it needs a Python API, a FalkorDB graph database and a React frontend, started together with Docker Compose. A recruiter will not do that, and a screenshot of an investigation does not convey much.
+
+I wanted a link that anyone could open and click through. Paying to keep a database and an API running for a portfolio did not appeal, and a half-working live version would be worse than none. So I recorded a real run and shipped the recording.
+
+## The idea
+
+The frontend only ever talks to the backend through one small function. Every call to the API goes through it. That makes a clean seam: if the function can answer from recorded responses instead of the network, the whole interface works without a backend.
+
+So the plan had three parts:
+
+1. Run the real stack and record what it says.
+2. Add a build mode to the frontend where that one function answers from the recording.
+3. Deploy the result as a static site.
+
+## Recording a real run
+
+I started the real stack locally, with the offline planner so no API key was needed, and wrote a small script that signs in as each demo user and walks the API. It captured:
+
+- all eight alerts and their detail views,
+- eight finished investigations, each with its full result and its tool trace,
+- the approval queue,
+- the audit trail and its integrity check,
+- and every graph neighbourhood and entity the interface can ask for: 85 entities and 125 neighbourhoods at different depths.
+
+The whole recording is about 1 MB as plain JSON and roughly 110 KB compressed, which is small enough to ship as an ordinary file.
+
+One practical lesson: record from a clean database. My first attempt was full of duplicate investigations from earlier test runs. Resetting to the seeded state and recording once gave a clean, predictable dataset.
+
+## Replaying it without lying
+
+A replay that behaves like a frozen screenshot would be dull, so the replay layer keeps a little state in the browser tab:
+
+- **Who is signed in.** The four demo users keep their real permissions. A viewer cannot start an investigation, and only an approver can decide on an action.
+- **Which investigations exist.** The demo opens with three finished ones. Running another alert plays back a brief "running" state, then reveals its recorded result, a lot like the real agent loop.
+- **Approvals.** Approving or rejecting an action updates the queue and the counts, using the shape of a real response.
+
+Anything the recording cannot answer says so clearly. Asking a free-text question about something that was never recorded returns a message pointing out that this is a replay, not a made-up answer.
+
+## Being honest about it
+
+The easy mistake would be to present this as live. It is not, so the interface says so in three places: a banner across the top, a note on the sign-in screen, and the sidebar, where the usual "backend and database reachable" lights are replaced by a line saying it is a recorded replay. The project page describes it the same way, and the link to the real, runnable project sits right next to it.
+
+I think that honesty makes the demo stronger, not weaker. Anyone who wants to see it do real work can run it locally, and everyone else can still understand exactly what it does.
+
+## Keeping it out of the real build
+
+The replay code and the recording are only included when a build flag is set. The normal build contains neither, and its output is unchanged. That keeps the real application clean and the extra weight where it belongs.
+
+## What I would do differently
+
+- **Record on a schedule.** If the backend changes, the recording goes stale. A script and a short note about re-recording cover this for now, but a CI job that records and diffs would be better.
+- **Shift the timestamps.** The recorded times are fixed, so a few "minutes ago" labels become "days ago". It is cosmetic, but it gives the game away if you look closely.
+- **Record more variety.** Eight alerts cover the interesting cases, but more would make the replay feel less finite.
+
+## Why bother
+
+A portfolio exists to let someone judge your work quickly. A replay turns a project that needs a setup guide into something you can understand in two minutes, and it shows a skill of its own: finding the seam in a system and using it. I would take that over a screenshot every time.

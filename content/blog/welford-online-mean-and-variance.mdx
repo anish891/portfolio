@@ -1,0 +1,87 @@
+---
+title: "Welford's algorithm: mean and variance in one pass"
+description: "How to keep a running mean and variance without storing history, why the textbook shortcut fails, and how I use it to flag unusual option flow."
+date: 2026-10-21
+tags: [algorithms, javascript, finance]
+project: chaindeck
+---
+
+Sooner or later a program needs to know whether a new number is unusual. That means knowing what usual looks like: a mean, and a measure of spread. The catch is that you often cannot keep every previous value around, and you do not want to rescan them each time a new one arrives.
+
+[ChainDeck](/projects/chaindeck) hits this when it watches open interest at each strike. This post is about the small algorithm that solves it, and the trap it avoids.
+
+## The textbook shortcut, and why it fails
+
+The formula most people remember for variance is the mean of the squares minus the square of the mean. It looks perfect for streaming, because you only need to keep three things: a count, a running sum and a running sum of squares.
+
+```js
+// Looks fine. Do not do this.
+let n = 0, sum = 0, sumSq = 0;
+function add(x) {
+  n += 1;
+  sum += x;
+  sumSq += x * x;
+}
+function variance() {
+  return (sumSq - (sum * sum) / n) / (n - 1);
+}
+```
+
+The problem is subtraction. When the values are large and their spread is small, `sumSq` and `sum * sum / n` are two huge numbers that are almost equal. Floating-point numbers only carry about 15 or 16 significant digits, so subtracting them cancels away exactly the digits that mattered. You can get a variance that is wildly wrong, or even negative, which is impossible.
+
+Open interest is a perfect example. Values like 4,812,350 and 4,812,410 have a big magnitude and a tiny spread.
+
+## Welford's update
+
+In 1962 B. P. Welford published a way to update the mean and the sum of squared deviations directly, without ever forming those huge intermediate numbers. For each new value `x`:
+
+```js
+let n = 0;
+let mean = 0;
+let m2 = 0; // sum of squared deviations from the current mean
+
+function add(x) {
+  n += 1;
+  const delta = x - mean;
+  mean += delta / n;
+  m2 += delta * (x - mean); // uses the NEW mean
+}
+
+function variance() {
+  return n > 1 ? m2 / (n - 1) : 0;
+}
+```
+
+That is the whole algorithm: three variables and four lines. It works with deviations from the current mean, which stay small, so there is no catastrophic cancellation. It also uses constant memory and constant time per value, however long the stream runs.
+
+The subtle line is the last one. `delta` is measured against the old mean and `(x - mean)` against the new one. Multiplying the two is what keeps `m2` exact.
+
+## From variance to "unusual"
+
+Once you have a mean and a variance, a z-score says how many standard deviations a new value sits from the usual:
+
+```js
+function zScore(x) {
+  const sd = Math.sqrt(variance());
+  return sd === 0 ? 0 : (x - mean) / sd;
+}
+```
+
+In ChainDeck, the values are the increases in volume and open interest at a strike from one snapshot to the next, and a z-score beyond a threshold of 2.5 marks the strike as unusual flow. One detail is worth getting right when you build something like this: the order. Score the new value against the history first, and only then add it. If you add it first, a huge spike inflates the very variance it is being compared with and partly hides itself.
+
+## One tool, several jobs
+
+The same running statistics serve more than one purpose. A 20-session rolling z-score of implied volatility tells you whether today's volatility is unusually high or low against its own recent past. That is the same code with a different stream feeding it.
+
+## Things to watch for
+
+- **Warm-up.** With very few values the standard deviation is meaningless. Do not flag anything until you have a handful.
+- **Zero spread.** If every value so far is identical, the standard deviation is zero. Guard the division, as above.
+- **Drift.** A plain running mean never forgets. If the process changes, such as a market regime shift, old data keeps dragging the average. Either reset on a schedule or use an exponentially weighted version.
+- **Merging.** If you compute statistics on separate chunks of data, there is a variant of the update that combines two partial results exactly. That is handy for parallel work.
+
+## How I check it
+
+The test for a streaming algorithm is simple: feed a list through it, then compute the mean and variance the slow way with the whole list in memory, and compare. Try it on random data, and also on deliberately nasty data with a large offset and a tiny spread, which is exactly where the textbook shortcut breaks.
+
+It is a small algorithm, but it earns its place. A few lines buy you a number you can trust, in constant memory, over a stream of any length.

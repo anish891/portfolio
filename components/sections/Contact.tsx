@@ -89,7 +89,7 @@ export function Contact() {
 
   return (
     <>
-      <Section id="contact" title="Contact">
+      <Section id="contact" title="Comms" kicker="contact">
         <p className="mb-6 text-sm leading-relaxed text-muted-foreground">
           Got a project idea or just want to say hi? Send a note and I&apos;ll reply
           soon.

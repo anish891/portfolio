@@ -21,7 +21,6 @@ All site content (projects, skills, links, experience, education) lives in [`lib
 | `/` | Intro, selected work, latest writing, experience, activity, stack, contact |
 | `/projects`, `/projects/[slug]` | Case study per project, with related posts |
 | `/blog`, `/blog/[slug]` | MDX blog, with RSS at `/feed.xml` |
-| `/lab`, `/lab/[slug]` | Small interactive demos (register new ones in `lib/lab.ts` and `components/lab`) |
 | `/about` | Background, interests, timelines, stack |
 
 `⌘K` / `Ctrl+K` opens a palette that searches pages, projects and posts.
@@ -69,6 +68,7 @@ Open <http://localhost:3000>.
 
 | Name | Purpose |
 | --- | --- |
+| `GITHUB_TOKEN` | Optional. Lets the activity heatmap read GitHub directly, so it is accurate to within minutes. Without it, a public service is used and it can lag by up to an hour. Server-side only. |
 | `NEXT_PUBLIC_WEB3FORMS_ACCESS_KEY` | Contact form delivery via [Web3Forms](https://web3forms.com). Restrict the key to your domain in their dashboard. Without it the form only simulates success in development and shows an error in production. |
 
 ## Notes

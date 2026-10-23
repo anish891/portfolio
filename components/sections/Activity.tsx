@@ -4,7 +4,8 @@ import { siteConfig } from "@/lib/data";
 
 export function Activity() {
   return (
-    <Section title="Activity">
+    <Section title="Commit log"
+      kicker="github activity">
       <GitHubHeatmap username={siteConfig.githubUsername} />
     </Section>
   );

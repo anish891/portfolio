@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft } from "lucide-react";
 import { projects } from "@/lib/data";
 import { getPostsForProject } from "@/lib/blog";
 import { PostList } from "@/components/ui/PostList";
+import { PageHeader } from "@/components/ui/PageHeader";
+import { SectionHead } from "@/components/ui/Section";
 import { ProjectLinks } from "@/components/ui/ProjectLinks";
 
 interface Props {
@@ -39,61 +39,87 @@ export default async function ProjectPage({ params }: Props) {
   const posts = getPostsForProject(project.id);
   const paragraphs = project.longDescription.split("\n\n");
 
-  return (
-    <main id="main" className="container-prose pt-16">
-      <Link
-        href="/projects"
-        className="inline-flex items-center gap-1 text-sm text-muted-foreground transition-colors hover:text-foreground"
-      >
-        <ArrowLeft className="size-3.5" /> Projects
-      </Link>
+  const deployed = !!project.deployedUrl;
+  const index = projects.findIndex((p) => p.id === project.id) + 1;
 
-      <header className="mt-8">
-        <h1 className="text-2xl font-semibold tracking-tight sm:text-3xl">{project.title}</h1>
-        <p className="mt-3 leading-relaxed text-muted-foreground">{project.description}</p>
-        <div className="mt-4">
-          <ProjectLinks project={project} />
-        </div>
-      </header>
+  return (
+    <main id="main" className="container-prose pt-14 pb-4">
+      <PageHeader
+        back={{ href: "/projects", label: "Projects" }}
+        kicker={`Mission ${String(index).padStart(2, "0")}`}
+        title={project.title}
+        description={project.description}
+        uppercase={false}
+      >
+        <dl className="mt-6">
+          <div className="spec-row">
+            <dt className="label-mono">Status</dt>
+            <dd className="flex items-center gap-1.5 font-mono text-xs">
+              <span
+                className={`size-1.5 rounded-full ${deployed ? "bg-signal" : "border border-muted-foreground"}`}
+                aria-hidden
+              />
+              {deployed ? "Deployed" : "Source only"}
+            </dd>
+          </div>
+          <div className="spec-row">
+            <dt className="label-mono">Stack</dt>
+            <dd className="font-mono text-xs">{project.techStack.join(" · ")}</dd>
+          </div>
+          <div className="spec-row">
+            <dt className="label-mono">Links</dt>
+            <dd>
+              <ProjectLinks project={project} />
+            </dd>
+          </div>
+        </dl>
+      </PageHeader>
 
       {project.image && (
-        <div className="relative mt-8 aspect-[16/9] overflow-hidden rounded-lg border border-border">
-          <Image
-            src={project.image}
-            alt={`${project.title} preview`}
-            fill
-            preload
-            fetchPriority="high"
-            sizes="(min-width: 672px) 624px, 100vw"
-            className="object-cover"
-          />
-        </div>
+        <figure className="mt-10">
+          <div className="brackets">
+            <div className="relative aspect-[16/9] overflow-hidden border border-border bg-card">
+              <Image
+                src={project.image}
+                alt={`${project.title} preview`}
+                fill
+                preload
+                fetchPriority="high"
+                sizes="(min-width: 672px) 624px, 100vw"
+                className="object-cover"
+              />
+            </div>
+          </div>
+          <figcaption className="fig-caption">Fig. 01 · {project.title}</figcaption>
+        </figure>
       )}
 
-      <section className="prose-minimal mt-10">
-        <h2 className="!mt-0">Overview</h2>
-        {paragraphs.map((para, i) => (
-          <p key={i}>{para}</p>
-        ))}
+      <section className="mt-14">
+        <SectionHead title="Overview" />
+        <div className="prose-minimal">
+          {paragraphs.map((para, i) => (
+            <p key={i}>{para}</p>
+          ))}
+        </div>
       </section>
 
-      <section className="prose-minimal mt-10">
-        <h2 className="!mt-0">Highlights</h2>
-        <ul>
+      <section className="mt-14">
+        <SectionHead title="Highlights" kicker="key facts" />
+        <ul className="space-y-2 text-sm leading-relaxed text-foreground/90">
           {project.features.map((f) => (
-            <li key={f}>{f}</li>
+            <li key={f} className="flex gap-3">
+              <span className="mt-0.5 font-mono text-xs text-signal-ink" aria-hidden>
+                [x]
+              </span>
+              {f}
+            </li>
           ))}
         </ul>
       </section>
 
-      <section className="mt-10">
-        <h2 className="label-mono mb-3">Built with</h2>
-        <p className="text-sm text-foreground/85">{project.techStack.join(", ")}</p>
-      </section>
-
       {posts.length > 0 && (
-        <section className="mt-12 border-t border-border/60 pt-8">
-          <h2 className="label-mono mb-4">Write-ups</h2>
+        <section id="flight-log" className="mt-14">
+          <SectionHead title="Flight log" kicker="write-ups" />
           <PostList posts={posts} />
         </section>
       )}

@@ -84,30 +84,42 @@ export function GitHubHeatmap({ username }: Props) {
     return () => observer.disconnect();
   }, [contributions.length]);
 
+  // Load the data, then refresh it every 10 minutes while the page stays open
   useEffect(() => {
-    fetch("/api/github-contributions")
-      .then((r) => r.json())
-      .then((data) => {
-        const all: Contribution[] = data.contributions ?? [];
-        // Take last 371 days (53 full weeks)
-        const last = all.slice(-371);
-        const sum = last.reduce((acc, c) => acc + c.count, 0);
-        const first = last[0]?.date ? new Date(last[0].date) : null;
-        const end = last[last.length - 1]?.date
-          ? new Date(last[last.length - 1].date)
-          : null;
-        if (first && end) {
-          setYearLabel(
-            `${first.getFullYear()}–${String(end.getFullYear()).slice(2)}`
-          );
-        }
-        setContributions(last);
-        setTotal(sum);
-        setLoading(false);
-      })
-      .catch(() => {
-        setLoading(false);
-      });
+    let cancelled = false;
+
+    const load = () =>
+      fetch("/api/github-contributions", { cache: "no-cache" })
+        .then((r) => r.json())
+        .then((data) => {
+          if (cancelled) return;
+          const all: Contribution[] = data.contributions ?? [];
+          // Take last 371 days (53 full weeks)
+          const last = all.slice(-371);
+          const sum = last.reduce((acc, c) => acc + c.count, 0);
+          const first = last[0]?.date ? new Date(last[0].date) : null;
+          const end = last[last.length - 1]?.date
+            ? new Date(last[last.length - 1].date)
+            : null;
+          if (first && end) {
+            setYearLabel(`${first.getFullYear()}–${String(end.getFullYear()).slice(2)}`);
+          }
+          if (last.length > 0) {
+            setContributions(last);
+            setTotal(sum);
+          }
+          setLoading(false);
+        })
+        .catch(() => {
+          if (!cancelled) setLoading(false);
+        });
+
+    load();
+    const id = setInterval(load, 10 * 60 * 1000);
+    return () => {
+      cancelled = true;
+      clearInterval(id);
+    };
   }, [username]);
 
   // Group flat list into weeks (columns of 7 days)

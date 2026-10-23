@@ -2,7 +2,7 @@ import { ArrowUpRight } from "lucide-react";
 import type { Project } from "@/lib/data";
 
 const linkClass =
-  "inline-flex items-center gap-1 underline decoration-border underline-offset-4 transition-colors hover:decoration-foreground";
+  "inline-flex items-center gap-1 underline decoration-border underline-offset-4 transition-colors hover:decoration-signal";
 
 export function ProjectLinks({ project }: { project: Project }) {
   return (
