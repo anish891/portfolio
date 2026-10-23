@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { siteConfig } from "@/lib/data";
+import { LEVELS, normalizeDays, windowStart, type Day } from "@/lib/contributions";
 
 // Fresh data for a few minutes at most. Browsers revalidate; the CDN may serve a stale copy
 // briefly while it refreshes in the background.
@@ -8,27 +9,10 @@ const HEADERS = {
   "Cache-Control": `public, max-age=0, s-maxage=${CACHE_SECONDS}, stale-while-revalidate=600`,
 };
 
-const LEVELS: Record<string, 0 | 1 | 2 | 3 | 4> = {
-  NONE: 0,
-  FIRST_QUARTILE: 1,
-  SECOND_QUARTILE: 2,
-  THIRD_QUARTILE: 3,
-  FOURTH_QUARTILE: 4,
-};
-
-interface Day {
-  date: string;
-  count: number;
-  level: 0 | 1 | 2 | 3 | 4;
-}
-
 /** Straight from GitHub's GraphQL API: accurate to within minutes. Needs GITHUB_TOKEN. */
 async function fromGitHub(token: string): Promise<Day[]> {
   const to = new Date();
-  // Start on the first Sunday within the last 364 days: the heatmap draws whole weeks, and
-  // GitHub limits a request to one year, so this shows every day it fetches (none are dropped).
-  const from = new Date(Date.UTC(to.getUTCFullYear(), to.getUTCMonth(), to.getUTCDate() - 364));
-  from.setUTCDate(from.getUTCDate() + ((7 - from.getUTCDay()) % 7));
+  const from = windowStart(to);
   const res = await fetch("https://api.github.com/graphql", {
     method: "POST",
     headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
@@ -59,18 +43,6 @@ async function fromGitHub(token: string): Promise<Day[]> {
   );
 }
 
-/**
- * The heatmap draws columns of seven days, so the list must start on a Sunday and hold at most
- * 53 weeks. Both sources are trimmed to that shape here.
- */
-function normalize(days: Day[]): Day[] {
-  const recent = days.slice(-371);
-  const firstSunday = recent.findIndex(
-    (d) => new Date(`${d.date}T00:00:00Z`).getUTCDay() === 0
-  );
-  return firstSunday > 0 ? recent.slice(firstSunday) : recent;
-}
-
 /** Fallback with no token: a public scraper that can lag GitHub by up to an hour. */
 async function fromPublicApi(): Promise<Day[]> {
   const res = await fetch(
@@ -98,12 +70,12 @@ async function refresh(): Promise<Cached> {
   let contributions: Day[];
   let source: Cached["source"] = token ? "github" : "public-api";
   try {
-    contributions = normalize(token ? await fromGitHub(token) : await fromPublicApi());
+    contributions = normalizeDays(token ? await fromGitHub(token) : await fromPublicApi());
   } catch (err) {
     // If the token path fails (expired token, rate limit), still show something.
     if (!token) throw err;
     console.error("[github-contributions] GitHub GraphQL failed, using the public API:", errorMessage(err));
-    contributions = normalize(await fromPublicApi());
+    contributions = normalizeDays(await fromPublicApi());
     source = "public-api";
   }
   return { at: Date.now(), contributions, source };

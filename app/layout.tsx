@@ -18,14 +18,16 @@ const plexSans = IBM_Plex_Sans({
 const plexCondensed = IBM_Plex_Sans_Condensed({
   variable: "--font-plex-condensed",
   subsets: ["latin"],
-  weight: ["500", "600", "700"],
+  // The display face is only ever used at semibold (checked across every page).
+  weight: ["600"],
   display: "swap",
 });
 
 const plexMono = IBM_Plex_Mono({
   variable: "--font-plex-mono",
   subsets: ["latin"],
-  weight: ["400", "500"],
+  // Labels and code are only ever regular weight.
+  weight: ["400"],
   display: "swap",
 });
 

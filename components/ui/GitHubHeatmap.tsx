@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { formatTooltipDate, utcDate } from "@/lib/contributions";
 
 interface Contribution {
   date: string;
@@ -21,25 +22,6 @@ const levelStyles = [
   "bg-primary/80 border-primary/80",       // 3 – high
   "bg-primary border-primary",             // 4 – max
 ];
-
-// Dates arrive as plain calendar days ("2026-10-23"). Read and format them in UTC so the day
-// never shifts for visitors west of Greenwich (a bare date string is parsed as UTC midnight).
-const utcDate = (dateStr: string) => new Date(`${dateStr}T00:00:00Z`);
-
-function formatTooltipDate(dateStr: string): string {
-  const d = utcDate(dateStr);
-  const day = d.getUTCDate();
-  const suffix =
-    day % 10 === 1 && day !== 11
-      ? "st"
-      : day % 10 === 2 && day !== 12
-        ? "nd"
-        : day % 10 === 3 && day !== 13
-          ? "rd"
-          : "th";
-  const month = d.toLocaleString("default", { month: "long", timeZone: "UTC" });
-  return `${month} ${day}${suffix}`;
-}
 
 export function GitHubHeatmap({ username }: Props) {
   const [contributions, setContributions] = useState<Contribution[]>([]);

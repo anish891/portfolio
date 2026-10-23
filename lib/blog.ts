@@ -37,20 +37,23 @@ export interface Post extends PostMeta {
   draft: boolean;
 }
 
-function readingMinutes(text: string): number {
+export function readingMinutes(text: string): number {
   // Code blocks are skimmed, not read word by word, so they are left out of the estimate.
   const prose = text.replace(/^```[\s\S]*?^```/gm, "");
   const words = prose.trim().split(/\s+/).length;
   return Math.max(1, Math.round(words / 220));
 }
 
-function parsePost(file: string): Post {
+/**
+ * Turns the text of one post file into a Post, or throws a clear error naming the file.
+ * Kept free of file-system access so it can be tested directly.
+ */
+export function parsePostSource(file: string, raw: string): Post {
   const slug = file.replace(/\.mdx?$/, "");
   const fail = (msg: string): never => {
     throw new Error(`content/blog/${file}: ${msg}`);
   };
 
-  const raw = fs.readFileSync(path.join(BLOG_DIR, file), "utf8");
   const { data, content } = matter(raw, MATTER_OPTIONS);
 
   if (!data.title) fail('missing "title" in frontmatter');
@@ -80,15 +83,35 @@ function parsePost(file: string): Post {
   };
 }
 
-/** All published posts, newest first. Posts with `draft: true` are skipped. */
-export function getAllPosts(): Post[] {
+function readPosts(): Post[] {
   if (!fs.existsSync(BLOG_DIR)) return [];
-  return fs
-    .readdirSync(BLOG_DIR)
-    .filter((f) => /\.mdx?$/.test(f))
-    .map(parsePost)
+  const files = fs.readdirSync(BLOG_DIR).filter((f) => /\.mdx?$/.test(f));
+
+  // "x.md" and "x.mdx" would both become the slug "x": refuse rather than silently pick one.
+  const seen = new Map<string, string>();
+  for (const f of files) {
+    const slug = f.replace(/\.mdx?$/, "");
+    const other = seen.get(slug);
+    if (other) throw new Error(`content/blog: "${other}" and "${f}" produce the same slug "${slug}"`);
+    seen.set(slug, f);
+  }
+
+  return files
+    .map((f) => parsePostSource(f, fs.readFileSync(path.join(BLOG_DIR, f), "utf8")))
     .filter((p) => !p.draft)
     .sort((a, b) => b.date.localeCompare(a.date));
+}
+
+// In production the content cannot change while the process runs, and the layout plus each page
+// ask for the post list several times, so read and parse the files once. In development the
+// files are re-read every time so edits show up straight away.
+let cachedPosts: Post[] | null = null;
+
+/** All published posts, newest first. Posts with `draft: true` are skipped. */
+export function getAllPosts(): Post[] {
+  if (process.env.NODE_ENV !== "production") return readPosts();
+  cachedPosts ??= readPosts();
+  return [...cachedPosts];
 }
 
 export function getPost(slug: string): Post | undefined {

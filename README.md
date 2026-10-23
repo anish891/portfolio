@@ -63,6 +63,7 @@ Open <http://localhost:3000>.
 | `npm run dev` | Start the dev server |
 | `npm run build` | Production build |
 | `npm run lint` | ESLint |
+| `npm test` | Unit tests (Vitest, about a second) |
 
 ### Environment variables
 
@@ -70,6 +71,14 @@ Open <http://localhost:3000>.
 | --- | --- |
 | `GITHUB_TOKEN` | Optional. Lets the activity heatmap read GitHub directly, so it is accurate to within minutes. Without it, a public service is used and it can lag by up to an hour. Server-side only. |
 | `NEXT_PUBLIC_WEB3FORMS_ACCESS_KEY` | Contact form delivery via [Web3Forms](https://web3forms.com). Restrict the key to your domain in their dashboard. Without it the form only simulates success in development and shows an error in production. |
+
+## Tests
+
+`npm test` runs the Vitest suite in `tests/`. It covers the logic that is easy to get subtly wrong:
+the post parser (including refusing code-running front matter), reading time and headings, the
+heatmap's date window and time-zone-safe formatting, the malformed-URL proxy, the security
+headers, the GitHub route's caching and fallbacks (with the network mocked), the RSS feed, and
+integrity checks on `lib/data.ts`. It needs Node 22.12 or newer, and CI runs it on every push.
 
 ## Notes
 
