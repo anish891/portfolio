@@ -1,22 +1,40 @@
 ---
 title: "ChainDeck: turning an option chain into signals"
-description: How a raw NSE option chain becomes Max Pain, gamma exposure and a market regime, and why prefix sums and Welford's algorithm do the heavy lifting.
+description: "How a raw NSE option chain becomes Max Pain, gamma exposure, volatility panels and a market regime, and why prefix sums, Welford's algorithm and a boring storage layer do the heavy lifting."
 date: 2026-10-19
 tags: [algorithms, javascript, finance]
 project: chaindeck
 ---
 
-[ChainDeck](/projects/chaindeck) is a live dashboard for NIFTY 50 options traders. It pulls the option chain from NSE every minute and turns thousands of numbers into a handful of readable signals. This post covers the parts I enjoyed building most.
+[ChainDeck](/projects/chaindeck) is a live dashboard for NIFTY 50 options traders. It pulls the option chain from NSE every minute and turns thousands of numbers into a handful of readable signals: where open interest is building, where the market is pinned, how fast volatility is moving, and what regime all of that adds up to.
 
-## The data problem first
+It started life as a small open-interest tracker and grew one panel at a time. This post walks through the parts that taught me the most, in roughly the order the data flows through them.
 
-NSE's option chain endpoint wants specific cookies and headers, and it does not like being hit by every visitor at once. ChainDeck puts a small caching Express proxy in front of it. The proxy coalesces concurrent requests, so ten people loading the page cost one upstream call.
+## The data problem comes first
+
+NSE's option chain endpoint wants specific cookies and browser-like headers, and it does not like being hit by every visitor at once. Browsers also cannot call it directly because of CORS, so ChainDeck puts a small Express proxy in front of it.
+
+The proxy does three jobs. It fetches a session cookie from the NSE site and reuses it. It caches each response for a few seconds. And it coalesces concurrent requests, so ten people loading the page at the same moment cost one upstream call, not ten.
+
+Outside market hours (09:15 to 15:30 IST, Monday to Friday) NSE returns the last end-of-day snapshot, so the dashboard still renders. The header says how old the data is, so nobody mistakes a Friday close for live prices.
+
+## The signals at a glance
+
+Before the maths, here is what the page computes from one chain:
+
+- **Open interest buildup.** Each strike is classed as long buildup, short buildup, long unwinding or short covering, from the change in open interest against the change in price.
+- **Put-call ratio** by open interest and by volume.
+- **Max Pain**, the strike where option buyers collectively lose the most at expiry.
+- **Gamma exposure** and the **zero-gamma level**, where dealer hedging is assumed to flip from calming to amplifying moves.
+- **Central pivot range** from the previous session's high, low and close.
+- **A 25-delta risk reversal**, as a measure of skew.
+- **A composite regime** that combines several of those into one label and a plain-language trade setup.
 
 ## Max Pain without the O(n²) loop
 
-Max Pain is the strike at which option buyers collectively lose the most at expiry. The obvious implementation checks every candidate strike against every other strike, which is O(n²).
+The obvious implementation of Max Pain checks every candidate strike against every other strike. For each candidate you add up what every call and put would be worth if the market expired there, then pick the cheapest. That nested loop is O(n²) in the number of strikes.
 
-The payout at a candidate strike `K` splits into two sums: calls struck below `K` and puts struck above it. Each sum is a weighted prefix or suffix of the chain, so two passes of running totals replace the nested loop.
+The payout at a candidate strike `K` splits into two sums: calls struck below `K`, and puts struck above it. Each sum is a weighted prefix or suffix of the chain. If you keep running totals of open interest and of open interest times strike, every candidate costs a couple of subtractions.
 
 ```js
 function maxPain(strikes, callOI, putOI) {
@@ -50,20 +68,58 @@ function maxPain(strikes, callOI, putOI) {
 }
 ```
 
-The result is identical to the brute-force version, and a test suite checks that against random chains.
+This sketch shows the idea; the version in the app works on typed arrays and a sorted strike list. The answer is identical to the brute-force version, and the test suite checks the two against each other on random chains.
+
+## Gamma exposure, and an honest caveat
+
+Gamma exposure estimates how much dealers have to buy or sell to stay hedged as the index moves. For every strike, ChainDeck computes the Black-Scholes gamma from the quoted implied volatility, multiplies by open interest and lot size, and sums calls against puts.
+
+There is a convention hiding in that sum: it assumes dealers are long the calls and short the puts. Nobody can observe that from public data, so the code documents it as a convention, not a fact. The zero-gamma level comes from re-running the sum at different spot prices and finding where the total changes sign.
+
+## Skew and the pivot range
+
+The 25-delta risk reversal compares the implied volatility of a 25-delta call with a 25-delta put. A strongly negative number means puts are richer, which is the market paying up for protection. When the chain is too thin to interpolate, the app falls back to the gap between at-the-money put and call volatility and says that is what it did.
+
+The central pivot range is classic and cheap: a pivot and its top and bottom central levels, computed from the previous session's high, low and close. Its width tells you whether the day is likely to trend or chop.
 
 ## Spotting unusual flow
 
-To flag an open-interest change as unusual, you need a running mean and variance without storing the whole history. Welford's online algorithm gives both in one pass and stays numerically stable, which a naive sum-of-squares does not.
+To flag a change in open interest as unusual, you need a running mean and variance without storing the whole history. Welford's online algorithm gives both in one pass and stays numerically stable, where a naive sum-of-squares quietly loses precision. I wrote a separate post on [how Welford's algorithm works](/blog/welford-online-mean-and-variance), because it is worth understanding on its own.
 
 ## Days that looked like today
 
-Each trading session is summarised as a feature vector, such as PCR, skew and range. Cosine similarity between today's vector and the saved sessions surfaces the days that behaved similarly, which is a useful sanity check next to the composite regime.
+Each trading session is summarised as a feature vector, such as PCR, skew and range. Cosine similarity between today's vector and the saved sessions surfaces the days that behaved similarly. It is a sanity check next to the composite regime: if today resembles a day that ended badly, that is worth a second look.
 
-## Storage
+## Implied versus realised volatility
 
-Snapshots land on Upstash Redis over REST about once a minute. That powers the timeline chart, the 5-minute and 15-minute rate-of-change figures, and end-of-day summaries. With no database configured, the app falls back to an in-memory store, so the project still runs from a fresh clone.
+Implied volatility is what the market expects. Realised volatility is what the index actually did. ChainDeck shows both, and the comparison needs care.
 
-## Hardening
+NSE quotes implied volatility on a calendar basis, as if time ticks 24 hours a day. Realised volatility measured from intraday snapshots only sees minutes when the market is open. To put them on one clock, the app converts both to a trading-time basis: 09:15 to 15:30 IST, 252 trading days a year. It then reports realised volatility over 15, 30 and 60 minutes next to the converted implied figure.
 
-The app ships with a strict Content-Security-Policy, no third-party assets, input validation, rate limiting and authenticated cron endpoints. It is a small app, but it talks to the internet and takes input, so it gets the same care as a bigger one.
+The panel also shows an IV percentile against saved session closes. That needs at least five sessions of history, and until then it says so instead of guessing.
+
+## Storage that stays boring
+
+Snapshots land on Upstash Redis over REST about once a minute, at roughly 1 to 2 KB each. That is around 400 snapshots per trading day, comfortably inside a free tier. Those snapshots power the intraday timeline, the 5-minute and 15-minute rate-of-change figures (which survive a page refresh), and the end-of-day session summaries.
+
+Without a database configured, the app falls back to an in-memory store, so a fresh clone still runs. The timeline card shows whether history is saved or only in memory.
+
+Recording does not have to depend on someone having the page open. A cron endpoint takes a snapshot on demand, and it requires a bearer secret. In production it refuses every request until that secret is set, and it never accepts the secret in the URL.
+
+## Hardening a small app
+
+The app is small, but it talks to the internet and takes input, so it gets the same care as a bigger one:
+
+- A strict Content-Security-Policy with scripts from the same origin only.
+- No third-party assets in the browser: fonts and chart libraries are served from the site itself, so visitors' addresses are never sent to a CDN.
+- Input validation on expiry, date and strike before anything reaches NSE or Redis, with generic error messages.
+- Per-IP rate limiting, with a note that a hard limit belongs in the host's firewall.
+- Constant-time secret comparison on the operational endpoints.
+
+## Testing
+
+`npm test` runs six verification scripts that cover the calculations, history storage, alerts, flow detection, volatility maths and the security headers. One test fails if the headers in the code and in the deployment config ever drift apart. Calculations like these are easy to get subtly wrong, so having the brute-force answer to compare against is worth the extra code.
+
+## What it does not do
+
+ChainDeck is an analytics tool, not advice. The regime and trade setup are rule-based summaries of the numbers on the page. The dealer-positioning assumption is a convention. And it only knows what NSE publishes, when NSE publishes it.

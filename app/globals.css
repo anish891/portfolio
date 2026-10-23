@@ -9,9 +9,12 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-sans);
-  --font-mono: var(--font-geist-mono);
-  --font-heading: var(--font-sans);
+  --font-sans: var(--font-plex-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-plex-condensed), var(--font-plex-sans), ui-sans-serif, sans-serif;
+  --font-mono: var(--font-plex-mono), ui-monospace, SFMono-Regular, monospace;
+  --font-heading: var(--font-display);
+  --color-signal: var(--signal);
+  --color-signal-ink: var(--signal-ink);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -50,64 +53,76 @@
   --radius-4xl: calc(var(--radius) * 2.6);
 }
 
-/* ─── Light Mode (minimal, near-monochrome) ─────────────────────────────────── */
+/* ─── Light Mode: drafting paper, ink, one signal-orange accent ─────────────── */
 
 :root {
-  --background: oklch(0.995 0 0);
-  --foreground: oklch(0.2 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.2 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.2 0 0);
+  --background: oklch(0.972 0.004 240);
+  --foreground: oklch(0.21 0.02 255);
+  --card: oklch(0.985 0.003 240);
+  --card-foreground: oklch(0.21 0.02 255);
+  --popover: oklch(0.985 0.003 240);
+  --popover-foreground: oklch(0.21 0.02 255);
 
-  --primary: oklch(0.2 0 0);
-  --primary-foreground: oklch(0.99 0 0);
+  --primary: oklch(0.21 0.02 255);
+  --primary-foreground: oklch(0.985 0.003 240);
 
-  --secondary: oklch(0.965 0 0);
-  --secondary-foreground: oklch(0.25 0 0);
+  --secondary: oklch(0.945 0.006 240);
+  --secondary-foreground: oklch(0.26 0.02 255);
 
-  --muted: oklch(0.965 0 0);
-  --muted-foreground: oklch(0.5 0 0);
+  --muted: oklch(0.945 0.006 240);
+  --muted-foreground: oklch(0.47 0.02 250);
 
-  --accent: oklch(0.955 0 0);
-  --accent-foreground: oklch(0.2 0 0);
+  --accent: oklch(0.94 0.008 240);
+  --accent-foreground: oklch(0.21 0.02 255);
 
   --destructive: oklch(0.6 0.18 25);
 
-  --border: oklch(0.915 0 0);
-  --input: oklch(0.915 0 0);
-  --ring: oklch(0.6 0 0);
+  --border: oklch(0.875 0.01 245);
+  --input: oklch(0.875 0.01 245);
+  --ring: oklch(0.55 0.02 250);
 
-  --radius: 0.5rem;
+  /* Signal orange: graphics use --signal, text uses the darker --signal-ink (contrast). */
+  --signal: oklch(0.65 0.19 44);
+  --signal-ink: oklch(0.5 0.17 40);
+
+  /* Blueprint grid */
+  --grid: oklch(0.21 0.02 255 / 4.5%);
+
+  --radius: 0.375rem;
 }
 
-/* ─── Dark Mode ──────────────────────────────────────────────────────────────── */
+/* ─── Dark Mode: night console ───────────────────────────────────────────────── */
 
 .dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.93 0 0);
-  --card: oklch(0.175 0 0);
-  --card-foreground: oklch(0.93 0 0);
-  --popover: oklch(0.175 0 0);
-  --popover-foreground: oklch(0.93 0 0);
+  --background: oklch(0.155 0.015 255);
+  --foreground: oklch(0.93 0.01 240);
+  --card: oklch(0.185 0.016 255);
+  --card-foreground: oklch(0.93 0.01 240);
+  --popover: oklch(0.185 0.016 255);
+  --popover-foreground: oklch(0.93 0.01 240);
 
-  --primary: oklch(0.93 0 0);
-  --primary-foreground: oklch(0.145 0 0);
+  --primary: oklch(0.93 0.01 240);
+  --primary-foreground: oklch(0.155 0.015 255);
 
-  --secondary: oklch(0.22 0 0);
-  --secondary-foreground: oklch(0.9 0 0);
+  --secondary: oklch(0.225 0.018 255);
+  --secondary-foreground: oklch(0.9 0.01 240);
 
-  --muted: oklch(0.2 0 0);
-  --muted-foreground: oklch(0.65 0 0);
+  --muted: oklch(0.21 0.017 255);
+  --muted-foreground: oklch(0.68 0.015 250);
 
-  --accent: oklch(0.23 0 0);
-  --accent-foreground: oklch(0.93 0 0);
+  --accent: oklch(0.24 0.018 255);
+  --accent-foreground: oklch(0.93 0.01 240);
 
-  --destructive: oklch(0.55 0.2 25);
+  --destructive: oklch(0.58 0.2 25);
 
-  --border: oklch(0.26 0 0);
-  --input: oklch(0.26 0 0);
-  --ring: oklch(0.55 0 0);
+  --border: oklch(0.3 0.02 255);
+  --input: oklch(0.3 0.02 255);
+  --ring: oklch(0.55 0.03 250);
+
+  --signal: oklch(0.74 0.17 55);
+  --signal-ink: oklch(0.78 0.15 58);
+
+  --grid: oklch(0.93 0.01 240 / 4%);
 }
 
 /* ─── Base ───────────────────────────────────────────────────────────────────── */
@@ -118,7 +133,13 @@
   }
   body {
     @apply bg-background text-foreground;
-    font-feature-settings: "cv11", "ss01";
+    /* Faint blueprint grid that fades out toward the bottom of the first screen */
+    background-image:
+      linear-gradient(to right, var(--grid) 1px, transparent 1px),
+      linear-gradient(to bottom, var(--grid) 1px, transparent 1px);
+    background-size: 32px 32px;
+    background-position: center top;
+    background-repeat: repeat;
   }
   html {
     @apply font-sans scroll-smooth;
@@ -126,11 +147,11 @@
 }
 
 ::selection {
-  background: oklch(0.2 0 0 / 14%);
+  background: oklch(0.65 0.19 44 / 25%);
 }
 
 .dark ::selection {
-  background: oklch(0.93 0 0 / 22%);
+  background: oklch(0.74 0.17 55 / 30%);
 }
 
 ::-webkit-scrollbar {
@@ -165,6 +186,70 @@ section[id] {
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--muted-foreground);
+}
+
+/* ─── Flight-manual helpers ──────────────────────────────────────────────────── */
+
+/* Corner brackets, like registration marks on a technical drawing */
+.brackets {
+  position: relative;
+}
+
+.brackets::before,
+.brackets::after {
+  content: "";
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border-color: var(--signal);
+  border-style: solid;
+  pointer-events: none;
+}
+
+.brackets::before {
+  top: -1px;
+  left: -1px;
+  border-width: 1.5px 0 0 1.5px;
+}
+
+.brackets::after {
+  right: -1px;
+  bottom: -1px;
+  border-width: 0 1.5px 1.5px 0;
+}
+
+/* Figure caption: FIG. 01 -- description */
+.fig-caption {
+  margin-top: 0.5rem;
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--muted-foreground);
+}
+
+/* Spec table rows: LABEL ........ value */
+.spec-row {
+  display: grid;
+  grid-template-columns: 6.5rem 1fr;
+  gap: 0.75rem;
+  border-top: 1px dashed var(--border);
+  padding-block: 0.4rem;
+  font-size: 0.8125rem;
+}
+
+.spec-row:last-child {
+  border-bottom: 1px dashed var(--border);
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0.25;
+  }
+}
+
+.blink {
+  animation: blink 1.6s ease-in-out infinite;
 }
 
 /* ─── Motion ─────────────────────────────────────────────────────────────────── */
@@ -225,9 +310,10 @@ section[id] {
 .prose-minimal h2 {
   scroll-margin-top: 5rem;
   margin-top: 2.5em;
-  font-size: 1.25rem;
+  font-family: var(--font-display);
+  font-size: 1.4rem;
   font-weight: 600;
-  letter-spacing: -0.01em;
+  letter-spacing: 0;
   color: var(--foreground);
 }
 
@@ -247,7 +333,7 @@ section[id] {
 }
 
 .prose-minimal a:hover {
-  text-decoration-color: var(--foreground);
+  text-decoration-color: var(--signal);
 }
 
 .prose-minimal ul,
@@ -331,4 +417,27 @@ code[data-theme*=" "] span {
 
 .prose-minimal pre {
   background: var(--muted);
+}
+
+/* Automatic section numbers: 01, 02, ... in render order on each page */
+main {
+  counter-reset: sec;
+}
+
+.sec-no::before {
+  counter-increment: sec;
+  content: counter(sec, decimal-leading-zero);
+}
+
+/* Prose: signal-coloured accents on quotes and code */
+.prose-minimal blockquote {
+  border-left-color: var(--signal);
+}
+
+.prose-minimal pre {
+  border-left: 2px solid var(--signal);
+}
+
+.prose-minimal li::marker {
+  color: var(--signal);
 }

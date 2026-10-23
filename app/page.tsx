@@ -3,6 +3,7 @@ import { TechStack } from "@/components/sections/TechStack";
 import { Projects } from "@/components/sections/Projects";
 import { Experience } from "@/components/sections/Experience";
 import { Writing } from "@/components/sections/Writing";
+import { Crew } from "@/components/sections/Crew";
 import { Activity } from "@/components/sections/Activity";
 import { Contact } from "@/components/sections/Contact";
 
@@ -13,6 +14,7 @@ export default function Home() {
       <Projects />
       <Writing />
       <Experience />
+      <Crew />
       <Activity />
       <TechStack />
       <Contact />

@@ -27,12 +27,13 @@ export function Navbar({ posts }: { posts: PaletteProps["posts"] }) {
 
   return (
     <>
-      <header className="sticky top-0 z-50 border-b border-border/60 bg-background/80 backdrop-blur">
+      <header className="sticky top-0 z-50 border-b border-border bg-background/85 backdrop-blur">
         <div className="container-prose flex h-14 items-center justify-between">
           <Link
             href="/"
-            className="text-sm font-semibold tracking-tight text-foreground"
+            className="flex items-center gap-2 font-display text-[15px] font-semibold uppercase tracking-[0.08em] text-foreground"
           >
+            <span className="size-2 bg-signal" aria-hidden />
             {heroContent.name.split(" ")[0]}
             <span className="hidden sm:inline"> {heroContent.name.split(" ").slice(1).join(" ")}</span>
           </Link>
@@ -47,8 +48,10 @@ export function Navbar({ posts }: { posts: PaletteProps["posts"] }) {
                   href={item.href}
                   aria-current={active ? "page" : undefined}
                   className={cn(
-                    "rounded-md px-2 py-1.5 text-sm sm:px-2.5 transition-colors hover:text-foreground",
-                    active ? "text-foreground" : "text-muted-foreground"
+                    "px-2 py-1.5 font-mono text-[11px] uppercase tracking-[0.1em] transition-colors hover:text-foreground sm:px-2.5",
+                    active
+                      ? "text-foreground underline decoration-signal decoration-2 underline-offset-[6px]"
+                      : "text-muted-foreground"
                   )}
                 >
                   {item.label}

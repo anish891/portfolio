@@ -9,7 +9,8 @@ export function Writing() {
   return (
     <Section
       id="writing"
-      title="Writing"
+      title="Flight log"
+      kicker="writing"
       action={
         <Link
           href="/blog"

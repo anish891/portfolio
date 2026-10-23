@@ -1,6 +1,6 @@
 ---
 title: "GraphSentinel: an investigation agent with a short leash"
-description: Designing an LLM agent for security work that can look at a lot and do almost nothing on its own.
+description: "Designing an LLM agent for security work that can look at a lot and do almost nothing on its own, with typed tools, deterministic scoring, human approval and an audit trail."
 date: 2026-10-17
 tags: [ai, agents, security, graphs]
 project: graph-sentinel
@@ -8,30 +8,76 @@ project: graph-sentinel
 
 [GraphSentinel AI](/projects/graph-sentinel) investigates a security alert by walking a graph in FalkorDB: identities, IPs, devices, services, vulnerabilities, indicators, evidence and past incidents. The interesting design question was not how to make the agent powerful. It was how to keep it safe to be wrong.
 
+Security is a good domain for that question. An agent that is wrong about a movie recommendation costs you a bad evening. An agent that is wrong about isolating a server costs you an outage, or worse, a missed breach.
+
+## What an investigation looks like
+
+You ask a question such as "Investigate alert ALT-1001. Is this part of a larger attack?" and the agent works through a fixed shape of steps:
+
+1. It resolves the target and checks that you are allowed to investigate it, then creates a persisted record.
+2. It calls typed graph tools inside a bounded loop.
+3. It gathers evidence, both supporting and contradicting, with provenance.
+4. Deterministic code scores the risk and decides which response actions are eligible.
+5. Humans approve or reject those actions.
+6. The finished investigation is written back into the graph.
+
+On the demo dataset it finds a real five-hop chain returned by the graph: the alert, the user it was raised against, that user's workstation, a finance server, the payments service running on it, and an exploitable vulnerability in that service. It also links the alert to two earlier incidents through a shared indicator.
+
 ## Let the model choose, not decide
 
-The LLM picks which graph tool to run next. That is all it does. Each tool is typed, bounded and read-only. The agent cannot write queries of its own and cannot change anything.
+The LLM picks which graph tool to run next. That is all it does. The tools are typed, bounded and read-only, and include fetching an alert, exploring a neighbourhood, finding attack paths, finding related incidents, assessing impact, fetching evidence, running a graph algorithm and recalling prior investigations. The agent cannot write queries of its own and cannot change anything.
 
-The model can be Azure OpenAI, Groq, or an offline deterministic planner. The offline planner means the whole pipeline can be tested without a network or an API key.
+The loop itself has limits on steps, tool calls, tokens and wall-clock time. Every tool call is validated for name and arguments before it runs, and an invalid call is rejected and recorded. After three consecutive invalid calls the loop stops, and the baseline investigation still completes.
+
+The model can be Azure OpenAI, Groq, or an offline deterministic planner. The offline planner chooses tools with fixed rules over the same outputs a model would see, and it is labelled "mock planner, not an LLM" everywhere it appears. That means the entire pipeline can be tested without a network or an API key.
+
+## Why the graph is not decoration
+
+It is easy to bolt a graph database onto an agent and call it graph-native. The test I used was to remove the graph and see what is left. Every decision comes from a graph query:
+
+- **Is the alert part of a larger attack?** Variable-length, typed, tenant-scoped path queries over propagation relationships, with incidents and vulnerabilities allowed only as path endpoints, and historical edges filtered by when they stopped being valid.
+- **Which assets are at risk?** Directed reachability, which separates downstream dependencies from upstream dependents and from things that are merely co-located.
+- **Is it isolated?** A connected-components algorithm that runs inside FalkorDB.
+- **Where are the chokepoints?** Betweenness and PageRank, also inside the database.
+- **What happened before?** Paths to past incidents, classified as direct or indirect by hop count.
+
+The risk factors, such as asset criticality, exploitable vulnerability, historical incidents, path proximity and threat intelligence, all collapse to zero without the graph. The verdict is literally computed from query results.
 
 ## Decisions belong to deterministic code
 
-Risk scoring and the list of eligible response actions come from deterministic engines, not from the model. A model can explain a score, but it cannot raise one. A human then approves any action, and the approvals use a four-eyes rule: an investigator cannot approve their own investigation.
+Risk scoring and the list of eligible response actions come from deterministic engines, not from the model. The risk score uses a documented weighted formula, and on the headline scenario it lands at 65 out of 100, in the high band, with high confidence. A model can explain a score. It cannot raise one.
+
+Actions come from a policy engine with a versioned policy. For that scenario it proposes isolating the workstation, rotating the user's credentials, blocking the indicator, patching the payments service and escalating. Each one is marked pending approval, and all of them are simulated.
+
+## Humans approve, with four eyes
+
+Nothing runs until a person approves it. Access is role-based: viewers read, investigators start investigations, approvers decide on actions, and admins see diagnostics. The server enforces a four-eyes rule, so the person who requested an investigation cannot approve its actions. Approvals are idempotent and tied to the policy version, so a stale approval is rejected instead of quietly applied.
 
 ## Evidence, with receipts
 
-Every finding cites the graph records behind it. The agent collects supporting and contradicting evidence with provenance, so a reader can check the claim instead of trusting it.
+Every finding cites the graph records behind it. The agent collects supporting and contradicting evidence, each with provenance, so a reader can check a claim instead of trusting it. A validation step rejects claims that cite a record the agent never retrieved.
 
-On the demo dataset it finds a 5-hop attack chain, links the alert to two earlier incidents through a shared indicator, and notices a prompt-injection attempt hidden in a helpdesk ticket. It flags the attempt and ignores the instructions inside it.
+## Prompt injection
+
+Evidence can contain text written by an attacker. In the demo dataset, one helpdesk ticket carries a hidden instruction. The agent flags it as an injection attempt, excludes it from the evidence, and does not let it change the verdict. Nothing is approved automatically, and a claim that came from the injected text is rejected.
 
 ## Memory that is also a graph
 
-Finished investigations are written back into the graph, so a later, related alert can recall them. Every step lands in a hash-chained audit trail, which makes after-the-fact tampering detectable.
+Finished investigations are written back into the graph as nodes, so a later, related alert can recall them by traversal. Every step also lands in a hash-chained audit trail: each record includes the hash of the one before it, so changing or deleting an old record breaks every later hash. That detects tampering by anyone who cannot recompute the whole chain, and the documentation is clear that it does not make a database tamper-proof against someone with write access to everything.
 
-## Evaluating it
+## Evaluating it, honestly
 
-An evaluation suite runs 14 scenarios against a real FalkorDB. All 14 pass, along with 64 of 64 checks. CI runs lint, type checks, tests, dependency audits, Trivy and gitleaks.
+An evaluation suite runs 14 scenarios against a real FalkorDB with a fixed clock so the results repeat. They cover a multi-hop attack chain, a benign look-alike, a missing or ambiguous target, a disconnected entity, stale relationships, contradictory evidence, a critical service reachable downstream, repeated entities across incidents, invalid tool calls, prompt injection, an unauthorised approval, duplicate execution and hallucinated claims.
+
+All 14 pass, with 64 of 64 checks and a citation coverage of 1.0. Two of the other numbers need context. The unsupported-claim rate is 0.069, but every rejected claim comes from the two scenarios that inject claims on purpose. Tool-call validity is 0.917, and the invalid calls are the deliberate ones in the invalid-tools scenario.
+
+These are behavioural checks on a designed synthetic dataset. They are not a benchmark of detection accuracy, and the offline planner's numbers say nothing about how a real model chooses tools. CI runs lint, type checks, tests with a real database service, end-to-end tests, dependency audits, Trivy and gitleaks.
 
 ## Limits, stated plainly
 
-All data is synthetic and all response actions are simulated. The hosted demo is a recorded replay of a real run, served as a static site. The full stack, a FastAPI backend and a React frontend with React Flow, runs locally with Docker Compose.
+- All data is synthetic and all response actions are simulated.
+- Risk weights are heuristic, not calibrated.
+- It is single-tenant, and investigations run as in-process tasks, so scaling out would need a durable queue.
+- The graph algorithms ignore when relationships were valid, and the tool output says so.
+
+The full stack, a FastAPI backend and a React frontend with React Flow, runs locally with Docker Compose. The hosted demo is a recorded replay of a real run, and [how that replay was built](/blog/recording-a-real-run-for-a-hosted-demo) is its own story.

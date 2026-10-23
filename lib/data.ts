@@ -11,6 +11,8 @@ export interface Project {
   description: string;
   longDescription: string;
   features: string[];
+  /** Short, checkable facts shown on the project row (tests, scope, guarantees). */
+  proof: string[];
   techStack: string[];
   category: "ai" | "web" | "mobile";
   deployedUrl?: string;
@@ -51,7 +53,6 @@ export interface SocialLink {
 export const navItems: NavItem[] = [
   { label: "Work", href: "/projects" },
   { label: "Blog", href: "/blog" },
-  { label: "Lab", href: "/lab" },
   { label: "About", href: "/about" },
 ];
 
@@ -82,8 +83,10 @@ export const quote = {
 export const heroContent = {
   name: "Anish Tejwani",
   intro:
-    "I build intelligent software systems, AI-powered applications, and scalable web platforms. Passionate about solving complex problems through automation, modern engineering practices, and elegant user experiences.",
+    "I build tools that find the signal in messy data: option chains, spreadsheets, security graphs. I work across the stack, with a focus on AI-powered products and the systems behind them.",
   location: "Mumbai, India",
+  coordinates: "19.08°N 72.88°E",
+  status: "Open to full-time & freelance",
   email: "anishtejwani891@gmail.com",
   roles: [
     "Software Architect",
@@ -92,6 +95,22 @@ export const heroContent = {
     "Full-Stack Developer",
   ],
 };
+
+// ─── Crew profile ────────────────────────────────────────────────────────────
+// Self-reported, unverified.
+
+export const crewProfile = [
+  { label: "Strength log", value: "50 push-ups. 100 lb deadlift." },
+  {
+    label: "Field activity",
+    value: "Sports, played hard enough that injuries are routine.",
+  },
+  { label: "Fuel", value: "Tea. A lot of it." },
+  {
+    label: "Workshop",
+    value: "Building things, art and crafts, and trying whatever is new.",
+  },
+];
 
 // ─── About ───────────────────────────────────────────────────────────────────
 
@@ -216,6 +235,7 @@ export const projects: Project[] = [
     deployedUrl: "https://chaindeck.vercel.app/",
     image: "/projects/chaindeck.jpg",
     githubUrl: "https://github.com/anish891/chaindeck",
+    proof: ["Live NSE data", "Max Pain in one pass", "6 verification scripts"],
   },
   {
     id: "unbake",
@@ -237,6 +257,7 @@ export const projects: Project[] = [
     deployedUrl: "https://unbake.vercel.app/",
     image: "/projects/unbake.jpg",
     githubUrl: "https://github.com/anish891/unbake",
+    proof: ["22 tests", "Runs in the browser", "No upload, no server"],
   },
   {
     id: "graph-sentinel",
@@ -258,6 +279,7 @@ export const projects: Project[] = [
     deployedUrl: "https://graphsentinel-ai.vercel.app/",
     image: "/projects/graphsentinel.jpg",
     githubUrl: "https://github.com/anish891/graph_sentinel",
+    proof: ["14 of 14 scenarios", "64 of 64 checks", "CI with security scans"],
   },
 ];
 
