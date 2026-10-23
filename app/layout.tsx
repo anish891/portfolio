@@ -3,6 +3,7 @@ import { IBM_Plex_Sans, IBM_Plex_Sans_Condensed, IBM_Plex_Mono } from "next/font
 import "./globals.css";
 import { siteConfig, heroContent, socialLinks } from "@/lib/data";
 import { Providers } from "@/components/Providers";
+import { serializeJsonLd } from "@/lib/jsonld";
 import { getAllPosts } from "@/lib/blog";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
@@ -106,7 +107,7 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col bg-background text-foreground overflow-x-hidden">
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd) }}
+          dangerouslySetInnerHTML={{ __html: serializeJsonLd(personJsonLd) }}
         />
         <a
           href="#main"

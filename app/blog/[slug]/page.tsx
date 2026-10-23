@@ -6,6 +6,7 @@ import { TagList } from "@/components/ui/TagList";
 import { PostBody } from "@/components/ui/PostBody";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { heroContent, siteConfig } from "@/lib/data";
+import { serializeJsonLd } from "@/lib/jsonld";
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -56,7 +57,7 @@ export default async function PostPage({ params }: Props) {
     <main id="main" className="container-prose pt-14 pb-4">
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: serializeJsonLd(jsonLd) }}
       />
       <PageHeader
         back={{ href: "/blog", label: "Blog" }}

@@ -28,6 +28,8 @@ export function Contact() {
     const name = formData.get("name") as string;
     const email = formData.get("email") as string;
     const message = formData.get("message") as string;
+    // The name ends up in the email subject: collapse any line breaks or tabs and cap the length.
+    const subjectName = name.replace(/\s+/g, " ").trim().slice(0, 100);
 
     setIsSending(true);
 
@@ -68,7 +70,7 @@ export function Contact() {
           email: email,
           message: message,
           from_name: "Portfolio Contact Form",
-          subject: `New Portfolio Message from ${name}`,
+          subject: `New Portfolio Message from ${subjectName}`,
         }),
       });
 
@@ -108,7 +110,7 @@ export function Contact() {
               <label htmlFor="contact-name" className="mb-1.5 block text-sm font-medium">
                 Name
               </label>
-              <Input id="contact-name" name="name" required disabled={isSending} />
+              <Input id="contact-name" name="name" required maxLength={100} disabled={isSending} />
             </div>
             <div>
               <label htmlFor="contact-email" className="mb-1.5 block text-sm font-medium">
@@ -119,6 +121,7 @@ export function Contact() {
                 name="email"
                 type="email"
                 required
+                maxLength={254}
                 disabled={isSending}
               />
             </div>
@@ -132,6 +135,7 @@ export function Contact() {
               name="message"
               rows={4}
               required
+              maxLength={5000}
               disabled={isSending}
               className="resize-none"
             />

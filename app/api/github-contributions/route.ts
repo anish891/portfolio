@@ -79,23 +79,54 @@ async function fromPublicApi(): Promise<Day[]> {
   return data.contributions as Day[];
 }
 
-export async function GET() {
+// Per-instance memory cache. Next's own fetch cache cannot help here: the GitHub request body
+// contains a changing timestamp, so every call would look new. This keeps repeat visitors from
+// each costing a GitHub API call, and serves the last good data if GitHub is briefly unavailable.
+interface Cached {
+  at: number;
+  contributions: Day[];
+  source: "github" | "public-api";
+}
+let cache: Cached | null = null;
+let inFlight: Promise<Cached> | null = null;
+
+async function refresh(): Promise<Cached> {
   const token = process.env.GITHUB_TOKEN;
+  let contributions: Day[];
+  let source: Cached["source"] = token ? "github" : "public-api";
   try {
-    let contributions: Day[];
-    try {
-      contributions = normalize(token ? await fromGitHub(token) : await fromPublicApi());
-    } catch (err) {
-      // If the token path fails (expired token, rate limit), still show something.
-      if (!token) throw err;
-      contributions = normalize(await fromPublicApi());
-    }
-    const lastYear = contributions.reduce((sum, d) => sum + d.count, 0);
-    return NextResponse.json(
-      { total: { lastYear }, contributions, source: token ? "github" : "public-api" },
-      { headers: HEADERS }
-    );
-  } catch {
-    return NextResponse.json({ error: "Failed to fetch" }, { status: 502 });
+    contributions = normalize(token ? await fromGitHub(token) : await fromPublicApi());
+  } catch (err) {
+    // If the token path fails (expired token, rate limit), still show something.
+    if (!token) throw err;
+    console.error("[github-contributions] GitHub GraphQL failed, using the public API:", errorMessage(err));
+    contributions = normalize(await fromPublicApi());
+    source = "public-api";
   }
+  return { at: Date.now(), contributions, source };
+}
+
+/** Messages only: error objects can carry request details, and the token must never be logged. */
+function errorMessage(err: unknown): string {
+  return err instanceof Error ? err.message : "unknown error";
+}
+
+export async function GET() {
+  const fresh = cache && Date.now() - cache.at < CACHE_SECONDS * 1000;
+  try {
+    if (!fresh) {
+      // Share one upstream request between concurrent visitors.
+      inFlight ??= refresh().finally(() => {
+        inFlight = null;
+      });
+      cache = await inFlight;
+    }
+  } catch (err) {
+    console.error("[github-contributions] refresh failed:", errorMessage(err));
+    if (!cache) return NextResponse.json({ error: "Failed to fetch" }, { status: 502 });
+    // Fall through and serve the last good data.
+  }
+  const { contributions, source } = cache!;
+  const lastYear = contributions.reduce((sum, d) => sum + d.count, 0);
+  return NextResponse.json({ total: { lastYear }, contributions, source }, { headers: HEADERS });
 }

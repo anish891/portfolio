@@ -6,6 +6,21 @@ import { projects } from "@/lib/data";
 
 const BLOG_DIR = path.join(process.cwd(), "content", "blog");
 
+/**
+ * gray-matter can evaluate "---js" / "---javascript" front matter with eval(), which would let a
+ * post run arbitrary code at build time. Posts only ever need YAML, so the JavaScript engine is
+ * replaced with one that refuses to run.
+ */
+const MATTER_OPTIONS = {
+  engines: {
+    javascript: {
+      parse(): never {
+        throw new Error("JavaScript front matter is disabled; use YAML between --- lines");
+      },
+    },
+  },
+};
+
 export interface PostMeta {
   slug: string;
   title: string;
@@ -34,7 +49,7 @@ function parsePost(file: string): Post {
   };
 
   const raw = fs.readFileSync(path.join(BLOG_DIR, file), "utf8");
-  const { data, content } = matter(raw);
+  const { data, content } = matter(raw, MATTER_OPTIONS);
 
   if (!data.title) fail('missing "title" in frontmatter');
   if (!data.description) fail('missing "description" in frontmatter');
