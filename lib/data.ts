@@ -66,12 +66,7 @@ export const siteConfig = {
   xUrl: "https://x.com/anish_891",
 };
 
-// ─── Now & Quote ───────────────────────────────────────────────
-
-export const nowContent = {
-  label: "Now",
-  text: "Building ChainDeck: NIFTY options analytics from live NSE data.",
-};
+// ─── Quote ─────────────────────────────────────────────────────────────────
 
 export const quote = {
   text: "Make it work, make it right, make it fast.",
@@ -85,7 +80,7 @@ export const heroContent = {
   intro:
     "I build tools that find the signal in messy data: option chains, spreadsheets, security graphs. I work across the stack, with a focus on AI-powered products and the systems behind them.",
   location: "Mumbai, India",
-  coordinates: "19.08°N 72.88°E",
+  coordinates: "37.23°N 115.81°W",
   status: "Open to full-time & freelance",
   email: "anishtejwani891@gmail.com",
   roles: [

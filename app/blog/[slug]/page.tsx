@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { formatDate, getAdjacentPosts, getAllPosts, getHeadings, getPost } from "@/lib/blog";
+import { getAdjacentPosts, getAllPosts, getHeadings, getPost } from "@/lib/blog";
 import { TagList } from "@/components/ui/TagList";
 import { PostBody } from "@/components/ui/PostBody";
 import { PageHeader } from "@/components/ui/PageHeader";
@@ -66,12 +66,6 @@ export default async function PostPage({ params }: Props) {
         uppercase={false}
       >
         <dl className="mt-6">
-          <div className="spec-row">
-            <dt className="label-mono">Date</dt>
-            <dd className="font-mono text-xs">
-              <time dateTime={post.date}>{formatDate(post.date)}</time>
-            </dd>
-          </div>
           <div className="spec-row">
             <dt className="label-mono">Read</dt>
             <dd className="font-mono text-xs">{post.readingMinutes} min</dd>

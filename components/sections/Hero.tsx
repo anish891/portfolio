@@ -1,7 +1,7 @@
 import { ArrowUpRight } from "lucide-react";
 import { Github, Linkedin, X } from "@/components/ui/icons";
 import { Mail } from "lucide-react";
-import { heroContent, nowContent, projects, socialLinks } from "@/lib/data";
+import { heroContent, projects, socialLinks } from "@/lib/data";
 import { getAllPosts } from "@/lib/blog";
 import { OrbitDiagram } from "@/components/ui/OrbitDiagram";
 import { Telemetry } from "@/components/ui/Telemetry";
@@ -42,11 +42,6 @@ export function Hero() {
       </div>
 
       <p className="fade-up mt-8 max-w-xl leading-relaxed text-foreground/85">{heroContent.intro}</p>
-
-      <p className="fade-up mt-4 text-sm leading-relaxed text-muted-foreground">
-        <span className="label-mono mr-2 text-signal-ink">Current mission</span>
-        {nowContent.text}
-      </p>
 
       <div className="fade-up mt-6 flex items-center gap-4">
         <a

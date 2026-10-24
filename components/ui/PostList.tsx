@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { formatDate, type PostMeta } from "@/lib/blog";
+import type { PostMeta } from "@/lib/blog";
 
 export function PostList({
   posts,
@@ -21,17 +21,9 @@ export function PostList({
               {String(i + 1).padStart(2, "0")}
             </span>
             <div>
-              <div className="flex items-baseline justify-between gap-4">
-                <Heading className="font-display text-lg font-semibold tracking-tight group-hover:underline group-hover:decoration-signal group-hover:decoration-2 group-hover:underline-offset-4">
-                  {post.title}
-                </Heading>
-                <time
-                  dateTime={post.date}
-                  className="shrink-0 font-mono text-xs text-muted-foreground"
-                >
-                  {formatDate(post.date, "short")}
-                </time>
-              </div>
+              <Heading className="font-display text-lg font-semibold tracking-tight group-hover:underline group-hover:decoration-signal group-hover:decoration-2 group-hover:underline-offset-4">
+                {post.title}
+              </Heading>
               <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
                 {post.description}
               </p>
