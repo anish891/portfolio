@@ -91,38 +91,43 @@
   --radius: 0.375rem;
 }
 
-/* ─── Dark Mode: night console ───────────────────────────────────────────────── */
+/* ─── Dark Mode: night cockpit ───────────────────────────────────────────────────
+   Warm near-black panels, amber instruments, a dim amber grid and a soft instrument
+   backlight at the top of the page. Not an inverted light theme: the accent and the
+   neutrals both shift to amber/warm hues. */
 
 .dark {
-  --background: oklch(0.155 0.015 255);
-  --foreground: oklch(0.93 0.01 240);
-  --card: oklch(0.185 0.016 255);
-  --card-foreground: oklch(0.93 0.01 240);
-  --popover: oklch(0.185 0.016 255);
-  --popover-foreground: oklch(0.93 0.01 240);
+  --background: oklch(0.13 0.008 70);
+  --foreground: oklch(0.92 0.02 85);
+  --card: oklch(0.165 0.01 70);
+  --card-foreground: oklch(0.92 0.02 85);
+  --popover: oklch(0.165 0.01 70);
+  --popover-foreground: oklch(0.92 0.02 85);
 
-  --primary: oklch(0.93 0.01 240);
-  --primary-foreground: oklch(0.155 0.015 255);
+  /* Amber is the primary action colour in the dark theme */
+  --primary: oklch(0.8 0.165 72);
+  --primary-foreground: oklch(0.13 0.008 70);
 
-  --secondary: oklch(0.225 0.018 255);
-  --secondary-foreground: oklch(0.9 0.01 240);
+  --secondary: oklch(0.2 0.012 70);
+  --secondary-foreground: oklch(0.9 0.02 85);
 
-  --muted: oklch(0.21 0.017 255);
-  --muted-foreground: oklch(0.68 0.015 250);
+  --muted: oklch(0.19 0.01 70);
+  --muted-foreground: oklch(0.7 0.03 80);
 
-  --accent: oklch(0.24 0.018 255);
-  --accent-foreground: oklch(0.93 0.01 240);
+  --accent: oklch(0.22 0.014 70);
+  --accent-foreground: oklch(0.92 0.02 85);
 
-  --destructive: oklch(0.58 0.2 25);
+  --destructive: oklch(0.62 0.2 25);
 
-  --border: oklch(0.3 0.02 255);
-  --input: oklch(0.3 0.02 255);
-  --ring: oklch(0.55 0.03 250);
+  --border: oklch(0.3 0.02 70);
+  --input: oklch(0.3 0.02 70);
+  --ring: oklch(0.8 0.165 72 / 60%);
 
-  --signal: oklch(0.74 0.17 55);
-  --signal-ink: oklch(0.78 0.15 58);
+  --signal: oklch(0.8 0.165 72);
+  --signal-ink: oklch(0.83 0.15 75);
 
-  --grid: oklch(0.93 0.01 240 / 4%);
+  --grid: oklch(0.8 0.15 72 / 5%);
+  --backlight: oklch(0.8 0.165 72 / 8%);
 }
 
 /* ─── Base ───────────────────────────────────────────────────────────────────── */
@@ -151,7 +156,7 @@
 }
 
 .dark ::selection {
-  background: oklch(0.74 0.17 55 / 30%);
+  background: oklch(0.8 0.165 72 / 30%);
 }
 
 ::-webkit-scrollbar {
@@ -169,6 +174,32 @@
 
 section[id] {
   scroll-margin-top: 5rem;
+}
+
+/* Dark theme extras: instrument backlight over the grid, an edge vignette, glowing readouts */
+.dark body {
+  background-image:
+    radial-gradient(900px 420px at 50% -80px, var(--backlight), transparent 70%),
+    linear-gradient(to right, var(--grid) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--grid) 1px, transparent 1px);
+  background-size:
+    auto,
+    32px 32px,
+    32px 32px;
+  background-repeat: no-repeat, repeat, repeat;
+}
+
+.dark::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: radial-gradient(ellipse at center, transparent 55%, oklch(0 0 0 / 38%) 100%);
+}
+
+.dark .readout {
+  text-shadow: 0 0 10px color-mix(in oklab, var(--signal) 45%, transparent);
 }
 
 /* ─── Layout helpers ─────────────────────────────────────────────────────────── */
@@ -282,6 +313,51 @@ section[id] {
 
 .role-in {
   animation: role-in 0.3s ease-out both;
+}
+
+/* Page transitions: content fades up on every navigation, and a thin signal line sweeps
+   across the top of the screen. Both are removed for reduced-motion users. */
+@keyframes page-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.page-in {
+  animation: page-in 0.28s ease-out both;
+}
+
+@keyframes route-scan {
+  0% {
+    transform: translateX(-100%);
+    opacity: 1;
+  }
+  80% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+}
+
+.route-scan {
+  animation: route-scan 0.55s ease-in-out both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page-in {
+    animation: none;
+  }
+
+  .route-scan {
+    display: none;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -446,4 +522,79 @@ main {
    the code background. Darken only that colour, in light mode. */
 .prose-minimal code span[style*="--shiki-light:#66707B"] {
   --shiki-light: #4f5862 !important;
+}
+
+/* ─── Annotated screenshots ──────────────────────────────────────────────────── */
+
+.pin {
+  position: absolute;
+  display: flex;
+  width: 1.5rem;
+  height: 1.5rem;
+  transform: translate(-50%, -50%);
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  border: 1.5px solid var(--background);
+  background: var(--signal);
+  color: oklch(0.13 0.008 70);
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  line-height: 1;
+  cursor: pointer;
+  box-shadow: 0 1px 6px oklch(0 0 0 / 35%);
+  transition: transform 0.15s ease;
+}
+
+@media (max-width: 640px) {
+  .pin {
+    width: 1.25rem;
+    height: 1.25rem;
+    font-size: 0.625rem;
+  }
+}
+
+.pin::before {
+  content: "";
+  position: absolute;
+  inset: -5px;
+  border-radius: inherit;
+  border: 1px solid var(--signal);
+  opacity: 0;
+  transform: scale(0.8);
+  transition:
+    opacity 0.15s ease,
+    transform 0.15s ease;
+}
+
+.pin[data-active="true"] {
+  transform: translate(-50%, -50%) scale(1.15);
+}
+
+.pin[data-active="true"]::before {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.pin:focus-visible {
+  outline: 2px solid var(--foreground);
+  outline-offset: 3px;
+}
+
+@keyframes pin-pulse {
+  0% {
+    box-shadow:
+      0 1px 6px oklch(0 0 0 / 35%),
+      0 0 0 0 color-mix(in oklab, var(--signal) 55%, transparent);
+  }
+  100% {
+    box-shadow:
+      0 1px 6px oklch(0 0 0 / 35%),
+      0 0 0 10px transparent;
+  }
+}
+
+.pin-idle {
+  animation: pin-pulse 2.4s ease-out infinite;
 }

@@ -5,6 +5,16 @@ export interface NavItem {
   href: string;
 }
 
+/** A numbered pin on a project screenshot. x and y are pixels in the 1280x800 screenshot. */
+export interface Annotation {
+  x: number;
+  y: number;
+  title: string;
+  text: string;
+}
+
+export const SCREENSHOT_SIZE = { width: 1280, height: 800 } as const;
+
 export interface Project {
   id: string;
   title: string;
@@ -18,6 +28,8 @@ export interface Project {
   deployedUrl?: string;
   githubUrl?: string;
   image?: string;
+  /** Callouts drawn over `image` (a 1280x800 screenshot). */
+  annotations?: Annotation[];
 }
 
 export interface SkillCategory {
@@ -229,6 +241,38 @@ export const projects: Project[] = [
     category: "web",
     deployedUrl: "https://chaindeck.vercel.app/",
     image: "/projects/chaindeck.jpg",
+    annotations: [
+      {
+        x: 700,
+        y: 163,
+        title: "Composite market regime",
+        text: "Combines the individual signals into one plain-language regime, with a signal-agreement score.",
+      },
+      {
+        x: 700,
+        y: 247,
+        title: "Live trade setup",
+        text: "Bias, key target, invalidation level and strategy, synthesised from CPR, gamma zero-gamma level, PCR rate of change and straddle bounds.",
+      },
+      {
+        x: 640,
+        y: 393,
+        title: "Smart money flow",
+        text: "Flags unusual open-interest moves as they happen, for example a rapid put unwinding at a strike.",
+      },
+      {
+        x: 925,
+        y: 500,
+        title: "Open interest and velocity",
+        text: "Total call and put open interest with the 5-minute and 15-minute rate of change.",
+      },
+      {
+        x: 1222,
+        y: 500,
+        title: "Key levels",
+        text: "Max Pain, the largest call and put walls and how strong each is.",
+      },
+    ],
     githubUrl: "https://github.com/anish891/chaindeck",
     proof: ["Live NSE data", "Max Pain in one pass", "6 verification scripts"],
   },
@@ -251,6 +295,38 @@ export const projects: Project[] = [
     category: "web",
     deployedUrl: "https://unbake.vercel.app/",
     image: "/projects/unbake.jpg",
+    annotations: [
+      {
+        x: 1045,
+        y: 100,
+        title: "Summary",
+        text: "How many formulas were recovered, over how many cells, and how many cells break them.",
+      },
+      {
+        x: 610,
+        y: 316,
+        title: "Lookup recovered",
+        text: "Unit price is a lookup table keyed by the SKU column, rebuilt from the data.",
+      },
+      {
+        x: 600,
+        y: 506,
+        title: "Exact rows and breaks",
+        text: "Each formula reports how many rows it explains exactly and how many break it.",
+      },
+      {
+        x: 1190,
+        y: 233,
+        title: "Root cause",
+        text: "The blame solver picks the cell whose correction repairs the most broken calculations.",
+      },
+      {
+        x: 1180,
+        y: 538,
+        title: "Kind of slip",
+        text: "Each suspect cell is labelled, for example swapped digits or a slipped decimal point.",
+      },
+    ],
     githubUrl: "https://github.com/anish891/unbake",
     proof: ["22 tests", "Runs in the browser", "No upload, no server"],
   },
@@ -273,6 +349,38 @@ export const projects: Project[] = [
     category: "ai",
     deployedUrl: "https://graphsentinel-ai.vercel.app/",
     image: "/projects/graphsentinel.jpg",
+    annotations: [
+      {
+        x: 1150,
+        y: 24,
+        title: "Labelled as a replay",
+        text: "The hosted demo replays a real run on synthetic data, and says so at the top of every page.",
+      },
+      {
+        x: 335,
+        y: 190,
+        title: "Deterministic risk score",
+        text: "The score comes from a weighted-sum engine, not from the language model.",
+      },
+      {
+        x: 860,
+        y: 388,
+        title: "Attack path",
+        text: "A 5-hop path from the alert to a vulnerability, returned by FalkorDB.",
+      },
+      {
+        x: 1235,
+        y: 355,
+        title: "Key paths",
+        text: "The paths the agent found, including shorter ones that link the alert to earlier incidents.",
+      },
+      {
+        x: 212,
+        y: 232,
+        title: "Human approval",
+        text: "Response actions wait in an approvals queue, where a person signs off. Actions are simulated.",
+      },
+    ],
     githubUrl: "https://github.com/anish891/graph_sentinel",
     proof: ["14 of 14 scenarios", "64 of 64 checks", "CI with security scans"],
   },

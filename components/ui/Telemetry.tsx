@@ -33,7 +33,7 @@ export function Telemetry() {
       {cells.map(({ label, value, live }) => (
         <div key={label} className="bg-card px-3 py-2 first:col-span-2 sm:first:col-span-1">
           <dt className="label-mono">{label}</dt>
-          <dd className="mt-0.5 flex items-center gap-1.5 font-mono text-[13px] tabular-nums text-foreground">
+          <dd className="mt-0.5 flex items-center gap-1.5 readout font-mono text-[13px] tabular-nums text-foreground">
             {live && <span className="blink size-1.5 shrink-0 rounded-full bg-signal" aria-hidden />}
             {value}
           </dd>

@@ -3,16 +3,31 @@
 import { useEffect, useRef } from "react";
 
 /**
- * A small technical drawing of an orbit: degree ring, two orbital paths and two satellites.
- * Satellites move with SVG animateMotion; the animation is paused for reduced-motion users.
+ * A small technical drawing of an orbit: degree ring, three orbital paths and three
+ * satellites, one per project ("mission"). Satellites move slowly with SVG animateMotion.
+ * For reduced-motion users the animation is paused and the satellites rest on their paths.
  */
-export function OrbitDiagram({ className }: { className?: string }) {
+export function OrbitDiagram({
+  className,
+  missions = [],
+}: {
+  className?: string;
+  /** Project names, in orbit order (inner circle, wide ellipse, tight ellipse). */
+  missions?: string[];
+}) {
   const ref = useRef<SVGSVGElement>(null);
 
   useEffect(() => {
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      ref.current?.pauseAnimations();
-    }
+    const query = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const apply = () => {
+      const svg = ref.current;
+      if (!svg) return;
+      if (query.matches) svg.pauseAnimations();
+      else svg.unpauseAnimations();
+    };
+    apply();
+    query.addEventListener("change", apply);
+    return () => query.removeEventListener("change", apply);
   }, []);
 
   const ticks = Array.from({ length: 36 }, (_, i) => i * 10);
@@ -22,7 +37,11 @@ export function OrbitDiagram({ className }: { className?: string }) {
       ref={ref}
       viewBox="0 0 200 200"
       role="img"
-      aria-label="Diagram of two satellites orbiting a planet"
+      aria-label={
+        missions.length
+          ? `Diagram of ${missions.length} satellites orbiting a planet, one for each project: ${missions.join(", ")}`
+          : "Diagram of satellites orbiting a planet"
+      }
       className={className}
       fill="none"
       stroke="currentColor"
@@ -69,6 +88,9 @@ export function OrbitDiagram({ className }: { className?: string }) {
       <g transform="rotate(-25 100 100)">
         <ellipse cx="100" cy="100" rx="80" ry="34" strokeDasharray="2 3" opacity="0.7" />
       </g>
+      <g transform="rotate(40 100 100)">
+        <ellipse cx="100" cy="100" rx="52" ry="30" strokeDasharray="2 3" opacity="0.7" />
+      </g>
 
       {/* planet with graticule */}
       <circle cx="100" cy="100" r="22" strokeWidth="1" />
@@ -79,22 +101,39 @@ export function OrbitDiagram({ className }: { className?: string }) {
       {/* crosshair */}
       <path d="M100 4v-3M100 196v3M4 100H1M196 100h3" opacity="0" />
 
-      {/* satellites */}
-      <circle r="3" fill="var(--signal)" stroke="none">
+      {/* satellites: circle = mission 1, square = mission 2, diamond = mission 3 */}
+      <circle r="3.2" fill="var(--signal)" stroke="none">
         <animateMotion
-          dur="26s"
+          dur="30s"
           repeatCount="indefinite"
           path="M 166 100 A 66 66 0 1 1 34 100 A 66 66 0 1 1 166 100"
         />
       </circle>
       <g transform="rotate(-25 100 100)">
-        <circle r="2.4" fill="currentColor" stroke="none">
+        <rect x="-2.6" y="-2.6" width="5.2" height="5.2" fill="currentColor" stroke="none">
           <animateMotion
-            dur="17s"
+            dur="22s"
             repeatCount="indefinite"
             path="M 180 100 A 80 34 0 1 0 20 100 A 80 34 0 1 0 180 100"
           />
-        </circle>
+        </rect>
+      </g>
+      <g transform="rotate(40 100 100)">
+        <rect
+          x="-2.6"
+          y="-2.6"
+          width="5.2"
+          height="5.2"
+          transform="rotate(45)"
+          fill="currentColor"
+          stroke="none"
+        >
+          <animateMotion
+            dur="14s"
+            repeatCount="indefinite"
+            path="M 152 100 A 52 30 0 1 1 48 100 A 52 30 0 1 1 152 100"
+          />
+        </rect>
       </g>
     </svg>
   );

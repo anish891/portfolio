@@ -36,8 +36,23 @@ export function Hero() {
         </div>
 
         <figure className="shrink-0">
-          <OrbitDiagram className="size-24 text-foreground sm:size-40" />
-          <figcaption className="fig-caption hidden text-center sm:block">Fig. 00 · Orbit</figcaption>
+          <OrbitDiagram
+            className="size-24 text-foreground sm:size-40"
+            missions={projects.map((p) => p.title)}
+          />
+          <figcaption className="fig-caption hidden sm:block">
+            <span className="block text-center">Fig. 00 · Missions in orbit</span>
+            <ul className="mx-auto mt-1.5 w-fit space-y-0.5 normal-case tracking-normal">
+              {projects.map((p, i) => (
+                <li key={p.id} className="flex items-center gap-1.5">
+                  <span aria-hidden className={i === 0 ? "text-signal" : "text-foreground"}>
+                    {["●", "■", "◆"][i] ?? "●"}
+                  </span>
+                  {p.title}
+                </li>
+              ))}
+            </ul>
+          </figcaption>
         </figure>
       </div>
 

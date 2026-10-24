@@ -8,6 +8,7 @@ import { serializeJsonLd } from "@/lib/jsonld";
 import { getAllPosts } from "@/lib/blog";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
+import { RouteScan } from "@/components/ui/RouteScan";
 
 const plexSans = IBM_Plex_Sans({
   variable: "--font-plex-sans",
@@ -119,6 +120,7 @@ export default function RootLayout({
           Skip to content
         </a>
         <Providers>
+          <RouteScan />
           <Navbar posts={getAllPosts().map(({ slug, title, description, tags }) => ({ slug, title, description, tags }))} />
           {children}
           <Footer />

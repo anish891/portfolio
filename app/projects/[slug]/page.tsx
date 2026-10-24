@@ -6,6 +6,7 @@ import { getPostsForProject } from "@/lib/blog";
 import { PostList } from "@/components/ui/PostList";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { SectionHead } from "@/components/ui/Section";
+import { AnnotatedImage } from "@/components/ui/AnnotatedImage";
 import { ProjectLinks } from "@/components/ui/ProjectLinks";
 
 interface Props {
@@ -77,20 +78,31 @@ export default async function ProjectPage({ params }: Props) {
 
       {project.image && (
         <figure className="mt-10">
-          <div className="brackets">
-            <div className="relative aspect-[16/9] overflow-hidden border border-border bg-card">
-              <Image
-                src={project.image}
-                alt={`${project.title} preview`}
-                fill
-                preload
-                fetchPriority="high"
-                sizes="(min-width: 672px) 624px, 100vw"
-                className="object-cover"
-              />
+          {project.annotations?.length ? (
+            <AnnotatedImage
+              src={project.image}
+              alt={`${project.title} preview`}
+              annotations={project.annotations}
+            />
+          ) : (
+            <div className="brackets">
+              <div className="relative aspect-[16/10] overflow-hidden border border-border bg-card">
+                <Image
+                  src={project.image}
+                  alt={`${project.title} preview`}
+                  fill
+                  preload
+                  fetchPriority="high"
+                  sizes="(min-width: 672px) 624px, 100vw"
+                  className="object-cover"
+                />
+              </div>
             </div>
-          </div>
-          <figcaption className="fig-caption">Fig. 01 · {project.title}</figcaption>
+          )}
+          <figcaption className="fig-caption">
+            Fig. 01 · {project.title}
+            {project.annotations?.length ? " · numbered callouts" : ""}
+          </figcaption>
         </figure>
       )}
 
