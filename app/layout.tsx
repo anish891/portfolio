@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Analytics } from "@vercel/analytics/next";
 import { IBM_Plex_Sans, IBM_Plex_Sans_Condensed, IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";
 import { siteConfig, heroContent, socialLinks } from "@/lib/data";
@@ -121,6 +122,7 @@ export default function RootLayout({
           <Navbar posts={getAllPosts().map(({ slug, title, description, tags }) => ({ slug, title, description, tags }))} />
           {children}
           <Footer />
+          <Analytics />
         </Providers>
       </body>
     </html>
