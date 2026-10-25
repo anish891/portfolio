@@ -59,17 +59,15 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "en_US",
-    title: "Anish Tejwani — AI Engineer & Full-Stack Developer",
-    description:
-      "Building intelligent software systems, AI-powered applications, and scalable web platforms.",
+    title: "Anish Tejwani · AI Agents Engineer",
+    description: "Building AI agents in Mumbai. GraphSentinel, Unbake, ChainDeck.",
     url: "/",
     siteName: "Anish Tejwani Portfolio",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Anish Tejwani — AI Engineer & Full-Stack Developer",
-    description:
-      "Building intelligent software systems, AI-powered applications, and scalable web platforms.",
+    title: "Anish Tejwani · AI Agents Engineer",
+    description: "Building AI agents in Mumbai. GraphSentinel, Unbake, ChainDeck.",
   },
   robots: {
     index: true,
