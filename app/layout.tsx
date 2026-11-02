@@ -2,9 +2,10 @@ import type { Metadata } from "next";
 import { Analytics } from "@vercel/analytics/next";
 import { IBM_Plex_Sans, IBM_Plex_Sans_Condensed, IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";
-import { siteConfig, heroContent, socialLinks } from "@/lib/data";
+import { siteConfig } from "@/lib/data";
 import { Providers } from "@/components/Providers";
-import { serializeJsonLd } from "@/lib/jsonld";
+import { JsonLd } from "@/components/ui/JsonLd";
+import { siteGraph } from "@/lib/schema";
 import { getAllPosts } from "@/lib/blog";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
@@ -78,16 +79,6 @@ export const metadata: Metadata = {
 };
 
 
-const personJsonLd = {
-  "@context": "https://schema.org",
-  "@type": "Person",
-  name: heroContent.name,
-  url: siteConfig.url,
-  email: `mailto:${heroContent.email}`,
-  jobTitle: "AI Engineer & Full-Stack Developer",
-  address: { "@type": "PostalAddress", addressLocality: "Mumbai", addressCountry: "IN" },
-  sameAs: socialLinks.filter((l) => l.icon !== "Mail").map((l) => l.url),
-};
 
 export default function RootLayout({
   children,
@@ -109,10 +100,7 @@ export default function RootLayout({
         />
       </head>
       <body className="min-h-full flex flex-col bg-background text-foreground overflow-x-hidden">
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: serializeJsonLd(personJsonLd) }}
-        />
+        <JsonLd data={siteGraph()} />
         <a
           href="#main"
           className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[100] focus:rounded-lg focus:bg-primary focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-primary-foreground"

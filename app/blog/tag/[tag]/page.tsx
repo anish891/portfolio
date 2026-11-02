@@ -6,6 +6,8 @@ import { TagList } from "@/components/ui/TagList";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { safeDecodeURIComponent } from "@/lib/utils";
 import { pageMetadata } from "@/lib/seo";
+import { JsonLd } from "@/components/ui/JsonLd";
+import { breadcrumbs } from "@/lib/schema";
 
 interface Props {
   params: Promise<{ tag: string }>;
@@ -36,6 +38,12 @@ export default async function TagPage({ params }: Props) {
 
   return (
     <main id="main" className="container-prose pt-14">
+      <JsonLd
+        data={breadcrumbs([
+          { name: "Blog", path: "/blog" },
+          { name: `#${tag}`, path: `/blog/tag/${encodeURIComponent(tag)}` },
+        ])}
+      />
       <PageHeader
         back={{ href: "/blog", label: "Blog" }}
         kicker="Tag"

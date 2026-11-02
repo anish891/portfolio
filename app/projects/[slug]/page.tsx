@@ -3,6 +3,8 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 import { projects } from "@/lib/data";
 import { pageMetadata } from "@/lib/seo";
+import { JsonLd } from "@/components/ui/JsonLd";
+import { breadcrumbs, softwareSourceCode } from "@/lib/schema";
 import { getPostsForProject } from "@/lib/blog";
 import { PostList } from "@/components/ui/PostList";
 import { PageHeader } from "@/components/ui/PageHeader";
@@ -43,6 +45,15 @@ export default async function ProjectPage({ params }: Props) {
 
   return (
     <main id="main" className="container-prose pt-14 pb-4">
+      <JsonLd
+        data={[
+          softwareSourceCode(project),
+          breadcrumbs([
+            { name: "Projects", path: "/projects" },
+            { name: project.title, path: `/projects/${project.id}` },
+          ]),
+        ]}
+      />
       <PageHeader
         back={{ href: "/projects", label: "Projects" }}
         kicker={`Mission ${String(index).padStart(2, "0")}`}

@@ -4,6 +4,8 @@ import { ArrowUpRight } from "lucide-react";
 import { projects } from "@/lib/data";
 import { getPostsForProject } from "@/lib/blog";
 import { pageMetadata } from "@/lib/seo";
+import { JsonLd } from "@/components/ui/JsonLd";
+import { breadcrumbs } from "@/lib/schema";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { ProjectLinks } from "@/components/ui/ProjectLinks";
 
@@ -19,6 +21,7 @@ const categoryLabel = { ai: "AI / agents", web: "Web application", mobile: "Mobi
 export default function ProjectsIndex() {
   return (
     <main id="main" className="container-prose pt-14">
+      <JsonLd data={breadcrumbs([{ name: "Projects", path: "/projects" }])} />
       <PageHeader
         kicker="Mission index"
         title="Projects"

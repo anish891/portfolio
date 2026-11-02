@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { aboutContent, education, experience, heroContent } from "@/lib/data";
 import { pageMetadata } from "@/lib/seo";
+import { JsonLd } from "@/components/ui/JsonLd";
+import { breadcrumbs, profilePage } from "@/lib/schema";
 import { Section } from "@/components/ui/Section";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { Timeline } from "@/components/ui/Timeline";
@@ -16,6 +18,7 @@ export const metadata: Metadata = pageMetadata({
 export default function AboutPage() {
   return (
     <main id="main" className="pb-4">
+      <JsonLd data={[profilePage(), breadcrumbs([{ name: "About", path: "/about" }])]} />
       <div className="container-prose pt-14">
         <PageHeader kicker="Crew dossier" title="About" />
         <p className="mt-8 max-w-xl leading-relaxed text-foreground/85">{heroContent.intro}</p>

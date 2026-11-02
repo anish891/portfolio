@@ -3,6 +3,8 @@ import { getAllPosts, getAllTags } from "@/lib/blog";
 import { TagList } from "@/components/ui/TagList";
 import { PostList } from "@/components/ui/PostList";
 import { pageMetadata } from "@/lib/seo";
+import { JsonLd } from "@/components/ui/JsonLd";
+import { breadcrumbs } from "@/lib/schema";
 import { PageHeader } from "@/components/ui/PageHeader";
 
 export const metadata: Metadata = pageMetadata({
@@ -18,6 +20,7 @@ export default function BlogIndex() {
   const tags = getAllTags();
   return (
     <main id="main" className="container-prose pt-14">
+      <JsonLd data={breadcrumbs([{ name: "Blog", path: "/blog" }])} />
       <PageHeader
         kicker="Flight log"
         title="Blog"

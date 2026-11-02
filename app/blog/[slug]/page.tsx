@@ -5,9 +5,9 @@ import { getAdjacentPosts, getAllPosts, getHeadings, getPost } from "@/lib/blog"
 import { TagList } from "@/components/ui/TagList";
 import { PostBody } from "@/components/ui/PostBody";
 import { PageHeader } from "@/components/ui/PageHeader";
-import { heroContent, siteConfig } from "@/lib/data";
 import { pageMetadata } from "@/lib/seo";
-import { serializeJsonLd } from "@/lib/jsonld";
+import { JsonLd } from "@/components/ui/JsonLd";
+import { blogPosting, breadcrumbs } from "@/lib/schema";
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -38,21 +38,17 @@ export default async function PostPage({ params }: Props) {
   const headings = getHeadings(post.content);
   const { newer, older } = getAdjacentPosts(post.slug);
 
-  const jsonLd = {
-    "@context": "https://schema.org",
-    "@type": "BlogPosting",
-    headline: post.title,
-    description: post.description,
-    datePublished: post.date,
-    author: { "@type": "Person", name: heroContent.name, url: siteConfig.url },
-    mainEntityOfPage: `${siteConfig.url}/blog/${post.slug}`,
-  };
 
   return (
     <main id="main" className="container-prose pt-14 pb-4">
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: serializeJsonLd(jsonLd) }}
+      <JsonLd
+        data={[
+          blogPosting(post),
+          breadcrumbs([
+            { name: "Blog", path: "/blog" },
+            { name: post.title, path: `/blog/${post.slug}` },
+          ]),
+        ]}
       />
       <PageHeader
         back={{ href: "/blog", label: "Blog" }}
