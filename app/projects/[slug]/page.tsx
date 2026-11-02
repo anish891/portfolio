@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { projects } from "@/lib/data";
+import { pageMetadata } from "@/lib/seo";
 import { getPostsForProject } from "@/lib/blog";
 import { PostList } from "@/components/ui/PostList";
 import { PageHeader } from "@/components/ui/PageHeader";
@@ -21,15 +22,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const project = projects.find((p) => p.id === slug);
   if (!project) return {};
-  return {
+  return pageMetadata({
     title: project.title,
     description: project.description,
-    alternates: { canonical: `/projects/${project.id}` },
-    openGraph: {
-      title: project.title,
-      description: project.description,
-    },
-  };
+    path: `/projects/${project.id}`,
+    ownImage: true,
+  });
 }
 
 export default async function ProjectPage({ params }: Props) {

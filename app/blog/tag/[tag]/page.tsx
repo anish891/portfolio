@@ -5,6 +5,7 @@ import { PostList } from "@/components/ui/PostList";
 import { TagList } from "@/components/ui/TagList";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { safeDecodeURIComponent } from "@/lib/utils";
+import { pageMetadata } from "@/lib/seo";
 
 interface Props {
   params: Promise<{ tag: string }>;
@@ -20,11 +21,11 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const tag = safeDecodeURIComponent((await params).tag);
   if (tag === null) return {};
-  return {
+  return pageMetadata({
     title: `#${tag}`,
-    description: `Posts tagged ${tag}.`,
-    alternates: { canonical: `/blog/tag/${encodeURIComponent(tag)}` },
-  };
+    description: `Posts by Anish Tejwani tagged ${tag}.`,
+    path: `/blog/tag/${encodeURIComponent(tag)}`,
+  });
 }
 
 export default async function TagPage({ params }: Props) {

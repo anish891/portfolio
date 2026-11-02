@@ -1,16 +1,17 @@
 import type { Metadata } from "next";
 import { aboutContent, education, experience, heroContent } from "@/lib/data";
+import { pageMetadata } from "@/lib/seo";
 import { Section } from "@/components/ui/Section";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { Timeline } from "@/components/ui/Timeline";
 import { Crew } from "@/components/sections/Crew";
 import { TechStack } from "@/components/sections/TechStack";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "About",
-  description: `About ${heroContent.name}: background, interests and the tools I work with.`,
-  alternates: { canonical: "/about" },
-};
+  description: `About ${heroContent.name}, an AI engineer and full-stack developer in ${heroContent.location}: background, interests and the tools used.`,
+  path: "/about",
+});
 
 export default function AboutPage() {
   return (

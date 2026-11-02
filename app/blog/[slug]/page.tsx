@@ -6,6 +6,7 @@ import { TagList } from "@/components/ui/TagList";
 import { PostBody } from "@/components/ui/PostBody";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { heroContent, siteConfig } from "@/lib/data";
+import { pageMetadata } from "@/lib/seo";
 import { serializeJsonLd } from "@/lib/jsonld";
 
 interface Props {
@@ -20,19 +21,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const post = getPost(slug);
   if (!post) return {};
-  return {
+  return pageMetadata({
     title: post.title,
     description: post.description,
-    alternates: { canonical: `/blog/${post.slug}` },
-    openGraph: {
-      type: "article",
-      title: post.title,
-      description: post.description,
-      publishedTime: post.date,
-      authors: [heroContent.name],
-    },
-    twitter: { card: "summary_large_image", title: post.title, description: post.description },
-  };
+    path: `/blog/${post.slug}`,
+    article: { publishedTime: post.date, tags: post.tags },
+    ownImage: true,
+  });
 }
 
 export default async function PostPage({ params }: Props) {
