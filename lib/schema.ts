@@ -52,6 +52,21 @@ export function profilePage() {
   };
 }
 
+/** FAQPage markup for the same questions the about page shows. */
+export function faqPage(items: { question: string; answer: string }[]) {
+  return {
+    "@context": CONTEXT,
+    "@type": "FAQPage",
+    "@id": abs("/about#faq"),
+    isPartOf: { "@id": WEBSITE_ID },
+    mainEntity: items.map((i) => ({
+      "@type": "Question",
+      name: i.question,
+      acceptedAnswer: { "@type": "Answer", text: i.answer },
+    })),
+  };
+}
+
 export interface Crumb {
   name: string;
   path: string;

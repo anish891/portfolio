@@ -2,7 +2,9 @@ import type { Metadata } from "next";
 import { aboutContent, education, experience, heroContent } from "@/lib/data";
 import { pageMetadata, ROLE_IN_TEXT } from "@/lib/seo";
 import { JsonLd } from "@/components/ui/JsonLd";
-import { breadcrumbs, profilePage } from "@/lib/schema";
+import { breadcrumbs, faqPage, profilePage } from "@/lib/schema";
+import { faqs } from "@/lib/faq";
+import { Faq } from "@/components/ui/Faq";
 import { Section } from "@/components/ui/Section";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { Timeline } from "@/components/ui/Timeline";
@@ -18,7 +20,9 @@ export const metadata: Metadata = pageMetadata({
 export default function AboutPage() {
   return (
     <main id="main" className="pb-4">
-      <JsonLd data={[profilePage(), breadcrumbs([{ name: "About", path: "/about" }])]} />
+      <JsonLd
+        data={[profilePage(), faqPage(faqs()), breadcrumbs([{ name: "About", path: "/about" }])]}
+      />
       <div className="container-prose pt-14">
         <PageHeader kicker="Crew dossier" title="About" />
         <p className="mt-8 max-w-xl font-medium leading-relaxed text-foreground">
@@ -59,6 +63,8 @@ export default function AboutPage() {
       )}
 
       <TechStack />
+
+      <Faq />
     </main>
   );
 }
