@@ -6,6 +6,9 @@ export const SITE_NAME = heroContent.name;
 /** The one phrase used for the role everywhere: titles, descriptions and share cards. */
 export const ROLE = "AI Engineer";
 
+/** The same role inside a sentence ("an AI engineer"): the acronym keeps its capitals. */
+export const ROLE_IN_TEXT = "AI engineer";
+
 interface PageMeta {
   /** Page title without the site suffix; the root layout template adds " — Anish Tejwani". */
   title: string;
