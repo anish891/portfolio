@@ -76,6 +76,12 @@ export default async function ProjectPage({ params }: Props) {
             <dt className="label-mono">Stack</dt>
             <dd className="font-mono text-xs">{project.techStack.join(" · ")}</dd>
           </div>
+          {project.proof.length > 0 && (
+            <div className="spec-row">
+              <dt className="label-mono">Proof</dt>
+              <dd className="font-mono text-xs">{project.proof.join(" · ")}</dd>
+            </div>
+          )}
           <div className="spec-row">
             <dt className="label-mono">Links</dt>
             <dd>

@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { aboutContent, education, experience, heroContent } from "@/lib/data";
-import { pageMetadata } from "@/lib/seo";
+import { pageMetadata, ROLE_IN_TEXT } from "@/lib/seo";
 import { JsonLd } from "@/components/ui/JsonLd";
 import { breadcrumbs, profilePage } from "@/lib/schema";
 import { Section } from "@/components/ui/Section";
@@ -21,7 +21,11 @@ export default function AboutPage() {
       <JsonLd data={[profilePage(), breadcrumbs([{ name: "About", path: "/about" }])]} />
       <div className="container-prose pt-14">
         <PageHeader kicker="Crew dossier" title="About" />
-        <p className="mt-8 max-w-xl leading-relaxed text-foreground/85">{heroContent.intro}</p>
+        <p className="mt-8 max-w-xl font-medium leading-relaxed text-foreground">
+          {heroContent.name} is an {ROLE_IN_TEXT} and full-stack developer based in{" "}
+          {heroContent.location}.
+        </p>
+        <p className="mt-3 max-w-xl leading-relaxed text-foreground/85">{heroContent.intro}</p>
         <p className="label-mono mt-4">
           Based in {heroContent.location} · {heroContent.coordinates}
         </p>

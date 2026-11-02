@@ -3,6 +3,7 @@ import { Github, Linkedin, X } from "@/components/ui/icons";
 import { Mail } from "lucide-react";
 import { heroContent, projects, socialLinks } from "@/lib/data";
 import { getAllPosts } from "@/lib/blog";
+import { ROLE } from "@/lib/seo";
 import { OrbitDiagram } from "@/components/ui/OrbitDiagram";
 import { Telemetry } from "@/components/ui/Telemetry";
 
@@ -31,7 +32,7 @@ export function Hero() {
             {heroContent.name}
           </h1>
           <p className="mt-3 font-mono text-xs uppercase tracking-[0.12em] text-signal-ink">
-            AI &amp; full-stack engineer · {heroContent.location}
+            {ROLE} &amp; full-stack developer · {heroContent.location}
           </p>
         </div>
 
