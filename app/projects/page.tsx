@@ -3,20 +3,25 @@ import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 import { projects } from "@/lib/data";
 import { getPostsForProject } from "@/lib/blog";
+import { pageMetadata } from "@/lib/seo";
+import { JsonLd } from "@/components/ui/JsonLd";
+import { breadcrumbs } from "@/lib/schema";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { ProjectLinks } from "@/components/ui/ProjectLinks";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "Projects",
-  description: "Things I've built: AI agents, analytics dashboards and browser-based tools.",
-  alternates: { canonical: "/projects" },
-};
+  description:
+    "Projects by Anish Tejwani: an AI security-graph agent, an option-chain analytics dashboard and a browser-based spreadsheet formula recovery tool.",
+  path: "/projects",
+});
 
 const categoryLabel = { ai: "AI / agents", web: "Web application", mobile: "Mobile application" } as const;
 
 export default function ProjectsIndex() {
   return (
     <main id="main" className="container-prose pt-14">
+      <JsonLd data={breadcrumbs([{ name: "Projects", path: "/projects" }])} />
       <PageHeader
         kicker="Mission index"
         title="Projects"

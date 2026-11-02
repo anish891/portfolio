@@ -5,8 +5,9 @@ import { getAdjacentPosts, getAllPosts, getHeadings, getPost } from "@/lib/blog"
 import { TagList } from "@/components/ui/TagList";
 import { PostBody } from "@/components/ui/PostBody";
 import { PageHeader } from "@/components/ui/PageHeader";
-import { heroContent, siteConfig } from "@/lib/data";
-import { serializeJsonLd } from "@/lib/jsonld";
+import { pageMetadata } from "@/lib/seo";
+import { JsonLd } from "@/components/ui/JsonLd";
+import { blogPosting, breadcrumbs } from "@/lib/schema";
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -20,19 +21,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const post = getPost(slug);
   if (!post) return {};
-  return {
+  return pageMetadata({
     title: post.title,
     description: post.description,
-    alternates: { canonical: `/blog/${post.slug}` },
-    openGraph: {
-      type: "article",
-      title: post.title,
-      description: post.description,
-      publishedTime: post.date,
-      authors: [heroContent.name],
-    },
-    twitter: { card: "summary_large_image", title: post.title, description: post.description },
-  };
+    path: `/blog/${post.slug}`,
+    article: { publishedTime: post.date, tags: post.tags },
+    ownImage: true,
+  });
 }
 
 export default async function PostPage({ params }: Props) {
@@ -43,21 +38,17 @@ export default async function PostPage({ params }: Props) {
   const headings = getHeadings(post.content);
   const { newer, older } = getAdjacentPosts(post.slug);
 
-  const jsonLd = {
-    "@context": "https://schema.org",
-    "@type": "BlogPosting",
-    headline: post.title,
-    description: post.description,
-    datePublished: post.date,
-    author: { "@type": "Person", name: heroContent.name, url: siteConfig.url },
-    mainEntityOfPage: `${siteConfig.url}/blog/${post.slug}`,
-  };
 
   return (
     <main id="main" className="container-prose pt-14 pb-4">
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: serializeJsonLd(jsonLd) }}
+      <JsonLd
+        data={[
+          blogPosting(post),
+          breadcrumbs([
+            { name: "Blog", path: "/blog" },
+            { name: post.title, path: `/blog/${post.slug}` },
+          ]),
+        ]}
       />
       <PageHeader
         back={{ href: "/blog", label: "Blog" }}

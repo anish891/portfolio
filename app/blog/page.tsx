@@ -2,20 +2,25 @@ import type { Metadata } from "next";
 import { getAllPosts, getAllTags } from "@/lib/blog";
 import { TagList } from "@/components/ui/TagList";
 import { PostList } from "@/components/ui/PostList";
+import { pageMetadata } from "@/lib/seo";
+import { JsonLd } from "@/components/ui/JsonLd";
+import { breadcrumbs } from "@/lib/schema";
 import { PageHeader } from "@/components/ui/PageHeader";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "Blog",
   description:
-    "Write-ups on the things I've built: how they work, what broke, and what I'd do differently.",
-  alternates: { canonical: "/blog", types: { "application/rss+xml": "/feed.xml" } },
-};
+    "Write-ups by Anish Tejwani on AI agents, data tools and the projects behind them: how they work, what broke, and what changed.",
+  path: "/blog",
+  feed: true,
+});
 
 export default function BlogIndex() {
   const posts = getAllPosts();
   const tags = getAllTags();
   return (
     <main id="main" className="container-prose pt-14">
+      <JsonLd data={breadcrumbs([{ name: "Blog", path: "/blog" }])} />
       <PageHeader
         kicker="Flight log"
         title="Blog"

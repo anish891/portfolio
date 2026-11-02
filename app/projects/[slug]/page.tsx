@@ -2,6 +2,9 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { projects } from "@/lib/data";
+import { pageMetadata } from "@/lib/seo";
+import { JsonLd } from "@/components/ui/JsonLd";
+import { breadcrumbs, softwareSourceCode } from "@/lib/schema";
 import { getPostsForProject } from "@/lib/blog";
 import { PostList } from "@/components/ui/PostList";
 import { PageHeader } from "@/components/ui/PageHeader";
@@ -21,15 +24,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const project = projects.find((p) => p.id === slug);
   if (!project) return {};
-  return {
+  return pageMetadata({
     title: project.title,
     description: project.description,
-    alternates: { canonical: `/projects/${project.id}` },
-    openGraph: {
-      title: project.title,
-      description: project.description,
-    },
-  };
+    path: `/projects/${project.id}`,
+    ownImage: true,
+  });
 }
 
 export default async function ProjectPage({ params }: Props) {
@@ -45,6 +45,15 @@ export default async function ProjectPage({ params }: Props) {
 
   return (
     <main id="main" className="container-prose pt-14 pb-4">
+      <JsonLd
+        data={[
+          softwareSourceCode(project),
+          breadcrumbs([
+            { name: "Projects", path: "/projects" },
+            { name: project.title, path: `/projects/${project.id}` },
+          ]),
+        ]}
+      />
       <PageHeader
         back={{ href: "/projects", label: "Projects" }}
         kicker={`Mission ${String(index).padStart(2, "0")}`}
@@ -67,6 +76,12 @@ export default async function ProjectPage({ params }: Props) {
             <dt className="label-mono">Stack</dt>
             <dd className="font-mono text-xs">{project.techStack.join(" · ")}</dd>
           </div>
+          {project.proof.length > 0 && (
+            <div className="spec-row">
+              <dt className="label-mono">Proof</dt>
+              <dd className="font-mono text-xs">{project.proof.join(" · ")}</dd>
+            </div>
+          )}
           <div className="spec-row">
             <dt className="label-mono">Links</dt>
             <dd>

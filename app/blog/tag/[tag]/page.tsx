@@ -5,6 +5,9 @@ import { PostList } from "@/components/ui/PostList";
 import { TagList } from "@/components/ui/TagList";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { safeDecodeURIComponent } from "@/lib/utils";
+import { pageMetadata } from "@/lib/seo";
+import { JsonLd } from "@/components/ui/JsonLd";
+import { breadcrumbs } from "@/lib/schema";
 
 interface Props {
   params: Promise<{ tag: string }>;
@@ -20,11 +23,11 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const tag = safeDecodeURIComponent((await params).tag);
   if (tag === null) return {};
-  return {
+  return pageMetadata({
     title: `#${tag}`,
-    description: `Posts tagged ${tag}.`,
-    alternates: { canonical: `/blog/tag/${encodeURIComponent(tag)}` },
-  };
+    description: `Posts by Anish Tejwani tagged ${tag}.`,
+    path: `/blog/tag/${encodeURIComponent(tag)}`,
+  });
 }
 
 export default async function TagPage({ params }: Props) {
@@ -35,6 +38,12 @@ export default async function TagPage({ params }: Props) {
 
   return (
     <main id="main" className="container-prose pt-14">
+      <JsonLd
+        data={breadcrumbs([
+          { name: "Blog", path: "/blog" },
+          { name: `#${tag}`, path: `/blog/tag/${encodeURIComponent(tag)}` },
+        ])}
+      />
       <PageHeader
         back={{ href: "/blog", label: "Blog" }}
         kicker="Tag"
