@@ -10,7 +10,7 @@ describe("siteGraph", () => {
   it("defines the person once with a stable id and every profile in sameAs", () => {
     expect(person["@id"]).toBe(PERSON_ID);
     expect(person.sameAs).toEqual(expect.arrayContaining([siteConfig.githubUrl, siteConfig.xUrl, siteConfig.linkedinUrl]));
-    expect(person.jobTitle).toContain("AI Engineer");
+    expect(person.jobTitle).toContain("Software Engineer");
   });
 
   it("never lists the email address as a sameAs profile", () => {

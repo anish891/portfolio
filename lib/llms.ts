@@ -1,9 +1,9 @@
 import { aboutContent, heroContent, projects, siteConfig, socialLinks } from "@/lib/data";
-import { ROLE_IN_TEXT } from "@/lib/seo";
+import { BIO } from "@/lib/seo";
 import type { Post } from "@/lib/blog";
 
 const summary = () =>
-  `${heroContent.name} is an ${ROLE_IN_TEXT} and full-stack developer based in ${heroContent.location}. ${heroContent.intro}`;
+  `${BIO} ${heroContent.intro}`;
 
 const profileLinks = () =>
   socialLinks.filter((l) => l.icon !== "Mail").map((l) => `- [${l.name}](${l.url})`);

@@ -67,7 +67,7 @@ describe("llms.txt", () => {
   });
 
   it("writes the role with its capitals intact", () => {
-    expect(llmsTxt(posts)).toContain("is an AI engineer and full-stack developer");
+    expect(llmsTxt(posts)).toContain("is a software engineer at Tata Consultancy Services (TCS)");
   });
 
   it("links every project with an absolute url", () => {

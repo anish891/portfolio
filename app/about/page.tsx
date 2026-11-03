@@ -13,7 +13,7 @@ import { TechStack } from "@/components/sections/TechStack";
 
 export const metadata: Metadata = pageMetadata({
   title: "About",
-  description: `About ${heroContent.name}, an AI engineer and full-stack developer in ${heroContent.location}: background, interests and the tools used.`,
+  description: `About ${heroContent.name}, a software engineer at ${heroContent.employer.name} (${heroContent.employer.shortName}) in ${heroContent.location}: background, interests and the tools used.`,
   path: "/about",
 });
 

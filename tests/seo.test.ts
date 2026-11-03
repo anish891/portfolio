@@ -40,7 +40,7 @@ describe("pageMetadata", () => {
   });
 
   it("uses one role phrase", () => {
-    expect(ROLE).toBe("AI Engineer");
+    expect(ROLE).toBe("Software Engineer");
   });
 });
 

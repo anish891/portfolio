@@ -92,6 +92,7 @@ export const heroContent = {
   intro:
     "I build tools that find the signal in messy data: option chains, spreadsheets, security graphs. I work across the stack, with a focus on AI-powered products and the systems behind them.",
   location: "Mumbai, India",
+  employer: { name: "Tata Consultancy Services", shortName: "TCS", url: "https://www.tcs.com" },
   coordinates: "37.23°N 115.81°W",
   status: "Open to full-time & freelance",
   email: "anishtejwani891@gmail.com",

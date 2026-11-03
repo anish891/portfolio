@@ -1,5 +1,5 @@
 import { heroContent, projects, siteConfig, techStack } from "@/lib/data";
-import { ROLE_IN_TEXT } from "@/lib/seo";
+import { BIO } from "@/lib/seo";
 
 export interface Faq {
   question: string;
@@ -18,7 +18,7 @@ export function faqs(): Faq[] {
   return [
     {
       question: `Who is ${name}?`,
-      answer: `${name} is an ${ROLE_IN_TEXT} and full-stack developer based in ${heroContent.location}. He builds tools that find the signal in messy data: option chains, spreadsheets and security graphs.`,
+      answer: `${BIO} He builds tools that find the signal in messy data: option chains, spreadsheets and security graphs.`,
     },
     {
       question: `What has ${name} built?`,

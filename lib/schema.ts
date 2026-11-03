@@ -1,5 +1,5 @@
 import { aboutContent, heroContent, siteConfig, socialLinks, type Project } from "@/lib/data";
-import { ROLE, ROLE_IN_TEXT, SITE_NAME } from "@/lib/seo";
+import { BIO, ROLE, SITE_NAME } from "@/lib/seo";
 
 const CONTEXT = "https://schema.org";
 
@@ -20,8 +20,14 @@ export function siteGraph() {
         "@id": PERSON_ID,
         name: heroContent.name,
         url: siteConfig.url,
-        jobTitle: `${ROLE} & Full-Stack Developer`,
-        description: `${heroContent.name} is an ${ROLE_IN_TEXT} and full-stack developer based in ${heroContent.location}.`,
+        jobTitle: ROLE,
+        description: BIO,
+        worksFor: {
+          "@type": "Organization",
+          name: `${heroContent.employer.name} (${heroContent.employer.shortName})`,
+          alternateName: heroContent.employer.shortName,
+          url: heroContent.employer.url,
+        },
         email: `mailto:${heroContent.email}`,
         address: { "@type": "PostalAddress", addressLocality: "Mumbai", addressCountry: "IN" },
         knowsAbout: aboutContent.interests,

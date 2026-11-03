@@ -32,7 +32,7 @@ export function Hero() {
             {heroContent.name}
           </h1>
           <p className="mt-3 font-mono text-xs uppercase tracking-[0.12em] text-signal-ink">
-            {ROLE} &amp; full-stack developer · {heroContent.location}
+            {ROLE} · {heroContent.employer.shortName} · {heroContent.location}
           </p>
         </div>
 

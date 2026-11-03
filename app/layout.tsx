@@ -36,17 +36,21 @@ const plexMono = IBM_Plex_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "Anish Tejwani — AI Engineer in Mumbai",
+    default: "Anish Tejwani — Software Engineer at TCS",
     template: "%s — Anish Tejwani",
   },
   metadataBase: new URL(siteConfig.url),
   alternates: { canonical: "/", types: { "application/rss+xml": "/feed.xml" } },
   description:
-    "Anish Tejwani is an AI engineer and full-stack developer in Mumbai, India. Projects: GraphSentinel (security-graph agent), Unbake (spreadsheet formula recovery) and ChainDeck (option-chain analytics).",
+    "Anish Tejwani is a software engineer at Tata Consultancy Services (TCS) in Mumbai, India, building full-stack and AI-powered products. Projects: GraphSentinel (security-graph agent), Unbake (spreadsheet formula recovery) and ChainDeck (option-chain analytics).",
   keywords: [
     "Anish Tejwani",
-    "AI Engineer",
+    "Anish Tejwani TCS",
+    "Anish Tejwani software engineer",
+    "Tata Consultancy Services",
+    "Software Engineer",
     "Full-Stack Developer",
+    "AI Engineer",
     "Portfolio",
     "React",
     "Next.js",
@@ -60,17 +64,17 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "en_US",
-    title: "Anish Tejwani — AI Engineer in Mumbai",
+    title: "Anish Tejwani — Software Engineer at TCS",
     description:
-      "AI engineer and full-stack developer in Mumbai. GraphSentinel, Unbake and ChainDeck.",
+      "Software engineer at Tata Consultancy Services (TCS), Mumbai. GraphSentinel, Unbake and ChainDeck.",
     url: "/",
     siteName: "Anish Tejwani",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Anish Tejwani — AI Engineer in Mumbai",
+    title: "Anish Tejwani — Software Engineer at TCS",
     description:
-      "AI engineer and full-stack developer in Mumbai. GraphSentinel, Unbake and ChainDeck.",
+      "Software engineer at Tata Consultancy Services (TCS), Mumbai. GraphSentinel, Unbake and ChainDeck.",
   },
   robots: {
     index: true,

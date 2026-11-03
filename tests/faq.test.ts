@@ -27,7 +27,7 @@ describe("faqs", () => {
   });
 
   it("keeps the AI capitals and the location", () => {
-    expect(answerTo("Who is")).toContain("an AI engineer");
+    expect(answerTo("Who is")).toContain("software engineer at Tata Consultancy Services");
     expect(answerTo("Who is")).toContain(heroContent.location);
   });
 });
