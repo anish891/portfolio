@@ -9,13 +9,10 @@ export const ROLE = "Software Engineer";
 /** The same role inside a sentence ("an AI engineer"): the acronym keeps its capitals. */
 export const ROLE_IN_TEXT = "software engineer";
 
-const { employer, location } = heroContent;
-
-/** "Software Engineer at Tata Consultancy Services (TCS)": the headline used in titles and cards. */
-export const ROLE_AT_EMPLOYER = `${ROLE} at ${employer.name} (${employer.shortName})`;
+const { location } = heroContent;
 
 /** The one-sentence answer to "who is Anish Tejwani?", reused by the schema, llms.txt, FAQ and meta tags. */
-export const BIO = `${SITE_NAME} is a ${ROLE_IN_TEXT} at ${employer.name} (${employer.shortName}) in ${location}, building full-stack and AI-powered products.`;
+export const BIO = `${SITE_NAME} is a ${ROLE_IN_TEXT} in ${location}, building full-stack and AI-powered products.`;
 
 interface PageMeta {
   /** Page title without the site suffix; the root layout template adds " — Anish Tejwani". */

@@ -1,7 +1,7 @@
 import { ImageResponse } from "next/og";
 import { heroContent, projects } from "@/lib/data";
 
-export const alt = "Anish Tejwani · Software Engineer at TCS";
+export const alt = "Anish Tejwani · Software Engineer";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -55,7 +55,7 @@ export default function OpengraphImage() {
                 {heroContent.name}
               </div>
               <div style={{ display: "flex", fontSize: 32, color: SIGNAL, marginTop: 22, letterSpacing: 1 }}>
-                Software Engineer · TCS
+                Software Engineer
               </div>
               <div style={{ display: "flex", fontSize: 29, color: MUTED, marginTop: 20, lineHeight: 1.3 }}>
                 Tools that find the signal in messy data.

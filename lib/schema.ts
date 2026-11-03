@@ -22,12 +22,6 @@ export function siteGraph() {
         url: siteConfig.url,
         jobTitle: ROLE,
         description: BIO,
-        worksFor: {
-          "@type": "Organization",
-          name: `${heroContent.employer.name} (${heroContent.employer.shortName})`,
-          alternateName: heroContent.employer.shortName,
-          url: heroContent.employer.url,
-        },
         email: `mailto:${heroContent.email}`,
         address: { "@type": "PostalAddress", addressLocality: "Mumbai", addressCountry: "IN" },
         knowsAbout: aboutContent.interests,

@@ -36,18 +36,16 @@ const plexMono = IBM_Plex_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "Anish Tejwani — Software Engineer at TCS",
+    default: "Anish Tejwani — Software Engineer in Mumbai",
     template: "%s — Anish Tejwani",
   },
   metadataBase: new URL(siteConfig.url),
   alternates: { canonical: "/", types: { "application/rss+xml": "/feed.xml" } },
   description:
-    "Anish Tejwani is a software engineer at Tata Consultancy Services (TCS) in Mumbai, India, building full-stack and AI-powered products. Projects: GraphSentinel (security-graph agent), Unbake (spreadsheet formula recovery) and ChainDeck (option-chain analytics).",
+    "Anish Tejwani is a software engineer in Mumbai, India, building full-stack and AI-powered products. Projects: GraphSentinel (security-graph agent), Unbake (spreadsheet formula recovery) and ChainDeck (option-chain analytics).",
   keywords: [
     "Anish Tejwani",
-    "Anish Tejwani TCS",
     "Anish Tejwani software engineer",
-    "Tata Consultancy Services",
     "Software Engineer",
     "Full-Stack Developer",
     "AI Engineer",
@@ -64,17 +62,17 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "en_US",
-    title: "Anish Tejwani — Software Engineer at TCS",
+    title: "Anish Tejwani — Software Engineer in Mumbai",
     description:
-      "Software engineer at Tata Consultancy Services (TCS), Mumbai. GraphSentinel, Unbake and ChainDeck.",
+      "Software engineer in Mumbai. GraphSentinel, Unbake and ChainDeck.",
     url: "/",
     siteName: "Anish Tejwani",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Anish Tejwani — Software Engineer at TCS",
+    title: "Anish Tejwani — Software Engineer in Mumbai",
     description:
-      "Software engineer at Tata Consultancy Services (TCS), Mumbai. GraphSentinel, Unbake and ChainDeck.",
+      "Software engineer in Mumbai. GraphSentinel, Unbake and ChainDeck.",
   },
   robots: {
     index: true,
