@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import { projects } from "@/lib/data";
 import { pageMetadata } from "@/lib/seo";
 import { JsonLd } from "@/components/ui/JsonLd";
-import { breadcrumbs, softwareSourceCode } from "@/lib/schema";
+import { breadcrumbs, softwareApplication, softwareSourceCode } from "@/lib/schema";
 import { getPostsForProject } from "@/lib/blog";
 import { PostList } from "@/components/ui/PostList";
 import { PageHeader } from "@/components/ui/PageHeader";
@@ -48,6 +48,7 @@ export default async function ProjectPage({ params }: Props) {
       <JsonLd
         data={[
           softwareSourceCode(project),
+          ...[softwareApplication(project)].filter((s) => s !== null),
           breadcrumbs([
             { name: "Projects", path: "/projects" },
             { name: project.title, path: `/projects/${project.id}` },

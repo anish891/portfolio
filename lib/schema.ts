@@ -102,6 +102,38 @@ export function softwareSourceCode(project: Project) {
   };
 }
 
+/** The running app, for projects that are deployed. Returns null when there is no live url. */
+export function softwareApplication(project: Project) {
+  if (!project.deployedUrl) return null;
+  return {
+    "@context": CONTEXT,
+    "@type": "SoftwareApplication",
+    "@id": abs(`/projects/${project.id}#app`),
+    name: project.title,
+    description: project.description,
+    url: project.deployedUrl,
+    mainEntityOfPage: abs(`/projects/${project.id}`),
+    ...(project.image ? { image: abs(project.image) } : {}),
+    applicationCategory: "WebApplication",
+    operatingSystem: "Any (web browser)",
+    offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+    author: personRef,
+  };
+}
+
+/** Marks /contact as the contact page for the person defined in the root layout. */
+export function contactPage() {
+  return {
+    "@context": CONTEXT,
+    "@type": "ContactPage",
+    "@id": abs("/contact#page"),
+    url: abs("/contact"),
+    name: `Contact ${heroContent.name}`,
+    isPartOf: { "@id": WEBSITE_ID },
+    about: personRef,
+  };
+}
+
 export interface PostForSchema {
   slug: string;
   title: string;

@@ -120,7 +120,7 @@ function PalettePanel({
       { id: "nav-projects", title: "Projects", group: "Navigate", icon: FolderGit2, run: () => go("/projects") },
       { id: "nav-blog", title: "Blog", group: "Navigate", icon: PenLine, run: () => go("/blog") },
       { id: "nav-about", title: "About", group: "Navigate", icon: User, run: () => go("/about") },
-      { id: "nav-contact", title: "Contact", group: "Navigate", icon: Mail, run: () => go("/#contact") },
+      { id: "nav-contact", title: "Contact", group: "Navigate", icon: Mail, run: () => go("/contact") },
 
       ...projects.map<CommandItem>((p) => ({
         id: `project-${p.id}`,

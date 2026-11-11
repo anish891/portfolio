@@ -1,6 +1,10 @@
 interface HeadProps {
   title: string;
-  /** Plain-English subtitle shown at the right of the heading rule. */
+  /**
+   * Plain-English subtitle shown at the right of the heading rule. It is also part of the heading
+   * text (visually hidden), so screen readers and crawlers read "Missions: selected projects"
+   * rather than the themed word alone.
+   */
   kicker?: string;
   action?: React.ReactNode;
 }
@@ -13,9 +17,16 @@ export function SectionHead({ title, kicker, action }: HeadProps) {
   return (
     <div className="mb-6 flex items-center gap-3">
       <span className="sec-no font-mono text-[11px] text-signal-ink" aria-hidden />
-      <h2 className="font-display text-base font-semibold uppercase tracking-[0.12em]">{title}</h2>
+      <h2 className="font-display text-base font-semibold uppercase tracking-[0.12em]">
+        {title}
+        {kicker && <span className="sr-only">: {kicker}</span>}
+      </h2>
       <span className="h-px flex-1 bg-border" aria-hidden />
-      {kicker && <span className="label-mono hidden sm:inline">{kicker}</span>}
+      {kicker && (
+        <span className="label-mono hidden sm:inline" aria-hidden>
+          {kicker}
+        </span>
+      )}
       {action}
     </div>
   );

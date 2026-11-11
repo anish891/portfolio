@@ -42,7 +42,7 @@ export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
   alternates: { canonical: "/", types: { "application/rss+xml": "/feed.xml" } },
   description:
-    "Anish Tejwani is a software engineer in Mumbai, India, building full-stack and AI-powered products. Projects: GraphSentinel (security-graph agent), Unbake (spreadsheet formula recovery) and ChainDeck (option-chain analytics).",
+    "Anish Tejwani is a software engineer in Mumbai, India, building full-stack and AI-powered products. Projects: GraphSentinel (security-graph agent), Unbake (spreadsheet formula recovery) and ChainDeck (option-chain analytics). Open to full-time roles and freelance work.",
   keywords: [
     "Anish Tejwani",
     "Anish Tejwani software engineer",

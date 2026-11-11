@@ -35,12 +35,12 @@ export function Footer() {
                 {item.label}
               </Link>
             ))}
-            <Link href="/#contact" className="label-mono transition-colors hover:text-foreground">
+            <Link href="/contact" className="label-mono transition-colors hover:text-foreground">
               Contact
             </Link>
           </nav>
 
-          <div className="flex items-center gap-3">
+          <div className="-m-2 flex items-center">
             {socialLinks.map((link) => {
               const Icon = iconMap[link.icon] ?? Mail;
               return (
@@ -50,7 +50,7 @@ export function Footer() {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={link.name}
-                  className="text-muted-foreground transition-colors hover:text-signal-ink"
+                  className="p-2 text-muted-foreground transition-colors hover:text-signal-ink"
                 >
                   <Icon className="size-4" />
                 </a>

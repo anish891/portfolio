@@ -4,6 +4,7 @@ import sitemap from "@/app/sitemap";
 import { ALLOWED_AI_CRAWLERS, BLOCKED_TRAINING_CRAWLERS } from "@/lib/crawlers";
 import { llmsFullTxt, llmsTxt } from "@/lib/llms";
 import { projects, siteConfig } from "@/lib/data";
+import { getAllTags } from "@/lib/blog";
 
 describe("robots", () => {
   const rules = robots().rules as { userAgent: string | string[]; allow?: string; disallow?: string }[];
@@ -42,6 +43,15 @@ describe("sitemap", () => {
     for (const p of projects) expect(entries.map((e) => e.url)).toContain(`${siteConfig.url}/projects/${p.id}`);
     const urls = entries.map((e) => e.url);
     expect(new Set(urls).size).toBe(urls.length);
+  });
+
+  it("lists the contact page and only tags shared by more than one post", () => {
+    const urls = entries.map((e) => e.url);
+    expect(urls).toContain(`${siteConfig.url}/contact`);
+    for (const { tag, count } of getAllTags()) {
+      const listed = urls.includes(`${siteConfig.url}/blog/tag/${encodeURIComponent(tag)}`);
+      expect(listed).toBe(count > 1);
+    }
   });
 
   it("only sets lastModified to real yyyy-mm-dd dates", () => {

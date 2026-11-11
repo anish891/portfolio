@@ -17,7 +17,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${siteConfig.url}/blog`, lastModified: allPosts[0]?.date },
     { url: `${siteConfig.url}/projects` },
     { url: `${siteConfig.url}/about` },
-    ...getAllTags().map(({ tag }) => ({
+    { url: `${siteConfig.url}/contact` },
+    // A tag with a single post lists nothing the post page does not, so only shared tags are listed.
+    ...getAllTags().filter(({ count }) => count > 1).map(({ tag }) => ({
       url: `${siteConfig.url}/blog/tag/${encodeURIComponent(tag)}`,
       lastModified: getPostsForTag(tag)[0]?.date,
     })),

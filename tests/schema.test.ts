@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { blogPosting, breadcrumbs, PERSON_ID, profilePage, siteGraph, softwareSourceCode, WEBSITE_ID } from "@/lib/schema";
+import { blogPosting, breadcrumbs, PERSON_ID, profilePage, siteGraph, softwareApplication, softwareSourceCode, WEBSITE_ID } from "@/lib/schema";
 import { projects, siteConfig } from "@/lib/data";
 
 describe("siteGraph", () => {
@@ -49,6 +49,16 @@ describe("page schema", () => {
     const s = softwareSourceCode(p);
     expect(s).not.toHaveProperty("codeRepository");
     expect(s).not.toHaveProperty("sameAs");
+  });
+
+  it("app schema points at the live url and is skipped for projects that are not deployed", () => {
+    const p = projects.find((x) => x.deployedUrl)!;
+    expect(softwareApplication(p)).toMatchObject({
+      "@type": "SoftwareApplication",
+      url: p.deployedUrl,
+      author: { "@id": PERSON_ID },
+    });
+    expect(softwareApplication({ ...p, deployedUrl: undefined })).toBeNull();
   });
 
   it("blog posting has dates, author, publisher and an absolute url", () => {

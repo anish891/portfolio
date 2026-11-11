@@ -4,7 +4,7 @@ import { Section } from "@/components/ui/Section";
 export function TechStack() {
   return (
     <Section id="tech" title="Instruments"
-      kicker="stack">
+      kicker="tech stack">
       <dl className="space-y-3">
         {techStack.map((category) => (
           <div

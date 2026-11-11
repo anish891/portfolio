@@ -28,6 +28,7 @@ export function llmsTxt(posts: Pick<Post, "slug" | "title" | "description">[]): 
     "## Pages",
     `- [About](${siteConfig.url}/about): background, interests and tools`,
     `- [All projects](${siteConfig.url}/projects)`,
+    `- [Contact](${siteConfig.url}/contact): email and contact form`,
     `- [Blog](${siteConfig.url}/blog), with an [RSS feed](${siteConfig.url}/feed.xml)`,
     "",
     "## Profiles",
