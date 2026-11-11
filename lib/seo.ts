@@ -6,7 +6,7 @@ export const SITE_NAME = heroContent.name;
 /** The one phrase used for the role everywhere: titles, descriptions and share cards. */
 export const ROLE = "Software Engineer";
 
-/** The same role inside a sentence ("an AI engineer"): the acronym keeps its capitals. */
+/** The same role inside a sentence ("a software engineer"). */
 export const ROLE_IN_TEXT = "software engineer";
 
 const { location } = heroContent;

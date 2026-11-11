@@ -55,7 +55,6 @@ export const metadata: Metadata = {
     "TypeScript",
     "LangChain",
     "Machine Learning",
-    "Software Engineer",
   ],
   authors: [{ name: "Anish Tejwani" }],
   creator: "Anish Tejwani",

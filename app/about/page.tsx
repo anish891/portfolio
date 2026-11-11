@@ -26,7 +26,7 @@ export default function AboutPage() {
       <div className="container-prose pt-14">
         <PageHeader kicker="Crew dossier" title="About" />
         <p className="mt-8 max-w-xl font-medium leading-relaxed text-foreground">
-          {heroContent.name} is an {ROLE_IN_TEXT} and full-stack developer based in{" "}
+          {heroContent.name} is a {ROLE_IN_TEXT} based in{" "}
           {heroContent.location}.
         </p>
         <p className="mt-3 max-w-xl leading-relaxed text-foreground/85">{heroContent.intro}</p>

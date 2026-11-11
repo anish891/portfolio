@@ -2,7 +2,7 @@
 
 Source for my personal site: **[anishtejwani.dev](https://anishtejwani.dev)**.
 
-I'm an AI / full-stack engineer based in Mumbai, India, building intelligent software systems, AI-powered applications and scalable web platforms.
+I'm a software engineer in Mumbai, India, building full-stack and AI-powered products.
 
 ## Featured projects
 
