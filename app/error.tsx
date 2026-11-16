@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { useEffect } from "react";
-import { PageHeader } from "@/components/ui/PageHeader";
 
 export default function Error({
   error,
@@ -16,26 +15,16 @@ export default function Error({
   }, [error]);
 
   return (
-    <main id="main" className="container-prose pt-14">
-      <PageHeader
-        kicker="Anomaly detected"
-        title="Something went wrong"
-        description="That page hit an unexpected problem. You can try again, or head back home."
-      />
-      <div className="mt-8 flex items-center gap-5 text-sm">
-        <button
-          type="button"
-          onClick={reset}
-          className="cursor-pointer rounded-sm border border-border px-3 py-1.5 font-mono text-xs uppercase tracking-wider transition-colors hover:border-signal"
-        >
+    <main id="main" className="wrap flex-1 pt-12">
+      <h1 className="page-title">Something went wrong</h1>
+      <p className="muted mt-3">
+        That page hit an unexpected problem. You can try again, or head back home.
+      </p>
+      <div className="ui mt-6 flex items-center gap-5">
+        <button type="button" onClick={reset} className="button">
           Try again
         </button>
-        <Link
-          href="/"
-          className="label-mono underline decoration-border underline-offset-4 hover:text-foreground hover:decoration-signal"
-        >
-          ← Back to base
-        </Link>
+        <Link href="/">← Home</Link>
       </div>
     </main>
   );

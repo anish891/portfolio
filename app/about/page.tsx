@@ -1,15 +1,17 @@
 import type { Metadata } from "next";
-import { aboutContent, education, experience, heroContent } from "@/lib/data";
+import {
+  aboutContent,
+  crewProfile,
+  education,
+  experience,
+  heroContent,
+  techStack,
+  type TimelineEntry,
+} from "@/lib/data";
 import { pageMetadata, ROLE_IN_TEXT } from "@/lib/seo";
 import { JsonLd } from "@/components/ui/JsonLd";
 import { breadcrumbs, faqPage, profilePage } from "@/lib/schema";
 import { faqs } from "@/lib/faq";
-import { Faq } from "@/components/ui/Faq";
-import { Section } from "@/components/ui/Section";
-import { PageHeader } from "@/components/ui/PageHeader";
-import { Timeline } from "@/components/ui/Timeline";
-import { Crew } from "@/components/sections/Crew";
-import { TechStack } from "@/components/sections/TechStack";
 
 export const metadata: Metadata = pageMetadata({
   title: "About",
@@ -17,54 +19,99 @@ export const metadata: Metadata = pageMetadata({
   path: "/about",
 });
 
+/** Experience and education entries. Both lists are empty for now, so nothing renders yet. */
+function Entries({ entries }: { entries: TimelineEntry[] }) {
+  return (
+    <>
+      {entries.map((e) => (
+        <div key={`${e.title}-${e.organization}-${e.start}`}>
+          <h3>
+            {e.title},{" "}
+            {e.url ? (
+              <a href={e.url} target="_blank" rel="noopener noreferrer">
+                {e.organization}
+              </a>
+            ) : (
+              e.organization
+            )}
+          </h3>
+          <p className="ui muted">
+            {e.start} – {e.end}
+            {e.location ? ` · ${e.location}` : ""}
+          </p>
+          {e.highlights?.length ? (
+            <ul>
+              {e.highlights.map((h) => (
+                <li key={h}>{h}</li>
+              ))}
+            </ul>
+          ) : null}
+          {e.tags?.length ? <p className="ui muted">{e.tags.join(" · ")}</p> : null}
+        </div>
+      ))}
+    </>
+  );
+}
+
 export default function AboutPage() {
   return (
-    <main id="main" className="pb-4">
+    <main id="main" data-wide className="wrap flex-1 pt-12">
       <JsonLd
         data={[profilePage(), faqPage(faqs()), breadcrumbs([{ name: "About", path: "/about" }])]}
       />
-      <div className="container-prose pt-14">
-        <PageHeader kicker="Crew dossier" title="About" />
-        <p className="mt-8 max-w-xl font-medium leading-relaxed text-foreground">
-          {heroContent.name} is a {ROLE_IN_TEXT} based in{" "}
-          {heroContent.location}.
-        </p>
-        <p className="mt-3 max-w-xl leading-relaxed text-foreground/85">{heroContent.intro}</p>
-        <p className="label-mono mt-4">
-          Based in {heroContent.location} · {heroContent.coordinates}
-        </p>
-      </div>
+      <article>
+        <h1 className="page-title">About</h1>
+        <div className="prose mt-8">
+          <p>
+            {heroContent.name} is a {ROLE_IN_TEXT} based in {heroContent.location}.
+          </p>
+          <p>{heroContent.intro}</p>
 
-      <Section title="Interests" kicker="checklist">
-        <ul className="space-y-1.5 text-sm text-foreground/90">
-          {aboutContent.interests.map((i) => (
-            <li key={i} className="flex items-center gap-3">
-              <span className="font-mono text-xs text-signal-ink" aria-hidden>
-                [x]
-              </span>
-              {i}
-            </li>
+          <h2 id="interests">Interests</h2>
+          <ul>
+            {aboutContent.interests.map((i) => (
+              <li key={i}>{i}</li>
+            ))}
+          </ul>
+
+          <h2 id="personal">Personal</h2>
+          {crewProfile.map((row) => (
+            <p key={row.label}>{row.value}</p>
           ))}
-        </ul>
-      </Section>
 
-      <Crew />
+          {experience.length > 0 && (
+            <>
+              <h2 id="experience">Experience</h2>
+              <Entries entries={experience} />
+            </>
+          )}
 
-      {experience.length > 0 && (
-        <Section title="Service record" kicker="experience">
-          <Timeline entries={experience} />
-        </Section>
-      )}
+          {education.length > 0 && (
+            <>
+              <h2 id="education">Education</h2>
+              <Entries entries={education} />
+            </>
+          )}
 
-      {education.length > 0 && (
-        <Section title="Training" kicker="education">
-          <Timeline entries={education} />
-        </Section>
-      )}
+          <h2 id="tech-stack">Tech stack</h2>
+          <ul>
+            {techStack.map((category) => (
+              <li key={category.name}>
+                <strong>{category.name}:</strong> {category.skills.map((s) => s.name).join(", ")}
+              </li>
+            ))}
+          </ul>
 
-      <TechStack />
-
-      <Faq />
+          {/* The FAQPage JSON-LD above is built from the same list, so markup and page agree. */}
+          <h2 id="questions">Questions</h2>
+          {faqs().map(({ question, answer }) => (
+            <div key={question}>
+              <h3>{question}</h3>
+              <p className="mt-2">{answer}</p>
+            </div>
+          ))}
+        </div>
+      </article>
     </main>
   );
 }

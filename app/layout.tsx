@@ -1,36 +1,24 @@
 import type { Metadata } from "next";
 import { Analytics } from "@vercel/analytics/next";
-import { IBM_Plex_Sans, IBM_Plex_Sans_Condensed, IBM_Plex_Mono } from "next/font/google";
+import { Inter, Source_Serif_4 } from "next/font/google";
 import "./globals.css";
 import { siteConfig } from "@/lib/data";
-import { Providers } from "@/components/Providers";
 import { JsonLd } from "@/components/ui/JsonLd";
 import { siteGraph } from "@/lib/schema";
-import { getAllPosts } from "@/lib/blog";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
-import { RouteScan } from "@/components/ui/RouteScan";
 
-const plexSans = IBM_Plex_Sans({
-  variable: "--font-plex-sans",
+// Both are variable fonts, self-hosted by next/font with size-adjusted fallbacks (no layout shift).
+const sourceSerif = Source_Serif_4({
+  variable: "--font-source-serif",
   subsets: ["latin"],
-  weight: ["400", "500", "600"],
+  style: ["normal", "italic"],
   display: "swap",
 });
 
-const plexCondensed = IBM_Plex_Sans_Condensed({
-  variable: "--font-plex-condensed",
+const inter = Inter({
+  variable: "--font-inter",
   subsets: ["latin"],
-  // The display face is only ever used at semibold (checked across every page).
-  weight: ["600"],
-  display: "swap",
-});
-
-const plexMono = IBM_Plex_Mono({
-  variable: "--font-plex-mono",
-  subsets: ["latin"],
-  // Labels and code are only ever regular weight.
-  weight: ["400"],
   display: "swap",
 });
 
@@ -89,32 +77,27 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${plexSans.variable} ${plexCondensed.variable} ${plexMono.variable} h-full antialiased`}
+      className={`${sourceSerif.variable} ${inter.variable} h-full antialiased`}
       suppressHydrationWarning
     >
       <head>
-        {/* Inline script: applies saved theme class before first paint to prevent flash */}
+        {/* Runs before first paint: resolves the theme (saved choice, else the system setting)
+            to a .light or .dark class, so there is no flash of the wrong theme. */}
         <script
           dangerouslySetInnerHTML={{
-            __html: `(function(){try{var t=localStorage.getItem("theme");if(t==="dark")document.documentElement.classList.add("dark");else if(!t&&window.matchMedia("(prefers-color-scheme: dark)").matches)document.documentElement.classList.add("dark")}catch(e){}})()`,
+            __html: `(function(){var t=null;try{t=localStorage.getItem("theme")}catch(e){}if(t!=="dark"&&t!=="light")t=window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.classList.add(t)})()`,
           }}
         />
       </head>
-      <body className="min-h-full flex flex-col bg-background text-foreground overflow-x-hidden">
+      <body className="flex min-h-full flex-col">
         <JsonLd data={siteGraph()} />
-        <a
-          href="#main"
-          className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[100] focus:rounded-lg focus:bg-primary focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-primary-foreground"
-        >
+        <a href="#main" className="skip-link">
           Skip to content
         </a>
-        <Providers>
-          <RouteScan />
-          <Navbar posts={getAllPosts().map(({ slug, title, description, tags }) => ({ slug, title, description, tags }))} />
-          {children}
-          <Footer />
-          <Analytics />
-        </Providers>
+        <Navbar />
+        {children}
+        <Footer />
+        <Analytics />
       </body>
     </html>
   );

@@ -6,7 +6,7 @@ import { mdxComponents } from "@/components/ui/mdx";
 
 export function PostBody({ source }: { source: string }) {
   return (
-    <div className="prose-minimal">
+    <div className="prose">
       <MDXRemote
         source={source}
         components={mdxComponents}

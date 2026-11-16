@@ -1,22 +1,54 @@
-import { ArrowUpRight } from "lucide-react";
+import Link from "next/link";
 import type { Project } from "@/lib/data";
+import type { PostMeta } from "@/lib/blog";
 
-const linkClass =
-  "inline-flex items-center gap-1 underline decoration-border underline-offset-4 transition-colors hover:decoration-signal";
-
-export function ProjectLinks({ project }: { project: Project }) {
+/** Inline Case study / Live / Source links for a project. */
+export function ProjectLinks({
+  project,
+  caseStudy = false,
+}: {
+  project: Project;
+  caseStudy?: boolean;
+}) {
   return (
-    <div className="flex items-center gap-4 text-sm">
+    <ul className="ui dots flex flex-wrap">
+      {caseStudy && (
+        <li>
+          <Link href={`/projects/${project.id}`} className="inline-block py-1">
+            Case study
+          </Link>
+        </li>
+      )}
       {project.deployedUrl && (
-        <a href={project.deployedUrl} target="_blank" rel="noopener noreferrer" className={linkClass}>
-          Live <ArrowUpRight className="size-3.5" />
-        </a>
+        <li>
+          <a href={project.deployedUrl} target="_blank" rel="noopener noreferrer" className="inline-block py-1">
+            Live
+          </a>
+        </li>
       )}
       {project.githubUrl && (
-        <a href={project.githubUrl} target="_blank" rel="noopener noreferrer" className={linkClass}>
-          Source <ArrowUpRight className="size-3.5" />
-        </a>
+        <li>
+          <a href={project.githubUrl} target="_blank" rel="noopener noreferrer" className="inline-block py-1">
+            Source
+          </a>
+        </li>
       )}
-    </div>
+    </ul>
+  );
+}
+
+/** The posts written about a project, linked by title. Renders nothing when there are none. */
+export function ProjectWriteUps({ posts }: { posts: PostMeta[] }) {
+  if (posts.length === 0) return null;
+  return (
+    <p className="ui">
+      <span className="muted">{posts.length === 1 ? "Write-up" : "Write-ups"}:</span>{" "}
+      {posts.map((post, i) => (
+        <span key={post.slug}>
+          {i > 0 && <span className="muted"> · </span>}
+          <Link href={`/blog/${post.slug}`}>{post.title}</Link>
+        </span>
+      ))}
+    </p>
   );
 }
