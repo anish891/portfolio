@@ -18,12 +18,11 @@ All site content (projects, skills, links, experience, education) lives in [`lib
 
 | Route | What it is |
 | --- | --- |
-| `/` | Intro, selected work, latest writing, experience, activity, stack, contact |
+| `/` | Intro, projects, latest writing, contact links |
 | `/projects`, `/projects/[slug]` | Case study per project, with related posts |
 | `/blog`, `/blog/[slug]` | MDX blog, with RSS at `/feed.xml` |
-| `/about` | Background, interests, timelines, stack |
-
-`⌘K` / `Ctrl+K` opens a palette that searches pages, projects and posts.
+| `/about` | Background, interests, timelines, stack, FAQ |
+| `/contact` | Email, profiles and the contact form |
 
 ## Writing a post
 
@@ -43,9 +42,8 @@ draft: true          # optional: hides the post everywhere
 ## Tech stack
 
 - **Framework:** Next.js 16 (App Router), React 19, TypeScript
-- **Styling:** Tailwind CSS v4 with OKLCH colour tokens, Radix UI primitives, Lucide icons
+- **Styling:** Tailwind CSS v4 with a small set of colour tokens in `app/globals.css`; Source Serif 4 for text and Inter for UI, self-hosted through `next/font`
 - **Blog:** MDX files rendered at build time (`next-mdx-remote`, `rehype-pretty-code`)
-- **Motion:** Framer Motion (respects `prefers-reduced-motion`)
 - **Theme:** system-aware light / dark mode, saved in `localStorage`
 
 ## Getting started
@@ -69,18 +67,14 @@ Open <http://localhost:3000>.
 
 | Name | Purpose |
 | --- | --- |
-| `GITHUB_TOKEN` | Optional. Lets the activity heatmap read GitHub directly, so it is accurate to within minutes. Without it, a public service is used and it can lag by up to an hour. Server-side only. |
 | `NEXT_PUBLIC_WEB3FORMS_ACCESS_KEY` | Contact form delivery via [Web3Forms](https://web3forms.com). Restrict the key to your domain in their dashboard. Without it the form only simulates success in development and shows an error in production. |
 
 ## Tests
 
 `npm test` runs the Vitest suite in `tests/`. It covers the logic that is easy to get subtly wrong:
 the post parser (including refusing code-running front matter), reading time and headings, the
-heatmap's date window and time-zone-safe formatting, the malformed-URL proxy, the security
-headers, the GitHub route's caching and fallbacks (with the network mocked), the RSS feed, and
-integrity checks on `lib/data.ts`. It needs Node 22.12 or newer, and CI runs it on every push.
+malformed-URL proxy, the security headers, the RSS feed, and integrity checks on `lib/data.ts`. It needs Node 22.12 or newer, and CI runs it on every push.
 
 ## Notes
 
-- The GitHub contribution heatmap is fetched through `app/api/github-contributions` and cached for an hour.
 - CI (`.github/workflows/ci.yml`) runs lint, type-check and build on every push and pull request.

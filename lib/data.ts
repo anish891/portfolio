@@ -5,7 +5,7 @@ export interface NavItem {
   href: string;
 }
 
-/** A numbered pin on a project screenshot. x and y are pixels in the 1280x800 screenshot. */
+/** A numbered callout for a project screenshot. x and y are pixels in the 1280x800 screenshot. */
 export interface Annotation {
   x: number;
   y: number;
@@ -63,8 +63,9 @@ export interface SocialLink {
 // ─── Navigation ──────────────────────────────────────────────────────────────
 
 export const navItems: NavItem[] = [
-  { label: "Work", href: "/projects" },
-  { label: "Blog", href: "/blog" },
+  { label: "Home", href: "/" },
+  { label: "Projects", href: "/projects" },
+  { label: "Writing", href: "/blog" },
   { label: "About", href: "/about" },
 ];
 
@@ -92,7 +93,6 @@ export const heroContent = {
   intro:
     "I build tools that find the signal in messy data: option chains, spreadsheets, security graphs. I work across the stack, with a focus on AI-powered products and the systems behind them.",
   location: "Mumbai, India",
-  coordinates: "19.08°N 72.88°E",
   status: "Open to full-time & freelance",
   email: "anishtejwani891@gmail.com",
   roles: [
@@ -103,7 +103,7 @@ export const heroContent = {
   ],
 };
 
-// ─── Crew profile ────────────────────────────────────────────────────────────
+// ─── Personal details ────────────────────────────────────────────────────────
 // Self-reported, unverified.
 
 export const crewProfile = [

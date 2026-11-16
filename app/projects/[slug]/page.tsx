@@ -1,15 +1,13 @@
 import type { Metadata } from "next";
 import Image from "next/image";
+import Link from "next/link";
 import { notFound } from "next/navigation";
-import { projects } from "@/lib/data";
+import { projects, SCREENSHOT_SIZE } from "@/lib/data";
 import { pageMetadata } from "@/lib/seo";
 import { JsonLd } from "@/components/ui/JsonLd";
 import { breadcrumbs, softwareApplication, softwareSourceCode } from "@/lib/schema";
 import { getPostsForProject } from "@/lib/blog";
 import { PostList } from "@/components/ui/PostList";
-import { PageHeader } from "@/components/ui/PageHeader";
-import { SectionHead } from "@/components/ui/Section";
-import { AnnotatedImage } from "@/components/ui/AnnotatedImage";
 import { ProjectLinks } from "@/components/ui/ProjectLinks";
 
 interface Props {
@@ -40,11 +38,8 @@ export default async function ProjectPage({ params }: Props) {
   const posts = getPostsForProject(project.id);
   const paragraphs = project.longDescription.split("\n\n");
 
-  const deployed = !!project.deployedUrl;
-  const index = projects.findIndex((p) => p.id === project.id) + 1;
-
   return (
-    <main id="main" className="container-prose pt-14 pb-4">
+    <main id="main" data-wide className="wrap flex-1 pt-10">
       <JsonLd
         data={[
           softwareSourceCode(project),
@@ -55,99 +50,65 @@ export default async function ProjectPage({ params }: Props) {
           ]),
         ]}
       />
-      <PageHeader
-        back={{ href: "/projects", label: "Projects" }}
-        kicker={`Mission ${String(index).padStart(2, "0")}`}
-        title={project.title}
-        description={project.description}
-        uppercase={false}
-      >
-        <dl className="mt-6">
-          <div className="spec-row">
-            <dt className="label-mono">Status</dt>
-            <dd className="flex items-center gap-1.5 font-mono text-xs">
-              <span
-                className={`size-1.5 rounded-full ${deployed ? "bg-signal" : "border border-muted-foreground"}`}
-                aria-hidden
+      <article>
+        <header>
+          <Link href="/projects" className="ui">
+            ← All projects
+          </Link>
+          <h1 className="page-title mt-6">{project.title}</h1>
+          <p className="muted mt-3">{project.description}</p>
+          <div className="mt-5 space-y-1">
+            {project.proof.length > 0 && <p className="ui">{project.proof.join(" · ")}</p>}
+            <p className="ui muted">{project.techStack.join(" · ")}</p>
+            <ProjectLinks project={project} />
+          </div>
+        </header>
+
+        <div className="prose mt-10">
+          {project.image && (
+            <figure>
+              <Image
+                src={project.image}
+                alt={`${project.title} preview`}
+                width={SCREENSHOT_SIZE.width}
+                height={SCREENSHOT_SIZE.height}
+                preload
+                fetchPriority="high"
+                sizes="(min-width: 768px) 720px, 100vw"
               />
-              {deployed ? "Deployed" : "Source only"}
-            </dd>
-          </div>
-          <div className="spec-row">
-            <dt className="label-mono">Stack</dt>
-            <dd className="font-mono text-xs">{project.techStack.join(" · ")}</dd>
-          </div>
-          {project.proof.length > 0 && (
-            <div className="spec-row">
-              <dt className="label-mono">Proof</dt>
-              <dd className="font-mono text-xs">{project.proof.join(" · ")}</dd>
-            </div>
+              {project.annotations?.length ? (
+                <figcaption>
+                  <ol>
+                    {project.annotations.map((a) => (
+                      <li key={a.title}>
+                        <strong>{a.title}.</strong> {a.text}
+                      </li>
+                    ))}
+                  </ol>
+                </figcaption>
+              ) : null}
+            </figure>
           )}
-          <div className="spec-row">
-            <dt className="label-mono">Links</dt>
-            <dd>
-              <ProjectLinks project={project} />
-            </dd>
-          </div>
-        </dl>
-      </PageHeader>
 
-      {project.image && (
-        <figure className="mt-10">
-          {project.annotations?.length ? (
-            <AnnotatedImage
-              src={project.image}
-              alt={`${project.title} preview`}
-              annotations={project.annotations}
-            />
-          ) : (
-            <div className="brackets">
-              <div className="relative aspect-[16/10] overflow-hidden border border-border bg-card">
-                <Image
-                  src={project.image}
-                  alt={`${project.title} preview`}
-                  fill
-                  preload
-                  fetchPriority="high"
-                  sizes="(min-width: 672px) 624px, 100vw"
-                  className="object-cover"
-                />
-              </div>
-            </div>
-          )}
-          <figcaption className="fig-caption">
-            Fig. 01 · {project.title}
-            {project.annotations?.length ? " · numbered callouts" : ""}
-          </figcaption>
-        </figure>
-      )}
-
-      <section className="mt-14">
-        <SectionHead title="Overview" />
-        <div className="prose-minimal">
+          <h2 id="overview">Overview</h2>
           {paragraphs.map((para, i) => (
             <p key={i}>{para}</p>
           ))}
-        </div>
-      </section>
 
-      <section className="mt-14">
-        <SectionHead title="Highlights" kicker="key facts" />
-        <ul className="space-y-2 text-sm leading-relaxed text-foreground/90">
-          {project.features.map((f) => (
-            <li key={f} className="flex gap-3">
-              <span className="mt-0.5 font-mono text-xs text-signal-ink" aria-hidden>
-                [x]
-              </span>
-              {f}
-            </li>
-          ))}
-        </ul>
-      </section>
+          <h2 id="highlights">Highlights</h2>
+          <ul>
+            {project.features.map((f) => (
+              <li key={f}>{f}</li>
+            ))}
+          </ul>
+        </div>
+      </article>
 
       {posts.length > 0 && (
-        <section id="flight-log" className="mt-14">
-          <SectionHead title="Flight log" kicker="write-ups" />
+        <section id="writing" aria-labelledby="writing-label" className="mt-12 scroll-mt-6">
+          <h2 id="writing-label" className="label mb-5">
+            Writing
+          </h2>
           <PostList posts={posts} />
         </section>
       )}

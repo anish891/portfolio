@@ -1,11 +1,10 @@
 import type { Metadata } from "next";
 import { getAllPosts, getAllTags } from "@/lib/blog";
 import { TagList } from "@/components/ui/TagList";
-import { PostList } from "@/components/ui/PostList";
+import { PostsByYear } from "@/components/ui/PostList";
 import { pageMetadata } from "@/lib/seo";
 import { JsonLd } from "@/components/ui/JsonLd";
 import { breadcrumbs } from "@/lib/schema";
-import { PageHeader } from "@/components/ui/PageHeader";
 
 export const metadata: Metadata = pageMetadata({
   title: "Blog",
@@ -19,34 +18,27 @@ export default function BlogIndex() {
   const posts = getAllPosts();
   const tags = getAllTags();
   return (
-    <main id="main" className="container-prose pt-14">
+    <main id="main" className="wrap flex-1 pt-12">
       <JsonLd data={breadcrumbs([{ name: "Blog", path: "/blog" }])} />
-      <PageHeader
-        kicker="Flight log"
-        title="Blog"
-        description="Write-ups on what I build: how it works, what broke, and what I'd change."
-      >
-        <p className="label-mono mt-4">
-          <a
-            href="/feed.xml"
-            className="underline decoration-border underline-offset-4 hover:decoration-signal"
-          >
-            RSS feed
-          </a>
-          {" · "}
-          {posts.length} {posts.length === 1 ? "entry" : "entries"}
+      <header>
+        <h1 className="page-title">Writing</h1>
+        <p className="muted mt-3">
+          Write-ups on what I build: how it works, what broke, and what I&apos;d change.
         </p>
-      </PageHeader>
-      {tags.length > 0 && (
-        <div className="mt-6">
-          <TagList tags={tags.map((t) => t.tag)} />
-        </div>
-      )}
-      <div className="mt-10">
+        <p className="ui muted mt-3">
+          <a href="/feed.xml">RSS feed</a> · {posts.length} {posts.length === 1 ? "post" : "posts"}
+        </p>
+        {tags.length > 0 && (
+          <div className="mt-2">
+            <TagList tags={tags.map((t) => t.tag)} />
+          </div>
+        )}
+      </header>
+      <div className="mt-12">
         {posts.length ? (
-          <PostList posts={posts} headingLevel="h2" />
+          <PostsByYear posts={posts} />
         ) : (
-          <p className="text-sm text-muted-foreground">Nothing here yet.</p>
+          <p className="ui muted">Nothing here yet.</p>
         )}
       </div>
     </main>

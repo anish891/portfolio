@@ -1,8 +1,9 @@
 import Link from "next/link";
 
+/** Tags as a row of small muted links. The active tag (on a tag page) is shown in the text colour. */
 export function TagList({ tags, active }: { tags: string[]; active?: string }) {
   return (
-    <ul className="flex flex-wrap gap-2 font-mono text-xs">
+    <ul className="ui flex flex-wrap gap-x-3 gap-y-0.5">
       {tags.map((tag) => {
         const on = tag === active;
         return (
@@ -10,11 +11,7 @@ export function TagList({ tags, active }: { tags: string[]; active?: string }) {
             <Link
               href={`/blog/tag/${encodeURIComponent(tag)}`}
               aria-current={on ? "page" : undefined}
-              className={
-                on
-                  ? "rounded-sm border border-signal px-2 py-0.5 text-signal-ink"
-                  : "rounded-sm border border-border px-2 py-0.5 text-muted-foreground transition-colors hover:border-foreground/40 hover:text-foreground"
-              }
+              className={`inline-block py-1 hover:text-text ${on ? "font-semibold text-text" : "text-muted"}`}
             >
               #{tag}
             </Link>

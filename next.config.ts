@@ -5,7 +5,7 @@ const isDev = process.env.NODE_ENV === "development";
 /**
  * Content-Security-Policy. The site is statically rendered, so a per-request nonce is not
  * possible; scripts and styles therefore allow 'unsafe-inline' (needed for the theme script that
- * prevents a flash of the wrong theme, and for Next.js and Framer Motion inline styles). The
+ * prevents a flash of the wrong theme, and for Next.js inline styles). The
  * policy still blocks everything else: other origins' scripts, plugins, framing and form posts.
  *
  * connect-src allows the contact form's request to Web3Forms. In development, 'unsafe-eval'

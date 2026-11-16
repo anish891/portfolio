@@ -1,38 +1,17 @@
 import Link from "next/link";
-import { PageHeader } from "@/components/ui/PageHeader";
 
 export default function NotFound() {
   return (
-    <main id="main" className="container-prose pt-14">
-      <PageHeader
-        kicker="Error 404"
-        title="Signal lost"
-        description="That page doesn't exist, or it moved."
-      />
-      <p className="mt-8 text-sm leading-relaxed text-muted-foreground">
-        Try the{" "}
-        <Link
-          href="/blog"
-          className="text-foreground underline decoration-border underline-offset-4 hover:decoration-signal"
-        >
-          blog
-        </Link>
-        ,{" "}
-        <Link
-          href="/projects"
-          className="text-foreground underline decoration-border underline-offset-4 hover:decoration-signal"
-        >
-          projects
-        </Link>{" "}
-        or press <kbd className="rounded-sm border border-border px-1 font-mono text-xs">⌘K</kbd> to
-        search.
+    <main id="main" className="wrap flex-1 pt-12">
+      <p className="label">Error 404</p>
+      <h1 className="page-title mt-2">Page not found</h1>
+      <p className="muted mt-3">That page doesn&apos;t exist, or it moved.</p>
+      <p className="mt-6">
+        Try the <Link href="/blog">blog</Link> or <Link href="/projects">projects</Link>.
       </p>
-      <Link
-        href="/"
-        className="label-mono mt-6 inline-block underline decoration-border underline-offset-4 hover:text-foreground hover:decoration-signal"
-      >
-        ← Back to base
-      </Link>
+      <p className="ui mt-6">
+        <Link href="/">← Home</Link>
+      </p>
     </main>
   );
 }

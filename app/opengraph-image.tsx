@@ -5,17 +5,17 @@ export const alt = "Anish Tejwani · Software Engineer";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
-const INK = "#e8edf3";
-const MUTED = "#8b96a5";
-const SIGNAL = "#f0883e";
-const BG = "#0f141b";
-const LINE = "rgba(232,237,243,0.06)";
+const INK = "#e7e5e4";
+const MUTED = "#a8a29e";
+const ACCENT = "#fdba74";
+const BG = "#161412";
+const LINE = "#44403c";
 
 // Order shown on the card: the AI project first, then the other two.
 const ORDER = ["graph-sentinel", "chaindeck", "unbake"];
 
 /**
- * Home-page share card: name, role and tagline on the left, a terminal-style list of
+ * Home-page share card: name, role and tagline on the left, a plain list of
  * shipped projects on the right. The bottom-left corner is kept empty on purpose,
  * because X draws its caption bar over that corner of large-image cards.
  */
@@ -33,20 +33,14 @@ export default function OpengraphImage() {
           display: "flex",
           position: "relative",
           background: BG,
-          backgroundImage: `linear-gradient(to right, ${LINE} 1px, transparent 1px), linear-gradient(to bottom, ${LINE} 1px, transparent 1px)`,
-          backgroundSize: "40px 40px",
           color: INK,
           padding: 56,
         }}
       >
-        <div style={{ position: "absolute", top: 36, left: 36, width: 28, height: 28, borderTop: `3px solid ${SIGNAL}`, borderLeft: `3px solid ${SIGNAL}`, display: "flex" }} />
-        <div style={{ position: "absolute", bottom: 36, right: 36, width: 28, height: 28, borderBottom: `3px solid ${SIGNAL}`, borderRight: `3px solid ${SIGNAL}`, display: "flex" }} />
-
         <div style={{ display: "flex", width: "100%", height: "100%", padding: "20px 24px" }}>
           {/* left: identity */}
           <div style={{ display: "flex", flexDirection: "column", justifyContent: "flex-start", width: 600 }}>
-            <div style={{ display: "flex", alignItems: "center", fontSize: 24, color: MUTED, letterSpacing: 4, textTransform: "uppercase" }}>
-              <div style={{ width: 14, height: 14, background: SIGNAL, marginRight: 16, display: "flex" }} />
+            <div style={{ display: "flex", alignItems: "center", fontSize: 24, color: MUTED, letterSpacing: 1 }}>
               anishtejwani.dev
             </div>
 
@@ -54,7 +48,7 @@ export default function OpengraphImage() {
               <div style={{ display: "flex", fontSize: 92, fontWeight: 700, letterSpacing: -2, lineHeight: 1.02 }}>
                 {heroContent.name}
               </div>
-              <div style={{ display: "flex", fontSize: 32, color: SIGNAL, marginTop: 22, letterSpacing: 1 }}>
+              <div style={{ display: "flex", fontSize: 32, color: ACCENT, marginTop: 22, letterSpacing: 1 }}>
                 Software Engineer
               </div>
               <div style={{ display: "flex", fontSize: 29, color: MUTED, marginTop: 20, lineHeight: 1.3 }}>
@@ -63,7 +57,7 @@ export default function OpengraphImage() {
             </div>
           </div>
 
-          {/* right: terminal */}
+          {/* right: project list */}
           <div
             style={{
               display: "flex",
@@ -71,29 +65,18 @@ export default function OpengraphImage() {
               marginLeft: "auto",
               alignSelf: "center",
               width: 430,
-              border: "1px solid rgba(232,237,243,0.22)",
-              background: "rgba(8,11,16,0.75)",
-              padding: "26px 28px",
+              borderLeft: `2px solid ${LINE}`,
+              padding: "8px 0 8px 36px",
             }}
           >
-            <div style={{ display: "flex", fontSize: 22, color: MUTED, letterSpacing: 2 }}>
-              $ ls ./projects
+            <div style={{ display: "flex", fontSize: 22, color: MUTED, letterSpacing: 3, textTransform: "uppercase" }}>
+              Projects
             </div>
             {list.map((p) => (
-              <div
-                key={p.id}
-                style={{ display: "flex", alignItems: "center", marginTop: 26, fontSize: 30 }}
-              >
-                <div style={{ width: 14, height: 14, borderRadius: 7, background: p.deployedUrl ? SIGNAL : MUTED, marginRight: 18, display: "flex" }} />
-                <div style={{ display: "flex", flex: 1, color: INK }}>{p.title.replace(/ AI$/, "")}</div>
-                <div style={{ display: "flex", fontSize: 20, color: p.deployedUrl ? SIGNAL : MUTED, letterSpacing: 2, textTransform: "uppercase" }}>
-                  {p.deployedUrl ? "live" : "src"}
-                </div>
+              <div key={p.id} style={{ display: "flex", marginTop: 24, fontSize: 32, color: INK }}>
+                {p.title.replace(/ AI$/, "")}
               </div>
             ))}
-            <div style={{ display: "flex", fontSize: 22, color: SIGNAL, marginTop: 30 }}>
-              $ _
-            </div>
           </div>
         </div>
       </div>

@@ -16,7 +16,7 @@ export default async function Image({ params }: { params: Promise<{ slug: string
   if (!project) return new Response("Not found", { status: 404 });
   return new ImageResponse(
     ogFrame({
-      label: "Mission",
+      label: "Project",
       title: project.title,
       titleSize: 92,
       subtitle: project.description.split(". ")[0],
